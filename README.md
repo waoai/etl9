@@ -2,6 +2,10 @@
 
 Simple all-in-one container for microservice-based ETL pipelines.
 
+```bash
+docker run -p 9123:9123 -v $(pwd)/etl9-config:config etl9
+```
+
 * Simple Declarative Interface
 * Automatically generated web-based documentation
 * Input/Output Type Checking
