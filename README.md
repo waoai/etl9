@@ -1,6 +1,6 @@
 # ETL9
 
-Simple manager for microservice-based ETL pipelines.
+Simple all-in-one container for microservice-based ETL pipelines.
 
 * Simple Declarative Interface
 * Automatically generated web-based documentation
