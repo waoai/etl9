@@ -6,28 +6,30 @@ Simple all-in-one container for microservice-based ETL pipelines.
 docker run -p 9123:9123 -v $(pwd)/etl9-config:config etl9
 ```
 
-* Simple Declarative Interface
-* Automatically generated web-based documentation
-* Input/Output Type Checking
-* GUI for configuring pipelines & types
-* API for type-checking and running pipeline jobs
-* Hot reloading YAML or JSON configuration
-* One docker run and you're ready to start building
-* Easy visual debugging and inspection
-* Progressive data input (partially completed stages)
-* Built to scale for large workloads
+- Simple Declarative Interface
+- Automatically generated web-based documentation
+- Input/Output Type Checking
+- GUI for configuring pipelines & types
+- API for type-checking and running pipeline jobs
+- Hot reloading YAML or JSON configuration
+- One docker run and you're ready to start building
+- Easy visual debugging, inspection and "pipeline breakpoints"
+- Progressive data input (partially completed stages)
+- Built to scale for large workloads
 
 ## Terminology
 
-* **endpoint**: A service endpoint, usually a URL
-* **stage**: A type of data transformation
-* **stage function**: The function executed to progress a stage. Every stage function takes 2 arguments, the input and the state of the stage, and return 2 objects, one indicating the new state, and one indicating the output.
+- **endpoint**: A service endpoint, usually a URL
+- **stage**: A type of data transformation
+- **stage function**: The function executed to progress a stage. Every stage function takes 2 arguments, the input and the state of the stage, and return 2 objects, one indicating the new state, and one indicating the output.
+- **pipeline**: Configuration of stages and connections to produce a desired output
+- **active pipeline, active stage**: A pipeline or stage that's running
 
 ## Principles
 
-* **Minimize side effects** Each stage function should not maintain state beyond what it returns and is input. State in other services should be avoided (but is often necessary, e.g. uploading to an s3 bucket).
-* **Keep payloads small** Don't store a lot of information e.g. files within the state of each stage.
-* **Return quickly** Stage functions should complete some progress then immediately return, rather than doing all the work available then returning. In some cases, this may create a lot of network overhead. If network overhead is an issue, complete as much work as possible in 10 seconds then return.
+- **Minimize side effects** Each stage function should not maintain state beyond what it returns and is input. State in other services should be avoided (but is often necessary, e.g. uploading to an s3 bucket).
+- **Keep payloads small** Don't store a lot of information e.g. files within the state of each stage.
+- **Return quickly** Stage functions should complete some progress then immediately return, rather than doing all the work available then returning. In some cases, this may create a lot of network overhead. If network overhead is an issue, complete as much work as possible in 10 seconds then return.
 
 ## Progressive Data
 
@@ -79,3 +81,14 @@ In production, you'll want to use a persistent database external to the containe
 | PG_USER              | Database user                           |
 | PG_PASS              | Database password                       |
 | PG_PORT              | Database port                           |
+
+## Development
+
+This repository is made up of several services managed by lerna. Here are the main services and their descriptions...
+
+| Service             | Description                                        |
+| ------------------- | -------------------------------------------------- |
+| `gui`               | NextJS user interface for managing pipelines       |
+| `master-controller` | Controls pipeline progression                      |
+| `database`          | Database with state of all active pipelines/stages |
+| `database-rest-api` | A REST API for the database.                       |

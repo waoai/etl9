@@ -1,0 +1,34 @@
+{
+  "name": "database",
+  "version": "0.0.0",
+  "main": "build/bundle.js",
+  "scripts": {
+    "build": "node ./migrations/build-migration && webpack",
+    "build:docker": "npm run build",
+    "test": "npm run build && tape tests/**/*.js",
+    "start:prod": "node migrate.js",
+    "start:postgres": "docker run --net host -it postgres -E",
+    "drop": "psql -h localhost -U postgres -c 'DROP DATABASE planner' || exit 0",
+    "init:dev": "npm run create && npm run migrate && npm run seed",
+    "create": "psql -h localhost -U postgres -c 'CREATE DATABASE planner'",
+    "migrate": "psql -h localhost -U postgres -d planner -f migrate.sql",
+    "seed": "psql -h localhost -U postgres -d planner -f seed.sql",
+    "reset": "npm run build && npm run drop && npm run create && npm run migrate && npm run seed"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.5",
+    "@babel/plugin-transform-flow-strip-types": "^7.0.0",
+    "babel-loader": "^8.0.4",
+    "csv-parse": "^2.4.0",
+    "knex": "^0.14.4",
+    "leaked-handles": "^5.2.0",
+    "pg": "^7.4.1",
+    "raw-loader": "^0.5.1",
+    "request": "^2.85.0",
+    "request-promise": "^4.2.2",
+    "tape": "^4.9.0",
+    "webpack": "^4.25.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-node-externals": "^1.7.2"
+  }
+}

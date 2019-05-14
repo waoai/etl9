@@ -1,0 +1,16 @@
+{
+  "name": "rest-api",
+  "version": "0.0.0",
+  "scripts": {
+    "start": "PG_URI=\"postgres://postgres@localhost:5432/planner\" postgrest ./postgrest.conf",
+    "start:prod": "postgrest ./postgrest.conf",
+    "test": "tape tests/**/*.test.js",
+    "build:docker": "echo ''"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "axios": "^0.18.0",
+    "cross-env": "^5.2.0",
+    "tape": "^4.10.0"
+  }
+}
