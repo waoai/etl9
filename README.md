@@ -42,18 +42,34 @@ The config directory will automatically be generated with some boilerplate code.
 A configuration file can be placed anywhere in the config directory (e.g. within subdirectories)
 
 ```yaml
+kind: Pipeline
+name: S3TestPipeline
+stages:
+  pull_s3:
+    type: PullFromS3
+    inputs:
+      s3_source:
+        value: s3://example-bucket
+  output_logger:
+    type: LogOutput
+    inputs:
+      input:
+        node: pull_s3
+        output: files
+---
 kind: Stage
 name: PullFromS3
 inputs:
-  s3_dest:
+  s3_source:
     type: string
     regex_validator: ^s3://.*
   s3_creds:
     type: S3Credentials
+    optional: yes
 outputs:
   files:
     type: FileList
-    progressive: true
+    progressive: yes
 ---
 kind: Type
 name: S3Credentials
