@@ -25,11 +25,9 @@ const useStyles = makeStyles({
 const items = [
   { label: "Active Pipelines" },
   "sep",
-  { label: "Pipeline Templates" },
   { label: "Stages" },
   { label: "Types" },
   "sep",
-  { label: "Create Pipeline Template" },
   { label: "Create Stage" },
   { label: "Create Type" }
 ]

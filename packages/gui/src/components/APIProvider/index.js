@@ -33,6 +33,7 @@ const mockData = {
     delayAndReturn([
       {
         name: "PullFromS3",
+        description: "Pull files from S3 Bucket",
         inputs: {
           s3_source: {
             type: "string",

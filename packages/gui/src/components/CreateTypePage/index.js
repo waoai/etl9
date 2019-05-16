@@ -8,6 +8,7 @@ import TextField from "@material-ui/core/TextField"
 import Button from "@material-ui/core/Button"
 import { struct } from "superstruct"
 import safeEval from "safe-eval"
+import CodeTextArea from "../CodeTextArea"
 
 const useStyles = makeStyles({
   root: {
@@ -17,11 +18,6 @@ const useStyles = makeStyles({
     "& > *": {
       marginTop: 20
     }
-  },
-  textArea: {
-    fontFamily: "monospace",
-    minHeight: 400,
-    lineHeight: 1.5
   },
   actions: {
     display: "flex",
@@ -36,6 +32,9 @@ export const CreateTypePage = () => {
 
   let error
   try {
+    if (!typeName.match(/[A-Z][a-zA-Z]+/))
+      throw new Error("Type names should be CapitalCase")
+
     safeEval(`struct(${typeDef})`, { struct })
   } catch (e) {
     error = e.toString()
@@ -49,31 +48,7 @@ export const CreateTypePage = () => {
           onChange={e => changeTypeName(e.target.value)}
           value={typeName}
         />
-        <textarea
-          onKeyDown={e => {
-            if (e.key === "Tab") {
-              e.preventDefault()
-              const { selectionStart, selectionEnd } = e.target
-              changeTypeDef(
-                typeDef.substring(0, selectionStart) +
-                  "  " +
-                  typeDef.substring(selectionStart, selectionEnd)
-              )
-            }
-          }}
-          placeholder="Type Definition in superstruct format e.g. { someProperty: 'string' }"
-          className={c.textArea}
-          style={
-            !error
-              ? undefined
-              : {
-                  border: "2px solid #f00"
-                }
-          }
-          onChange={e => changeTypeDef(e.target.value)}
-          value={typeDef}
-        />
-        {error && <div style={{ color: "#f00" }}>{error}</div>}
+        <CodeTextArea onChange={changeTypeDef} value={typeDef} error={error} />
         <div className={c.actions}>
           <Button disabled={error || typeName === ""}>
             Create Type "{typeName}"
