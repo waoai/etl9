@@ -40,11 +40,14 @@
     "@storybook/addons": "^5.0.11",
     "@storybook/react": "^5.0.11",
     "babel-loader": "^8.0.5",
+    "react-select": "^2.4.3",
     "rete": "1.2.2",
     "rete-area-plugin": "^0.2.1",
     "rete-connection-plugin": "0.7.0",
     "rete-context-menu-plugin": "^0.3.7",
     "rete-react-render-plugin": "^0.1.2",
+    "safe-eval": "^0.4.1",
+    "superstruct": "^0.6.1",
     "typescript": "^3.4.5"
   }
 }
