@@ -42,7 +42,7 @@ The config directory will automatically be generated with some boilerplate code.
 A configuration file can be placed anywhere in the config directory (e.g. within subdirectories)
 
 ```yaml
-kind: Pipeline
+kind: PipelineTemplate
 name: S3TestPipeline
 stages:
   pull_s3:
@@ -73,18 +73,18 @@ outputs:
 ---
 kind: Type
 name: S3Credentials
-flowtype: |
-  {|
-    secretAccessKey: string,
-    accessKeyId: string
-  |}
+superstruct: |
+  {
+    secretAccessKey: 'string',
+    accessKeyId: 'string'
+  }
 ---
 kind: Type
 name: FileList
-flowtype: |
-  Array<{|
-    url: string
-  |}>
+superstruct: |
+  [{
+    url: 'string'
+  }]
 ```
 
 ## Production Usage / Persistence
