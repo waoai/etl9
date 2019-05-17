@@ -11,19 +11,20 @@ const delayAndReturn = result => {
 }
 
 const mockData = {
-  getPipelines: () => delayAndReturn([]),
-  getPipelineTemplates: () =>
+  getPipelines: () =>
     delayAndReturn([
       {
         name: "S3TestPipeline",
-        stages: {
+        description: "Log Files from S3",
+        nodes: {
           pull_s3: {
+            name: "PullFromS3",
             inputs: {
               s3_source: { value: "s3://example-bucket" }
             }
           },
           output_logger: {
-            type: "LogOutput",
+            name: "LogOutput",
             inputs: { input: { node: "pull_s3", output: "files" } }
           }
         }
@@ -63,6 +64,15 @@ const mockData = {
           files: {
             type: "FileList",
             progressive: "yes"
+          }
+        }
+      },
+      {
+        name: "LogOutput",
+        description: "Log Output to ETL9 Server",
+        inputs: {
+          input: {
+            type: "any"
           }
         }
       }

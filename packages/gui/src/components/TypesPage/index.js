@@ -35,6 +35,7 @@ export const TypesPage = () => {
     <Page title="Types">
       {!selectedType ? (
         <ListSearch
+          placeholder="Search for Type"
           items={types.map(type => ({
             ...type,
             label: type.name,

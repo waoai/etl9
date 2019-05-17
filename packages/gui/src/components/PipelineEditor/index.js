@@ -8,21 +8,18 @@ import { makeStyles } from "@material-ui/styles"
 
 const useStyles = makeStyles({})
 
-export const StageEditor = ({ stage, onChange, onError }: any) => {
+export const PipelineEditor = ({ pipeline, onChange, onError }: any) => {
   const c = useStyles()
   const [configString, changeConfigString] = useState(
-    yaml.safeDump({ kind: "Stage", ...stage })
+    yaml.safeDump({ kind: "Pipeline", ...pipeline })
   )
 
-  let error, stageName
+  let error
   try {
     const doc = yaml.safeLoad(configString)
-    stageName = doc.name
-    if (!doc.kind || doc.kind !== "Stage")
-      throw new Error('Must have kind of "Stage"')
+    if (!doc.kind || doc.kind !== "Pipeline")
+      throw new Error('Must have kind of "Pipeline"')
     if (!doc.name) throw new Error("name is required")
-    if (!stageName.match(/[A-Z][a-zA-Z]+/))
-      throw new Error("Stage names should be CapitalCase")
   } catch (e) {
     error = e.toString()
   }
@@ -50,4 +47,4 @@ export const StageEditor = ({ stage, onChange, onError }: any) => {
   )
 }
 
-export default StageEditor
+export default PipelineEditor

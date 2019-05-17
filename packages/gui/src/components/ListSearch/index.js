@@ -12,10 +12,18 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     padding: 20
+  },
+  emptyListText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+    padding: 40,
+    paddingTop: 80,
+    color: "#CCC"
   }
 })
 
-export const ListSearch = ({ items, onSelect }: any) => {
+export const ListSearch = ({ items, placeholder, onSelect }: any) => {
   const c = useStyles()
   const [searchValue, changeSearchValue] = useState("")
 
@@ -34,23 +42,30 @@ export const ListSearch = ({ items, onSelect }: any) => {
   return (
     <div className={c.root}>
       <TextField
-        placeholder="Search for Stage"
+        placeholder={placeholder}
         onChange={e => changeSearchValue(e.target.value)}
         value={searchValue}
       />
       <div className={c.stages}>
-        <List>
-          {filteredItems.map(item => (
-            <ListItem
-              button
-              onClick={() => onSelect(item)}
-              key={item.label}
-              className={c.stage}
-            >
-              <ListItemText primary={item.label} secondary={item.description} />
-            </ListItem>
-          ))}
-        </List>
+        {filteredItems.length === 0 ? (
+          <div className={c.emptyListText}>No Items Matching Search</div>
+        ) : (
+          <List>
+            {filteredItems.map(item => (
+              <ListItem
+                button
+                onClick={() => onSelect(item)}
+                key={item.label}
+                className={c.stage}
+              >
+                <ListItemText
+                  primary={item.label}
+                  secondary={item.description}
+                />
+              </ListItem>
+            ))}
+          </List>
+        )}
       </div>
     </div>
   )

@@ -8,12 +8,13 @@ import { useAPI } from "../APIProvider"
 import ListSearch from "../ListSearch"
 import Button from "@material-ui/core/Button"
 import StageEditor from "../StageEditor"
-import Diagram from "../Diagram"
+import PipelineDiagram from "../PipelineDiagram"
 
 const useStyles = makeStyles({
   root: { padding: 20 },
   actions: { paddingTop: 20, textAlign: "right" },
   nav: {
+    display: "flex",
     paddingBottom: 20
   }
 })
@@ -21,7 +22,6 @@ const useStyles = makeStyles({
 export const StagesPage = () => {
   const c = useStyles()
   const api = useAPI()
-  const [searchValue, changeSearchValue] = useState("")
   const [stages, changeStages] = useState([])
   const { getStages } = useAPI()
   useEffect(() => {
@@ -36,6 +36,7 @@ export const StagesPage = () => {
     <Page title="Stages">
       {!selectedStage ? (
         <ListSearch
+          placeholder="Search for Stage"
           items={stages.map(stage => ({
             stage,
             label: stage.name,
@@ -49,6 +50,19 @@ export const StagesPage = () => {
             <Button onClick={() => changeSelectedStage(null)}>
               Back to Search
             </Button>
+            <div style={{ flexGrow: 1 }} />
+            <Button
+              disabled={mode === "editor"}
+              onClick={() => changeMode("editor")}
+            >
+              Editor
+            </Button>
+            <Button
+              disabled={mode === "component"}
+              onClick={() => changeMode("component")}
+            >
+              Component
+            </Button>
           </div>
           {mode === "editor" ? (
             <>
@@ -60,10 +74,22 @@ export const StagesPage = () => {
                 <Button onClick={async () => {}}>Save</Button>
               </div>
             </>
-          ) : mode === "diagram" ? (
-            <>
-              <Diagram stages={[selectedStage]} />
-            </>
+          ) : mode === "component" ? (
+            <div
+              style={{ width: "100%", height: 400, border: "1px solid #ccc" }}
+            >
+              <PipelineDiagram
+                stages={[selectedStage]}
+                pipeline={{
+                  nodes: {
+                    stage: {
+                      name: selectedStage.name,
+                      inputs: {}
+                    }
+                  }
+                }}
+              />
+            </div>
           ) : null}
         </div>
       )}

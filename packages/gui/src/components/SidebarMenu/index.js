@@ -23,7 +23,7 @@ const useStyles = makeStyles({
 })
 
 const items = [
-  { label: "Active Pipelines" },
+  { label: "Pipelines" },
   "sep",
   { label: "Stages" },
   { label: "Types" },
