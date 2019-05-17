@@ -5,7 +5,7 @@ import Page from "../Page"
 import { makeStyles } from "@material-ui/styles"
 import CodeTextArea from "../CodeTextArea"
 import Button from "@material-ui/core/Button"
-import yaml from "js-yaml"
+import StageEditor from "../StageEditor"
 
 const useStyles = makeStyles({
   root: {
@@ -22,42 +22,27 @@ const useStyles = makeStyles({
 
 export const CreateStagePage = () => {
   const c = useStyles()
-  const [configString, changeConfigString] = useState(
-    `
-kind: Stage
-name: MyStageName
-description: Some stage description
-inputs:
-  some_input:
-    type: string
-outputs:
-  some_output:
-    type: string
-  `.trim()
-  )
 
-  let error, stageName
-  try {
-    const doc = yaml.safeLoad(configString)
-    stageName = doc.name
-    if (!stageName.match(/[A-Z][a-zA-Z]+/))
-      throw new Error("Stage names should be CapitalCase")
-    if (!doc.kind || doc.kind !== "Stage")
-      throw new Error('Must have kind of "Stage"')
-  } catch (e) {
-    error = e.toString()
-  }
+  const [error, changeError] = useState()
+  const [stage, changeStage] = useState({
+    kind: "Stage",
+    name: "MyStageName",
+    description: "Some stage description",
+    inputs: { some_input: { type: "string" } },
+    outputs: { some_input: { type: "string" } }
+  })
+
   return (
     <Page title="Create Stage">
       <div className={c.root}>
-        <CodeTextArea
-          error={error}
-          onChange={changeConfigString}
-          value={configString}
+        <StageEditor
+          stage={stage}
+          onChange={changeStage}
+          onError={changeError}
         />
         <div className={c.actions}>
-          <Button disabled={error || stageName === null}>
-            Create Stage "{stageName ? stageName : ""}"
+          <Button disabled={error || stage.name === null}>
+            Create Stage "{stage.name ? stage.name : ""}"
           </Button>
         </div>
       </div>

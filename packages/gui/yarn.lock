@@ -10598,6 +10598,11 @@ rete-area-plugin@^0.2.1:
   resolved "https://registry.yarnpkg.com/rete-area-plugin/-/rete-area-plugin-0.2.1.tgz#0afe4581baf99c36c904d08e4f0a835ed6604d86"
   integrity sha512-MOeQRmSC/gjkZIMo0fNuomzunRplALqd86V+jSzuhBYchCw0wshv2/iXu4xRxVZkw9r1HpZxlz9gLkbatCbXMw==
 
+rete-auto-arrange-plugin@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/rete-auto-arrange-plugin/-/rete-auto-arrange-plugin-0.3.0.tgz#80be9fb3dabf7747779cf1976a6350be8c3273a5"
+  integrity sha512-XcP4ELEvZ5fBlS3r85G7VzcHSY8DLYoayB/y91uAkxeKwhxlEL9JsCxNShlI584M9XjvNSKkTjJQ8IvJ2fXZ6g==
+
 rete-connection-plugin@0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/rete-connection-plugin/-/rete-connection-plugin-0.7.0.tgz#38a68846868e77d490de137bdf49194fb13cb050"

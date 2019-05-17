@@ -6,9 +6,8 @@ import Page from "../Page"
 import Select from "react-select"
 import TextField from "@material-ui/core/TextField"
 import Button from "@material-ui/core/Button"
-import { struct } from "superstruct"
-import safeEval from "safe-eval"
 import CodeTextArea from "../CodeTextArea"
+import TypeEditor from "../TypeEditor"
 
 const useStyles = makeStyles({
   root: {
@@ -27,31 +26,15 @@ const useStyles = makeStyles({
 
 export const CreateTypePage = () => {
   const c = useStyles()
-  const [typeName, changeTypeName] = useState("")
-  const [typeDef, changeTypeDef] = useState("")
-
-  let error
-  try {
-    if (!typeName.match(/[A-Z][a-zA-Z]+/))
-      throw new Error("Type names should be CapitalCase")
-
-    safeEval(`struct(${typeDef})`, { struct })
-  } catch (e) {
-    error = e.toString()
-  }
+  const [type, changeType] = useState({})
 
   return (
     <Page title="Create Type">
       <div className={c.root}>
-        <TextField
-          placeholder="Type Name"
-          onChange={e => changeTypeName(e.target.value)}
-          value={typeName}
-        />
-        <CodeTextArea onChange={changeTypeDef} value={typeDef} error={error} />
+        <TypeEditor type={type} onChange={changeType} />
         <div className={c.actions}>
-          <Button disabled={error || typeName === ""}>
-            Create Type "{typeName}"
+          <Button disabled={type.error || type.name === ""}>
+            Create Type "{type.name}"
           </Button>
         </div>
       </div>

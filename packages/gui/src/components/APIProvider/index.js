@@ -50,17 +50,33 @@ const mockData = {
             progressive: "yes"
           }
         }
+      },
+      {
+        name: "PushToS3",
+        description: "Push files to an S3 Bucket",
+        inputs: {
+          files: {
+            type: "FileList"
+          }
+        },
+        outputs: {
+          files: {
+            type: "FileList",
+            progressive: "yes"
+          }
+        }
       }
     ]),
   getTypes: () =>
     delayAndReturn([
       {
         name: "S3Credentials",
-        flowtype: "{|\n  secretAccessKey: string,\n  accessKeyId: string\n|}\n"
+        superstruct:
+          "{\n  secretAccessKey: 'string',\n  accessKeyId: 'string'\n}\n"
       },
       {
         name: "FileList",
-        flowtype: "Array<{|\n  url: string\n|}>\n"
+        superstruct: "[{\n  url: 'string'\n}]\n"
       }
     ])
 }

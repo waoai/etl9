@@ -44,6 +44,7 @@
     "react-select": "^2.4.3",
     "rete": "1.2.2",
     "rete-area-plugin": "^0.2.1",
+    "rete-auto-arrange-plugin": "^0.3.0",
     "rete-connection-plugin": "0.7.0",
     "rete-context-menu-plugin": "^0.3.7",
     "rete-react-render-plugin": "^0.1.2",
