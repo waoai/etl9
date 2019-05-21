@@ -32,7 +32,9 @@ storiesOf("PipelineDiagram", module).add("Basic", () => (
         nodes: {
           stage1: {
             name: "SomeStage",
-            inputs: {}
+            inputs: {
+              input1: { value: "hello" }
+            }
           },
           stage2: {
             name: "SomeStage",

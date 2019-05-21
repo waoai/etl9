@@ -32,7 +32,7 @@ export const PipelinesPage = () => {
     getStages().then(stages => {
       changeStages(stages)
     })
-  })
+  }, [])
   const [selectedPipeline, changeSelectedPipeline] = useState()
 
   return (

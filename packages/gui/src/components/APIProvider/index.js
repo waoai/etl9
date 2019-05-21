@@ -23,6 +23,35 @@ const mockData = {
               s3_source: { value: "s3://example-bucket" }
             }
           },
+          pull_golden_set: {
+            name: "PullFromS3",
+            inputs: {
+              s3_source: { value: "s3://example-bucket" },
+              whitelist: { value: ["data/sound1.mp3", "data/sound2.mp3"] }
+            }
+          },
+          add_answers_to_golden_set: {
+            name: "AddMetaInformationToFiles",
+            inputs: {
+              files: { node: "pull_golden_set", output: "files" },
+              meta_information: {
+                value: {
+                  "data/sound1.mp3": { answer: "validation answer 1" },
+                  "data/sound2.mp3": { answer: "validation answer 2" }
+                }
+              }
+            }
+          },
+          convert_to_transcription_task: {
+            name: "ConvertToAudioTranscriptionTask",
+            inputs: {
+              golden_set: {
+                node: "add_answers_to_golden_set",
+                output: "files"
+              },
+              files: { node: "pull_s3", output: "files" }
+            }
+          },
           output_logger: {
             name: "LogOutput",
             inputs: { input: { node: "pull_s3", output: "files" } }
@@ -42,14 +71,51 @@ const mockData = {
           },
           s3_creds: {
             type: "S3Credentials",
-            optional: "yes"
+            optional: true
+          },
+          whitelist: {
+            type: "StringArray",
+            optional: true
           }
         },
         outputs: {
           files: {
             type: "FileList",
-            progressive: "yes"
+            progressive: true
           }
+        }
+      },
+      {
+        name: "AddMetaInformationToFiles",
+        description: "Add information to file array",
+        inputs: {
+          files: { type: "FileList" },
+          meta_information: { type: "Object" }
+        },
+        outputs: {
+          files: { type: "FileList" }
+        }
+      },
+      {
+        name: "ConvertToAudioTranscriptionTask",
+        description: "Convert audio files into human transcription tasks",
+        inputs: {
+          golden_set: { type: "FileList" },
+          files: { type: "FileList" }
+        },
+        outputs: {
+          task_config: { type: "TaskConfiguration" },
+          tasks: { type: "HumanTaskArray", progressive: true }
+        }
+      },
+      {
+        name: "ProcessHumanTasks",
+        description: "Upload tasks to human platform and process",
+        inputs: {
+          humanTasks: { type: "HumanTaskArray" }
+        },
+        outputs: {
+          taskOutput: { type: "TaskOutputArray" }
         }
       },
       {
@@ -63,7 +129,7 @@ const mockData = {
         outputs: {
           files: {
             type: "FileList",
-            progressive: "yes"
+            progressive: true
           }
         }
       },
@@ -87,6 +153,10 @@ const mockData = {
       {
         name: "FileList",
         superstruct: "[{\n  url: 'string'\n}]\n"
+      },
+      {
+        name: "StringArray",
+        superstruct: "[string]"
       }
     ])
 }
