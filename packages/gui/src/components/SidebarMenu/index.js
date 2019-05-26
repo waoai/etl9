@@ -8,6 +8,7 @@ import Divider from "@material-ui/core/Divider"
 import ListItem from "@material-ui/core/ListItem"
 import ListItemText from "@material-ui/core/ListItemText"
 import { grey } from "@material-ui/core/colors"
+import { environment } from "react-router-component"
 
 const useStyles = makeStyles({
   item: {
@@ -23,13 +24,15 @@ const useStyles = makeStyles({
 })
 
 const items = [
-  { label: "Pipelines" },
+  { label: "Pipelines", href: "/" },
+  { label: "Stages", href: "/stages" },
+  { label: "Types", href: "/types" },
   "sep",
-  { label: "Stages" },
-  { label: "Types" },
+  { label: "Create Stage", href: "/create-stage" },
+  { label: "Create Type", href: "/create-type" },
   "sep",
-  { label: "Create Stage" },
-  { label: "Create Type" }
+  { label: "Environment", href: "/environment" },
+  { label: "Settings", href: "/settings" }
 ]
 
 export const SidebarMenu = ({ currentPageTitle }: any) => {
@@ -37,22 +40,26 @@ export const SidebarMenu = ({ currentPageTitle }: any) => {
   return (
     <div className={c.root}>
       <List>
-        {items.map(item =>
-          item === "sep" ? (
-            <Divider />
-          ) : (
-            <ListItem
-              button
-              key={item.label}
-              disabled={currentPageTitle === item.label}
-              className={classnames(
-                c.item,
-                currentPageTitle === item.label && c.selectedItem
-              )}
-            >
-              <ListItemText>{item.label}</ListItemText>
-            </ListItem>
-          )
+        {items.map(
+          item =>
+            item === "sep" ? (
+              <Divider />
+            ) : (
+              <ListItem
+                button
+                onClick={() => {
+                  environment.defaultEnvironment.navigate(item.href)
+                }}
+                key={item.label}
+                disabled={currentPageTitle === item.label}
+                className={classnames(
+                  c.item,
+                  currentPageTitle === item.label && c.selectedItem
+                )}
+              >
+                <ListItemText>{item.label}</ListItemText>
+              </ListItem>
+            )
         )}
       </List>
     </div>

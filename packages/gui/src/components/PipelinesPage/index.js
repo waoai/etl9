@@ -9,6 +9,7 @@ import ListSearch from "../ListSearch"
 import Button from "@material-ui/core/Button"
 import PipelineDiagram from "../PipelineDiagram"
 import PipelineEditor from "../PipelineEditor"
+import PipelineInstances from "../PipelineInstances"
 
 const useStyles = makeStyles({
   root: { padding: 20 },
@@ -25,6 +26,7 @@ export const PipelinesPage = () => {
   const [pipelines, changePipelines] = useState([])
   const [stages, changeStages] = useState([])
   const { getPipelines, getStages } = useAPI()
+  const [mode, changeMode] = useState("editor")
   useEffect(() => {
     getPipelines().then(pipelines => {
       changePipelines(pipelines)
@@ -54,18 +56,28 @@ export const PipelinesPage = () => {
               Back to Search
             </Button>
             <div style={{ flexGrow: 1 }} />
-            <Button>Editor</Button>
-            <Button disabled>Inspector</Button>
+            <Button onClick={() => changeMode("editor")}>Editor</Button>
+            <Button onClick={() => changeMode("instances")}>Instances</Button>
           </div>
-          <div style={{ width: "100%", height: 400, border: "1px solid #ccc" }}>
-            <PipelineDiagram stages={stages} pipeline={selectedPipeline} />
-          </div>
-          <div style={{ marginTop: 20 }}>
-            <PipelineEditor
-              pipeline={selectedPipeline}
-              onChange={changeSelectedPipeline}
-            />
-          </div>
+          {mode === "editor" ? (
+            <>
+              <div
+                style={{ width: "100%", height: 400, border: "1px solid #ccc" }}
+              >
+                <PipelineDiagram stages={stages} pipeline={selectedPipeline} />
+              </div>
+              <div style={{ marginTop: 20 }}>
+                <PipelineEditor
+                  pipeline={selectedPipeline}
+                  onChange={changeSelectedPipeline}
+                />
+              </div>
+            </>
+          ) : mode === "instances" ? (
+            <>
+              <PipelineInstances pipelineName={selectedPipeline.name} />
+            </>
+          ) : null}
           <div className={c.actions}>
             <Button>Activate</Button>
             <Button disabled>Archive</Button>

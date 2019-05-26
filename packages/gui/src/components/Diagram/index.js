@@ -86,17 +86,15 @@ export const Diagram = ({ nodes, stages }: any) => {
     if (!container) return
 
     const editor = new Rete.NodeEditor("demo@0.1.0", container)
-    const components = stages
-      .map(s => new StageComponent(s))
-      .concat([
-        new StageComponent({
-          name: "Value",
-          inputs: {},
-          outputs: {
-            output: { type: "any" }
-          }
-        })
-      ])
+    const components = stages.map(s => new StageComponent(s)).concat([
+      new StageComponent({
+        name: "Value",
+        inputs: {},
+        outputs: {
+          output: { type: "any" }
+        }
+      })
+    ])
     components.forEach(c => editor.register(c))
 
     editor.use(ConnectionPlugin)

@@ -8,11 +8,11 @@
     "react-scripts": "3.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=9100 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 4010 -s public",
+    "storybook": "start-storybook -p 91001 -s public",
     "build-storybook": "build-storybook -s public"
   },
   "eslintConfig": {
@@ -42,6 +42,7 @@
     "babel-loader": "^8.0.5",
     "js-yaml": "^3.13.1",
     "object-hash": "^1.3.1",
+    "react-router-component": "^0.39.1",
     "react-select": "^2.4.3",
     "rete": "1.2.2",
     "rete-area-plugin": "^0.2.1",

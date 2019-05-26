@@ -6,6 +6,7 @@ import Header from "../Header"
 import CenteredContent from "../CenteredContent"
 import SidebarMenu from "../SidebarMenu"
 import Grid from "@material-ui/core/Grid"
+import usePageTitle from "../../utils/use-page-title.js"
 
 const useStyles = makeStyles({
   contentContainer: {
@@ -16,6 +17,7 @@ const useStyles = makeStyles({
 
 export const Page = ({ title, children }: any) => {
   const c = useStyles()
+  usePageTitle(`ETL9 | ${title}`)
   return (
     <div className={c.root}>
       <Header pageTitle={title} />

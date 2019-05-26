@@ -1,6 +1,6 @@
 # ETL9
 
-Simple all-in-one container for microservice-based ETL pipelines.
+Simple all-in-one container for FaaS-based ETL pipelines.
 
 ```bash
 docker run -p 9123:9123 -v $(pwd)/etl9-config:config etl9
@@ -102,9 +102,11 @@ In production, you'll want to use a persistent database external to the containe
 
 This repository is made up of several services managed by lerna. Here are the main services and their descriptions...
 
-| Service             | Description                                        |
-| ------------------- | -------------------------------------------------- |
-| `gui`               | NextJS user interface for managing pipelines       |
-| `master-controller` | Controls pipeline progression                      |
-| `database`          | Database with state of all active pipelines/stages |
-| `database-rest-api` | A REST API for the database.                       |
+| Service             | Port/Endpoint              | Description                                        |
+| ------------------- | -------------------------- | -------------------------------------------------- |
+| `gui`               | `:9100`, `/*`              | NextJS user interface for managing pipelines       |
+| `master-controller` | `:9101`, `/api/controller` | Controls pipeline progression                      |
+| `database`          |                            | Database with state of all active pipelines/stages |
+| `database-rest-api` | `:9102`, `/api/db`         | A REST API for the database.                       |
+| `stage-api`         | `:9103`, `/api/stages`     | Evoke stage function                               |
+| `reverse-proxy`     | `:9123`, `/*`              | Reverse proxy, coordinates to correct services     |
