@@ -29,7 +29,25 @@ const useStyles = makeStyles({
     },
     "& .collapsedContent": {
       marginTop: 10,
-      "& > .section": {
+      "& .content": {
+        display: "flex",
+        "& .left": {
+          display: "flex",
+          flexDirection: "column",
+          width: 120,
+          "& .leftTitle": {
+            fontSize: 12,
+            fontWeight: "bold",
+            textTransform: "uppercase",
+            marginTop: 10
+          },
+          "& .leftValue": {
+            fontSize: 24
+          }
+        },
+        "& .right": { display: "flex", flexDirection: "column", flexGrow: 1 }
+      },
+      "& .section": {
         marginTop: 10,
         backgroundColor: "#fff"
       }
@@ -49,6 +67,9 @@ export const StageInstance = ({
   output,
   status,
   state,
+  responseTime,
+  callCount,
+  input,
   error
 }) => {
   const c = useStyles()
@@ -67,35 +88,65 @@ export const StageInstance = ({
       </Button>
       <Collapse in={open}>
         <div className="collapsedContent">
-          <div className="section">
-            {error && Object.keys(error).length > 0 ? (
-              <WaterObject
-                tableName={`${stageInstanceId} Error`}
-                data={error}
-              />
-            ) : (
-              <div className={c.empty}>No Error</div>
-            )}
-          </div>
-          <div className="section">
-            {output && Object.keys(output).length > 0 ? (
-              <WaterObject
-                tableName={`${stageInstanceId} Outputs`}
-                data={output}
-              />
-            ) : (
-              <div className={c.empty}>No Output</div>
-            )}
-          </div>
-          <div className="section">
-            {state && Object.keys(state).length > 0 ? (
-              <WaterObject
-                tableName={`${stageInstanceId} State`}
-                data={state}
-              />
-            ) : (
-              <div className={c.empty}>No State</div>
-            )}
+          <div className="content">
+            <div className="left">
+              <div className="leftTitle">Calls</div>
+              <div className="leftValue">
+                {callCount !== undefined ? callCount : "???"}
+              </div>
+              <div className="leftTitle">Response Time</div>
+              <div className="leftValue">
+                {responseTime ? `${Math.round(responseTime)}ms` : `???`}
+              </div>
+              <div className="leftTitle">Health</div>
+              <div className="leftValue">
+                {status !== "error" && callCount && responseTime
+                  ? "Good"
+                  : "???"}
+              </div>
+            </div>
+            <div className="right">
+              <div className="section">
+                {error && Object.keys(error).length > 0 ? (
+                  <WaterObject
+                    tableName={`${stageInstanceId} Error`}
+                    data={error}
+                  />
+                ) : (
+                  <div className={c.empty}>No Error</div>
+                )}
+              </div>
+              <div className="section">
+                {input && Object.keys(input).length > 0 ? (
+                  <WaterObject
+                    tableName={`${stageInstanceId} Inputs`}
+                    data={input}
+                  />
+                ) : (
+                  <div className={c.empty}>No Input</div>
+                )}
+              </div>
+              <div className="section">
+                {output && Object.keys(output).length > 0 ? (
+                  <WaterObject
+                    tableName={`${stageInstanceId} Outputs`}
+                    data={output}
+                  />
+                ) : (
+                  <div className={c.empty}>No Output</div>
+                )}
+              </div>
+              <div className="section">
+                {state && Object.keys(state).length > 0 ? (
+                  <WaterObject
+                    tableName={`${stageInstanceId} State`}
+                    data={state}
+                  />
+                ) : (
+                  <div className={c.empty}>No State</div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </Collapse>

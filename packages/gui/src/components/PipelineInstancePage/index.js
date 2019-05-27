@@ -48,7 +48,9 @@ export const PipelineInstancePage = () => {
   useEffect(
     () => {
       if (!instanceId) return
-      getStages().then(stages => changeStageDefinitions(stages))
+      getStages().then(stages => {
+        changeStageDefinitions(stages)
+      })
       getPipelineInstances({ id: instanceId }).then(instances => {
         const instance = instances[0]
         changeStageInstances(
@@ -57,16 +59,30 @@ export const PipelineInstancePage = () => {
               stageInstanceId,
               ...instance.stageStates[stageInstanceId]
             }))
-            .map(si => ({
-              ...si,
-              status: si.complete
-                ? "complete"
-                : si.error
-                  ? "error"
-                  : si.progress > 0
-                    ? "running"
-                    : "not-started"
-            }))
+            .map(si => {
+              const inputDef =
+                instance.pipelineDefinition.nodes[si.stageInstanceId].inputs
+              const input = {}
+              for (const k in inputDef) {
+                if (inputDef[k].value) {
+                  input[k] = inputDef[k].value
+                } else if (inputDef[k].node) {
+                  input[k] = ((instance.stageStates[inputDef[k].node] || {})
+                    .output || {})[inputDef[k].value]
+                }
+              }
+              return {
+                ...si,
+                input,
+                status: si.complete
+                  ? "complete"
+                  : si.error
+                    ? "error"
+                    : si.progress > 0
+                      ? "running"
+                      : "not-started"
+              }
+            })
         )
         changeInstance(instance)
       })
@@ -128,6 +144,7 @@ export const PipelineInstancePage = () => {
                   ]
                 },
                 error: { title: "Error", type: "json" },
+                input: { title: "Input", type: "json" },
                 output: { title: "Output", type: "json" },
                 state: { title: "State", type: "json" }
               }}
