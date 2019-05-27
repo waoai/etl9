@@ -30,7 +30,7 @@ function App() {
         <Location path="/create-type" handler={CreateTypePage} />
         <Location path="/settings" handler={SettingsPage} />
         <Location path="/environment" handler={EnvironmentPage} />
-        <Location path="/pipeline-instances/*" handler={PipelineInstancePage} />
+        <Location path="/pipeline-instance/*" handler={PipelineInstancePage} />
       </Locations>
     </Theme>
   )

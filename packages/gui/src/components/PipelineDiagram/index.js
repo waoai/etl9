@@ -9,7 +9,10 @@ type Pipeline = {
     [nodeName: string]: {
       name: string,
       inputs: {
-        [inputKey: string]: { value: any } | { node: string, output: string }
+        [inputKey: string]:
+          | { value: any }
+          | { node: string, output: string }
+          | { key: string }
       }
     }
   }
@@ -33,7 +36,10 @@ export const PipelineDiagram = ({
       (nodeOutputConnections, nodeKey) => {
         const node = pipelineNodes[nodeKey]
         for (const inputKey in node.inputs) {
-          const inp: { value: any } | { output: string, node: string } =
+          const inp:
+            | { value: any }
+            | { output: string, node: string }
+            | { key: string } =
             node.inputs[inputKey]
           if (inp.node) {
             nodeOutputConnections[inp.node] =
@@ -66,6 +72,8 @@ export const PipelineDiagram = ({
             const inp = node.inputs[inputKey]
             if (inp.value) {
               valueMap[inputKey] = inp.value
+            } else if (inp.key) {
+              valueMap[inputKey] = inp
             }
           }
 

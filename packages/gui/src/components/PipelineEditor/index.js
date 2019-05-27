@@ -10,7 +10,7 @@ const useStyles = makeStyles({})
 
 export const PipelineEditor = ({ pipeline, onChange, onError }: any) => {
   const c = useStyles()
-  const [configString, changeConfigString] = useState(
+  const [configString, changeConfigString] = useState(() =>
     yaml.safeDump({ kind: "Pipeline", ...pipeline })
   )
 

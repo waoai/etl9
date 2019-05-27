@@ -32,7 +32,7 @@ export const PipelineInstances = ({ pipelineName }) => {
             onDeleteRow={instance => deletePipelineInstance(instance)}
             onClickRecordAction={(row, action) => {
               if (action === "View") {
-                navigate(`/pipeline-instances/${row.id}`)
+                navigate(`/pipeline-instance/${row.id}`)
               }
             }}
           />

@@ -7,7 +7,7 @@ import List from "@material-ui/core/List"
 import Divider from "@material-ui/core/Divider"
 import ListItem from "@material-ui/core/ListItem"
 import ListItemText from "@material-ui/core/ListItemText"
-import { grey } from "@material-ui/core/colors"
+import { grey, blue } from "@material-ui/core/colors"
 import useNavigation from "../../utils/use-navigation.js"
 
 const useStyles = makeStyles({
@@ -16,8 +16,9 @@ const useStyles = makeStyles({
     marginBottom: 5
   },
   selectedItem: {
-    backgroundColor: grey[100],
+    "&&": { backgroundColor: grey[800] },
     "&& span": {
+      color: "#fff",
       fontWeight: "bold"
     }
   }

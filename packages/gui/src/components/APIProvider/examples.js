@@ -10,7 +10,7 @@ export const pipelines = [
       pull_s3: {
         name: "PullFromS3",
         inputs: {
-          s3_source: { value: "s3://example-bucket" }
+          s3_source: { key: "s3_source" }
         }
       },
       pull_golden_set: {

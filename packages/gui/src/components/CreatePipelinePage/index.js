@@ -35,7 +35,7 @@ export const CreatePipelinePage = () => {
     <Page title="Create Pipeline">
       <div className={c.root}>
         <PipelineEditor
-          stage={pipeline}
+          pipeline={pipeline}
           onChange={changePipeline}
           onError={changeError}
         />
