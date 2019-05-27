@@ -8,7 +8,7 @@ import Divider from "@material-ui/core/Divider"
 import ListItem from "@material-ui/core/ListItem"
 import ListItemText from "@material-ui/core/ListItemText"
 import { grey } from "@material-ui/core/colors"
-import { environment } from "react-router-component"
+import useNavigation from "../../utils/use-navigation.js"
 
 const useStyles = makeStyles({
   item: {
@@ -24,10 +24,14 @@ const useStyles = makeStyles({
 })
 
 const items = [
-  { label: "Pipelines", href: "/" },
+  { label: "Dashboard", href: "/" },
+  { label: "Launch Pipeline", href: "/launch-pipeline" },
+  "sep",
+  { label: "Pipelines", href: "/pipelines" },
   { label: "Stages", href: "/stages" },
   { label: "Types", href: "/types" },
   "sep",
+  { label: "Create Pipeline", href: "/create-pipeline" },
   { label: "Create Stage", href: "/create-stage" },
   { label: "Create Type", href: "/create-type" },
   "sep",
@@ -37,6 +41,7 @@ const items = [
 
 export const SidebarMenu = ({ currentPageTitle }: any) => {
   const c = useStyles()
+  const { navigate } = useNavigation()
   return (
     <div className={c.root}>
       <List>
@@ -47,9 +52,7 @@ export const SidebarMenu = ({ currentPageTitle }: any) => {
             ) : (
               <ListItem
                 button
-                onClick={() => {
-                  environment.defaultEnvironment.navigate(item.href)
-                }}
+                onClick={() => navigate(item.href)}
                 key={item.label}
                 disabled={currentPageTitle === item.label}
                 className={classnames(

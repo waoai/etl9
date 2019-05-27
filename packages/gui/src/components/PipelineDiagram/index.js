@@ -27,23 +27,6 @@ export const PipelineDiagram = ({
 
     // Stage 1: Create nodes representing any "value" pipeline connections
     const pipelineNodes = cloneDeep(pipeline.nodes)
-    // for (const nodeKey in pipeline.nodes) {
-    //   const node = pipeline.nodes[nodeKey]
-    //   for (const inputKey in node.inputs) {
-    //     const input = node.inputs[inputKey]
-    //     if (input.value) {
-    //       const nodeId = `${nodeKey}_${inputKey}`
-    //       pipelineNodes[nodeId] = {
-    //         name: "Value",
-    //         inputs: {}
-    //       }
-    //       pipelineNodes[nodeKey].inputs[inputKey] = {
-    //         node: nodeId,
-    //         output: "output"
-    //       }
-    //     }
-    //   }
-    // }
 
     // Stage 2: Create the output connections
     const nodeOutputConnections = Object.keys(pipelineNodes).reduce(
@@ -64,17 +47,6 @@ export const PipelineDiagram = ({
               node: nodeKey,
               input: inputKey
             })
-          } else if (inp.value) {
-            // const vKey = `${nodeKey}_${inputKey}`
-            // nodeOutputConnections[vKey] = nodeOutputConnections[vKey] || {}
-            // nodeOutputConnections[vKey].output = {
-            //   connections: [
-            //     {
-            //       node: nodeKey,
-            //       input: inputKey
-            //     }
-            //   ]
-            // }
           }
         }
         return nodeOutputConnections

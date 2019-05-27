@@ -109,4 +109,6 @@ This repository is made up of several services managed by lerna. Here are the ma
 | `database`          |                            | Database with state of all active pipelines/stages |
 | `database-rest-api` | `:9102`, `/api/db`         | A REST API for the database.                       |
 | `stage-api`         | `:9103`, `/api/stages`     | Evoke stage function                               |
+| `typecheck-api`     | `:9104`, `/api/typecheck`  | Typecheck API                                      |
+| `pipeline-api`      | `:9105`, `/api/pipelines`  | Create or delete pipelines                         |
 | `reverse-proxy`     | `:9123`, `/*`              | Reverse proxy, coordinates to correct services     |
