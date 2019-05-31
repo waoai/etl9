@@ -4,7 +4,7 @@ const nodeExternals = require("webpack-node-externals")
 module.exports = {
   entry: {
     bundle: "./index.js",
-    seed: "./seed"
+    seed: "./seed/run"
   },
   output: {
     path: path.resolve(__dirname, "build"),

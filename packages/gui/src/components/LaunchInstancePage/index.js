@@ -17,15 +17,19 @@ const useStyles = makeStyles({
   }
 })
 
-export const LaunchPipelinePage = () => {
+export const LaunchInstancePage = () => {
   const c = useStyles()
-  const { getPipelines } = useAPI()
+  const { getPipelines, getStages } = useAPI()
   const [pipelines, changePipelines] = useState([])
+  const [stages, changeStages] = useState([])
   const [configVars, changeConfigVars] = useState([])
   const [selectedPipeline, changeSelectedPipeline] = useState()
   useEffect(() => {
     getPipelines().then(pipelines => {
       changePipelines(pipelines)
+    })
+    getStages().then(stages => {
+      changeStages(stages)
     })
   }, [])
   useEffect(
@@ -51,16 +55,24 @@ export const LaunchPipelinePage = () => {
     [selectedPipeline]
   )
   return (
-    <Page title="Launch Pipeline">
+    <Page title="Launch Instance">
       {!selectedPipeline ? (
         <ListSearch
           placeholder="Search for Pipeline"
-          items={pipelines.map(pipelines => ({
-            pipelines,
-            label: pipelines.name,
-            description: pipelines.description
-          }))}
-          onSelect={item => changeSelectedPipeline(item.pipelines)}
+          items={pipelines
+            .map(pipeline => ({
+              pipeline,
+              label: pipeline.name,
+              description: pipeline.description
+            }))
+            .concat(
+              stages.map(stage => ({
+                pipeline: stage, // TODO create standalone pipeline stage
+                label: `Standalone ${stage.name}`,
+                description: stage.description
+              }))
+            )}
+          onSelect={item => changeSelectedPipeline(item.pipeline)}
         />
       ) : (
         <div className={c.root}>
@@ -105,4 +117,4 @@ export const LaunchPipelinePage = () => {
   )
 }
 
-export default LaunchPipelinePage
+export default LaunchInstancePage

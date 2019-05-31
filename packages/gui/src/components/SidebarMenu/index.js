@@ -26,7 +26,8 @@ const useStyles = makeStyles({
 
 const items = [
   { label: "Dashboard", href: "/" },
-  { label: "Launch Pipeline", href: "/launch-pipeline" },
+  { label: "Instances", href: "/instances" },
+  { label: "Launch Instance", href: "/launch-instance" },
   "sep",
   { label: "Pipelines", href: "/pipelines" },
   { label: "Stages", href: "/stages" },
@@ -37,6 +38,7 @@ const items = [
   { label: "Create Type", href: "/create-type" },
   "sep",
   { label: "Environment", href: "/environment" },
+  { label: "Errors & Warnings", href: "/errors" },
   { label: "Settings", href: "/settings" }
 ]
 
@@ -46,24 +48,23 @@ export const SidebarMenu = ({ currentPageTitle }: any) => {
   return (
     <div className={c.root}>
       <List>
-        {items.map(
-          item =>
-            item === "sep" ? (
-              <Divider />
-            ) : (
-              <ListItem
-                button
-                onClick={() => navigate(item.href)}
-                key={item.label}
-                disabled={currentPageTitle === item.label}
-                className={classnames(
-                  c.item,
-                  currentPageTitle === item.label && c.selectedItem
-                )}
-              >
-                <ListItemText>{item.label}</ListItemText>
-              </ListItem>
-            )
+        {items.map(item =>
+          item === "sep" ? (
+            <Divider />
+          ) : (
+            <ListItem
+              button
+              onClick={() => navigate(item.href)}
+              key={item.label}
+              disabled={currentPageTitle === item.label}
+              className={classnames(
+                c.item,
+                currentPageTitle === item.label && c.selectedItem
+              )}
+            >
+              <ListItemText>{item.label}</ListItemText>
+            </ListItem>
+          )
         )}
       </List>
     </div>

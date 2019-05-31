@@ -1,23 +1,26 @@
 CREATE TABLE definition (
   entity_id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
-  def jsonb NOT NULL
+  def jsonb NOT NULL,
+  updated_at timestamptz NOT NULL DEFAULT current_timestamp
 );
 
 CREATE UNIQUE INDEX definition_name ON definition((def ->> 'name'));
 
 
-CREATE FUNCTION check_kind() RETURNS trigger AS $check_kind$
+CREATE FUNCTION check_definition_update() RETURNS trigger AS $check_definition_update$
     BEGIN
         IF NEW.def->>'kind' NOT IN ('Pipeline', 'Stage', 'Type') THEN
             RAISE EXCEPTION 'kind must be "Pipeline", "Stage" or "Type"';
         END IF;
 
+        NEW.updated_at := now();
+
         RETURN NEW;
     END;
-$check_kind$ LANGUAGE plpgsql;
+$check_definition_update$ LANGUAGE plpgsql;
 
-CREATE TRIGGER check_kind BEFORE INSERT OR UPDATE ON definition
-    FOR EACH ROW EXECUTE PROCEDURE check_kind();
+CREATE TRIGGER check_definition_update BEFORE INSERT OR UPDATE ON definition
+    FOR EACH ROW EXECUTE PROCEDURE check_definition_update();
 
 CREATE VIEW type_def AS
   SELECT definition.def->>'name' as name, *

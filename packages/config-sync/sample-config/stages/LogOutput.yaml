@@ -1,6 +1,6 @@
 kind: Stage
 name: LogOutput
-description: Log Output to ETL9 Server
 inputs:
   input:
     type: any
+description: Log Output to ETL9 Server

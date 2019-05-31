@@ -1,6 +1,5 @@
 kind: Stage
 name: AddMetaInformationToFiles
-description: Add information to file array
 inputs:
   files:
     type: FileList
@@ -9,3 +8,4 @@ inputs:
 outputs:
   files:
     type: FileList
+description: Add information to file array

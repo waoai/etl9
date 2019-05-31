@@ -13,7 +13,7 @@
     "create": "psql -h localhost -U postgres -c 'CREATE DATABASE etl9'",
     "migrate": "psql -h localhost -U postgres -d etl9 -f migrate.sql",
     "seed": "npm run build && node build/seed",
-    "reset": "npm run build && npm run drop && npm run create && npm run migrate && npm run seed"
+    "reset": "npm run build && npm run drop && npm run create && npm run migrate && node build/seed"
   },
   "devDependencies": {
     "@babel/core": "^7.1.5",
