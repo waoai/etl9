@@ -2,7 +2,7 @@
 
 import knex from "knex"
 import migrationSQL from "./migrate.sql"
-import seedSQL from "./seed.sql"
+import seedFunc from "./seed"
 
 const getConnectionInfo = (database, user) => ({
   host: process.env.POSTGRES_HOST || "localhost",
@@ -38,7 +38,7 @@ export default async ({ seed, testMode, user } = {}) => {
     testMode === undefined ? Boolean(process.env.USE_TEST_DB) : testMode
 
   const dbName = !testMode
-    ? process.env.POSTGRES_DB || "planner"
+    ? process.env.POSTGRES_DB || "etl9"
     : `testdb_${Math.random()
         .toString(36)
         .slice(7)}`
@@ -63,7 +63,7 @@ export default async ({ seed, testMode, user } = {}) => {
   // upload migration
   await pg.raw(migrationSQL)
 
-  if (seed) await pg.raw(seedSQL)
+  if (seed) await seedFunc(pg)
 
   if (user) {
     await pg.destroy()

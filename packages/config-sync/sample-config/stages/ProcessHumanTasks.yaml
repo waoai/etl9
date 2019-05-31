@@ -1,0 +1,9 @@
+kind: Stage
+name: ProcessHumanTasks
+description: Upload tasks to human platform and process
+inputs:
+  humanTasks:
+    type: HumanTaskArray
+outputs:
+  taskOutput:
+    type: TaskOutputArray

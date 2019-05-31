@@ -1,0 +1,6 @@
+kind: Type
+name: FileList
+superstruct: |
+  [{
+    url: 'string'
+  }]

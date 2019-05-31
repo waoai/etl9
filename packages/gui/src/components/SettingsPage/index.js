@@ -5,6 +5,7 @@ import Page from "../Page"
 import { makeStyles } from "@material-ui/styles"
 import Button from "@material-ui/core/Button"
 import Checkbox from "@material-ui/core/Checkbox"
+import Divider from "@material-ui/core/Divider"
 
 const useStyles = makeStyles({
   sectionHeader: {
@@ -25,9 +26,24 @@ export const SettingsPage = () => {
   })
   return (
     <Page title="Settings">
+      <div className={c.sectionHeader}>Configuration</div>
+      <div className={c.sectionContent}>
+        <div>
+          <Checkbox
+            value={exportSettings.encryptedInPlainText}
+            onChange={(e, checked) => {
+              // TODO
+            }}
+          />
+          Some Setting
+        </div>
+      </div>
+      <div className={c.actions}>
+        <Button disabled>Save Configuration</Button>
+      </div>
+      <Divider />
       <div className={c.sectionHeader}>Export</div>
       <div className={c.sectionContent}>
-        Export encrypted values in plaintext
         <Checkbox
           value={exportSettings.encryptedInPlainText}
           onChange={(e, checked) =>
@@ -37,6 +53,7 @@ export const SettingsPage = () => {
             })
           }
         />
+        Export encrypted values in plaintext
       </div>
       <div className={c.actions}>
         <Button disabled>Export as YAML Directory</Button>

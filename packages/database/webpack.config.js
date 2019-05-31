@@ -2,10 +2,13 @@ const path = require("path")
 const nodeExternals = require("webpack-node-externals")
 
 module.exports = {
-  entry: "./index.js",
+  entry: {
+    bundle: "./index.js",
+    seed: "./seed"
+  },
   output: {
     path: path.resolve(__dirname, "build"),
-    filename: "bundle.js",
+    filename: "[name].js",
     libraryTarget: "umd"
   },
   mode: "production",

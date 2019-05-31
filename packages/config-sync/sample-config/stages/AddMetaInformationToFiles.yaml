@@ -1,0 +1,11 @@
+kind: Stage
+name: AddMetaInformationToFiles
+description: Add information to file array
+inputs:
+  files:
+    type: FileList
+  meta_information:
+    type: Object
+outputs:
+  files:
+    type: FileList

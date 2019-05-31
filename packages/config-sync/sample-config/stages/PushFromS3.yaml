@@ -1,0 +1,10 @@
+kind: Stage
+name: PushToS3
+description: Push files to an S3 Bucket
+inputs:
+  files:
+    type: FileList
+outputs:
+  files:
+    type: FileList
+    progressive: true

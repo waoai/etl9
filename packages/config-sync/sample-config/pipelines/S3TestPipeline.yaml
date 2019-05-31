@@ -1,0 +1,45 @@
+kind: Pipeline
+name: S3TestPipeline
+description: Log Files from S3
+nodes:
+  pull_s3:
+    name: PullFromS3
+    inputs:
+      s3_source:
+        key: s3_source
+  pull_golden_set:
+    name: PullFromS3
+    inputs:
+      s3_source:
+        value: s3://example-bucket
+      whitelist:
+        value:
+          - data/sound1.mp3
+          - data/sound2.mp3
+  add_answers_to_golden_set:
+    name: AddMetaInformationToFiles
+    inputs:
+      files:
+        node: pull_golden_set
+        output: files
+      meta_information:
+        value:
+          data/sound1.mp3:
+            answer: validation answer 1
+          data/sound2.mp3:
+            answer: validation answer 2
+  convert_to_transcription_task:
+    name: ConvertToAudioTranscriptionTask
+    inputs:
+      golden_set:
+        node: add_answers_to_golden_set
+        output: files
+      files:
+        node: pull_s3
+        output: files
+  output_logger:
+    name: LogOutput
+    inputs:
+      input:
+        node: pull_s3
+        output: files

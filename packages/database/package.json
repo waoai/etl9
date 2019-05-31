@@ -8,11 +8,11 @@
     "test": "npm run build && tape tests/**/*.js",
     "start:prod": "node migrate.js",
     "start:postgres": "docker run --net host -it postgres -E",
-    "drop": "psql -h localhost -U postgres -c 'DROP DATABASE planner' || exit 0",
+    "drop": "psql -h localhost -U postgres -c 'DROP DATABASE etl9' || exit 0",
     "init:dev": "npm run create && npm run migrate && npm run seed",
-    "create": "psql -h localhost -U postgres -c 'CREATE DATABASE planner'",
-    "migrate": "psql -h localhost -U postgres -d planner -f migrate.sql",
-    "seed": "psql -h localhost -U postgres -d planner -f seed.sql",
+    "create": "psql -h localhost -U postgres -c 'CREATE DATABASE etl9'",
+    "migrate": "psql -h localhost -U postgres -d etl9 -f migrate.sql",
+    "seed": "npm run build && node build/seed",
     "reset": "npm run build && npm run drop && npm run create && npm run migrate && npm run seed"
   },
   "devDependencies": {
@@ -22,6 +22,7 @@
     "csv-parse": "^2.4.0",
     "knex": "^0.14.4",
     "leaked-handles": "^5.2.0",
+    "moment": "^2.24.0",
     "pg": "^7.4.1",
     "raw-loader": "^0.5.1",
     "request": "^2.85.0",

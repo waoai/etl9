@@ -24,8 +24,8 @@ docker run -p 9123:9123 -v $(pwd)/etl9-config:config etl9
 - **endpoint**: A service endpoint, usually a URL
 - **stage**: A type of data transformation
 - **stage function**: The function executed to progress a stage. Every stage function takes 2 arguments, the input and the state of the stage, and return 2 objects, one indicating the new state, and one indicating the output.
-- **pipeline**: Configuration of stages and connections to produce a desired output
-- **active pipeline, active stage**: A pipeline or stage that's running
+- **pipeline**: Configuration of stage(s) and connections to produce a desired output
+- **instance**: A running pipeline. Many instances can run from a single pipeline definition.
 
 ## Principles
 
@@ -113,4 +113,15 @@ This repository is made up of several services managed by lerna. Here are the ma
 | `stage-api`         | `:9103`, `/api/stages`     | Evoke stage function                               |
 | `typecheck-api`     | `:9104`, `/api/typecheck`  | Typecheck API                                      |
 | `pipeline-api`      | `:9105`, `/api/pipelines`  | Create or delete pipelines                         |
+| `config-sync`       |                            | Monitor filesystem and load configuration files    |
 | `reverse-proxy`     | `:9123`, `/*`              | Reverse proxy, coordinates to correct services     |
+
+## Instance Lifecycle
+
+An instance is created from a pipeline definition. The instance will perform the
+following steps until it's completed.
+
+1. Iterate over all it's stages.
+2. If input is available for a stage, execute the stage function.
+3. Store the resulting state and output of each stage function.
+4. If all stages are complete, done. If not, repeat from step 1.

@@ -71,15 +71,30 @@ export const LaunchPipelinePage = () => {
             <div style={{ flexGrow: 1 }} />
           </div>
           <div>
-            {configVars &&
-              configVars.length > 0 && (
-                <WaterTable
-                  canAddMore={false}
-                  canDelete={false}
-                  tableName="Instance Configuration"
-                  data={configVars}
-                />
-              )}
+            {configVars && configVars.length > 0 && (
+              <WaterTable
+                canAddMore={false}
+                canDelete={false}
+                tableName="Instance Configuration"
+                schema={{
+                  key: {
+                    title: "Key",
+                    type: "text",
+                    editable: false
+                  },
+                  type: {
+                    title: "Type",
+                    type: "text",
+                    editable: false
+                  },
+                  value: {
+                    title: "Value",
+                    type: "text"
+                  }
+                }}
+                data={configVars}
+              />
+            )}
           </div>
           <div className={c.actions}>
             <Button>Launch</Button>

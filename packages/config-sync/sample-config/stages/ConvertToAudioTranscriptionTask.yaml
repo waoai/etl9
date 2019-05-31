@@ -1,0 +1,14 @@
+kind: Stage
+name: ConvertToAudioTranscriptionTask
+description: Convert audio files into human transcription tasks
+inputs:
+  golden_set:
+    type: FileList
+  files:
+    type: FileList
+outputs:
+  task_config:
+    type: TaskConfiguration
+  tasks:
+    type: HumanTaskArray
+    progressive: true

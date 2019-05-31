@@ -2,7 +2,7 @@
   "name": "rest-api",
   "version": "0.0.0",
   "scripts": {
-    "start": "PG_URI=\"postgres://postgres@localhost:5432/planner\" postgrest ./postgrest.conf",
+    "start": "PG_URI=\"postgres://postgres@localhost:5432/etl9\" postgrest ./postgrest.conf",
     "start:prod": "postgrest ./postgrest.conf",
     "test": "tape tests/**/*.test.js",
     "build:docker": "echo ''"
