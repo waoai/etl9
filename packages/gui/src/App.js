@@ -4,6 +4,7 @@ import React from "react"
 import Theme from "./components/Theme"
 import { Locations, Location } from "react-router-component"
 
+import APIProvider from "./components/APIProvider"
 import PipelinesPage from "./components/PipelinesPage"
 import StagesPage from "./components/StagesPage"
 import TypesPage from "./components/TypesPage"
@@ -14,25 +15,27 @@ import LaunchInstancePage from "./components/LaunchInstancePage"
 import DashboardPage from "./components/DashboardPage"
 import EnvironmentPage from "./components/EnvironmentPage"
 import SettingsPage from "./components/SettingsPage"
-import PipelineInstancePage from "./components/PipelineInstancePage"
+import InstancePage from "./components/InstancePage"
 
 function App() {
   return (
-    <Theme>
-      <Locations>
-        <Location path="/" handler={DashboardPage} />
-        <Location path="/launch-instance" handler={LaunchInstancePage} />
-        <Location path="/pipelines" handler={PipelinesPage} />
-        <Location path="/stages" handler={StagesPage} />
-        <Location path="/types" handler={TypesPage} />
-        <Location path="/create-pipeline" handler={CreatePipelinePage} />
-        <Location path="/create-stage" handler={CreateStagePage} />
-        <Location path="/create-type" handler={CreateTypePage} />
-        <Location path="/settings" handler={SettingsPage} />
-        <Location path="/environment" handler={EnvironmentPage} />
-        <Location path="/pipeline-instance/*" handler={PipelineInstancePage} />
-      </Locations>
-    </Theme>
+    <APIProvider>
+      <Theme>
+        <Locations>
+          <Location path="/" handler={DashboardPage} />
+          <Location path="/launch-instance" handler={LaunchInstancePage} />
+          <Location path="/pipelines" handler={PipelinesPage} />
+          <Location path="/stages" handler={StagesPage} />
+          <Location path="/types" handler={TypesPage} />
+          <Location path="/create-pipeline" handler={CreatePipelinePage} />
+          <Location path="/create-stage" handler={CreateStagePage} />
+          <Location path="/create-type" handler={CreateTypePage} />
+          <Location path="/settings" handler={SettingsPage} />
+          <Location path="/environment" handler={EnvironmentPage} />
+          <Location path="/instance/*" handler={InstancePage} />
+        </Locations>
+      </Theme>
+    </APIProvider>
   )
 }
 

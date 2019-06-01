@@ -139,17 +139,18 @@ export const definitions = [
   {
     kind: "Type",
     name: "S3Credentials",
-    superstruct: "{\n  secretAccessKey: 'string',\n  accessKeyId: 'string'\n}\n"
+    superstruct:
+      '{\n  "secretAccessKey": "string",\n  "accessKeyId": "string"\n}'
   },
   {
     kind: "Type",
     name: "FileList",
-    superstruct: "[{\n  url: 'string'\n}]\n"
+    superstruct: '[{\n  "url": "string"\n}]\n'
   },
   {
     kind: "Type",
     name: "StringArray",
-    superstruct: "[string]"
+    superstruct: '["string"]'
   }
 ]
 

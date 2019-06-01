@@ -41,6 +41,7 @@
     "@storybook/addon-links": "^5.0.11",
     "@storybook/addons": "^5.0.11",
     "@storybook/react": "^5.0.11",
+    "axios": "^0.19.0",
     "babel-loader": "^8.0.5",
     "brace": "^0.11.1",
     "color-convert": "^2.0.0",

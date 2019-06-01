@@ -31,7 +31,7 @@ const useStyles = makeStyles({
   stageInstances: {}
 })
 
-export const PipelineInstancePage = () => {
+export const InstancePage = () => {
   const c = useStyles()
   const { getURLParams } = useNavigation()
   const { getPipelineInstances, getStages } = useAPI()
@@ -77,10 +77,10 @@ export const PipelineInstancePage = () => {
                 status: si.complete
                   ? "complete"
                   : si.error
-                    ? "error"
-                    : si.progress > 0
-                      ? "running"
-                      : "not-started"
+                  ? "error"
+                  : si.progress > 0
+                  ? "running"
+                  : "not-started"
               }
             })
         )
@@ -164,4 +164,4 @@ export const PipelineInstancePage = () => {
   )
 }
 
-export default PipelineInstancePage
+export default InstancePage
