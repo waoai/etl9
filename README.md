@@ -104,17 +104,17 @@ In production, you'll want to use a persistent database external to the containe
 
 This repository is made up of several services managed by lerna. Here are the main services and their descriptions...
 
-| Service             | Port/Endpoint              | Description                                        |
-| ------------------- | -------------------------- | -------------------------------------------------- |
-| `gui`               | `:9100`, `/*`              | NextJS user interface for managing pipelines       |
-| `master-controller` | `:9101`, `/api/controller` | Controls pipeline progression                      |
-| `database`          |                            | Database with state of all active pipelines/stages |
-| `database-rest-api` | `:9102`, `/api/db`         | A REST API for the database.                       |
-| `stage-api`         | `:9103`, `/api/stages`     | Evoke stage function                               |
-| `typecheck-api`     | `:9104`, `/api/typecheck`  | Typecheck API                                      |
-| `pipeline-api`      | `:9105`, `/api/pipelines`  | Create or delete pipelines                         |
-| `config-sync`       |                            | Monitor filesystem and load configuration files    |
-| `reverse-proxy`     | `:9123`, `/*`              | Reverse proxy, coordinates to correct services     |
+| Service             | Port/Endpoint                     | Description                                        |
+| ------------------- | --------------------------------- | -------------------------------------------------- |
+| `gui`               | `:9100`, `/*`                     | NextJS user interface for managing pipelines       |
+| `master-controller` | `:9101`, `/api/master-controller` | Controls pipeline progression                      |
+| `database`          |                                   | Database with state of all active pipelines/stages |
+| `database-rest-api` | `:9102`, `/api/db`                | A REST API for the database.                       |
+| `stage-api`         | `:9103`, `/api/stage`             | Evoke stage function                               |
+| `typecheck-api`     | `:9104`, `/api/typecheck`         | Typecheck API                                      |
+| `pipeline-api`      | `:9105`, `/api/pipeline`          | Create or delete pipelines                         |
+| `config-sync`       |                                   | Monitor filesystem and load configuration files    |
+| `reverse-proxy`     | `:9123`, `*`                      | Reverse proxy, coordinates to correct services     |
 
 ## Instance Lifecycle
 

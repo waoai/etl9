@@ -43,8 +43,11 @@ export default async ({ seed, testMode, user } = {}) => {
         .toString(36)
         .slice(7)}`
 
-  if (testMode)
+  if (testMode) {
     console.log(`\n---\nUsing Test DB: ${dbName}, User: ${user || "none"}\n---`)
+    // Overwrite environment variables so subsequent calls use this db
+    process.env.POSTGRES_DB = dbName
+  }
 
   await createDatabase(dbName)
 

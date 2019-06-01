@@ -7,6 +7,7 @@
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1"
   },
+  "proxy": "http://localhost:9123",
   "scripts": {
     "start": "PORT=9100 react-scripts start",
     "build": "react-scripts build",

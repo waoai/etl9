@@ -1,0 +1,54 @@
+defaultEntryPoints = ["http"]
+
+[entryPoints]
+	[entryPoints.http]
+		address = ":9123"
+	# [entryPoints.http.auth]
+  #   [entryPoints.http.auth.basic]
+	#
+
+[file]
+[backends]
+	[backends.gui]
+		[backends.gui.servers.server1]
+			url = "http://localhost:9100"
+	[backends.master-controller]
+		[backends.master-controller.servers.server1]
+			url = "http://localhost:9101"
+	[backends.database-rest-api]
+		[backends.database-rest-api.servers.server1]
+			url = "http://localhost:9102"
+	[backends.stage-api]
+		[backends.stage-api.servers.server1]
+			url = "http://localhost:9103"
+	[backends.typecheck-api]
+		[backends.typecheck-api.servers.server1]
+			url = "http://localhost:9104"
+	[backends.pipeline-api]
+		[backends.pipeline-api.servers.server1]
+			url = "http://localhost:9105"
+[frontends]
+	[frontends.gui]
+		backend="gui"
+		[frontends.gui.routes.test_1]
+			rule = "PathPrefixStrip: /"
+	[frontends.master-controller]
+		backend="master-controller"
+		[frontends.master-controller.routes.test_1]
+			rule = "PathPrefixStrip: /api/master-controller"
+	[frontends.database-rest-api]
+		backend="database-rest-api"
+		[frontends.database-rest-api.routes.test_1]
+			rule = "PathPrefixStrip: /api/db"
+	[frontends.typecheck-api]
+		backend="typecheck-api"
+		[frontends.typecheck-api.routes.test_1]
+			rule = "PathPrefixStrip: /api/typecheck"
+	[frontends.stage-api]
+		backend="stage-api"
+		[frontends.stage-api.routes.test_1]
+			rule = "PathPrefixStrip: /api/stage"
+	[frontends.pipeline-api]
+		backend="pipeline-api"
+		[frontends.pipeline-api.routes.test_1]
+			rule = "PathPrefixStrip: /api/pipeline"
