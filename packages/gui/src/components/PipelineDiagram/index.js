@@ -3,6 +3,7 @@
 import React from "react"
 import Diagram from "../Diagram"
 import cloneDeep from "lodash/cloneDeep"
+import set from "lodash/set"
 
 type Pipeline = {
   nodes: {
@@ -12,7 +13,7 @@ type Pipeline = {
         [inputKey: string]:
           | { value: any }
           | { node: string, output: string }
-          | { key: string }
+          | { param: string }
       }
     }
   }
@@ -20,10 +21,12 @@ type Pipeline = {
 
 export const PipelineDiagram = ({
   stages,
-  pipeline
+  pipeline,
+  onChange = () => null
 }: {
   stages: Array,
-  pipeline: Pipeline
+  pipeline: Pipeline,
+  onChange: Pipeline => any
 }) => {
   if (Object.keys(pipeline.nodes).length === 0) return null
   try {
@@ -40,7 +43,7 @@ export const PipelineDiagram = ({
           const inp:
             | { value: any }
             | { output: string, node: string }
-            | { key: string } = node.inputs[inputKey]
+            | { param: string } = node.inputs[inputKey]
           if (inp.node) {
             nodeOutputConnections[inp.node] =
               nodeOutputConnections[inp.node] || {}
@@ -72,7 +75,7 @@ export const PipelineDiagram = ({
             const inp = node.inputs[inputKey]
             if (inp.value) {
               valueMap[inputKey] = inp.value
-            } else if (inp.key) {
+            } else if (inp.param) {
               valueMap[inputKey] = inp
             }
           }
@@ -107,7 +110,26 @@ export const PipelineDiagram = ({
       )
     }
 
-    return <Diagram stages={stages} nodes={reteNodes} />
+    return (
+      <Diagram
+        stages={stages}
+        nodes={reteNodes}
+        onConnectionCreated={({
+          inputNodeId,
+          inputKey,
+          outputNodeId,
+          outputKey
+        }) => {
+          const newPipeline = cloneDeep(pipeline)
+          onChange(
+            set(newPipeline, ["nodes", inputNodeId, "inputs", inputKey], {
+              node: outputNodeId,
+              output: outputKey
+            })
+          )
+        }}
+      />
+    )
   } catch (e) {
     return <div style={{ color: "#f00" }}>{e.toString()}</div>
   }

@@ -7,7 +7,7 @@ nodes:
     name: PullFromS3
     inputs:
       s3_source:
-        key: s3_source
+        param: s3_source
   output_logger:
     name: LogOutput
     inputs:

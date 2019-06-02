@@ -40,7 +40,7 @@ CREATE VIEW pipeline_def AS
 CREATE TABLE instance (
   id text NOT NULL PRIMARY KEY DEFAULT gen_random_uuid()::text,
   parent_pipeline uuid references definition(entity_id),
-  input_configuration jsonb NOT NULL DEFAULT '{}',
+  params jsonb NOT NULL DEFAULT '{}',
   pipeline_def jsonb NOT NULL,
   instance_state jsonb,
   created_at timestamptz NOT NULL DEFAULT current_timestamp

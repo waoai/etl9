@@ -49,9 +49,9 @@ export const LaunchInstancePage = () => {
         if (!node.inputs) continue
         for (const inputKey in node.inputs) {
           const input = node.inputs[inputKey]
-          if (input.key) {
+          if (input.param) {
             configVars.push({
-              key: input.key,
+              param: input.param,
               type: "string",
               value: ""
             })
@@ -106,8 +106,8 @@ export const LaunchInstancePage = () => {
                 canDelete={false}
                 tableName="Instance Configuration"
                 schema={{
-                  key: {
-                    title: "Key",
+                  param: {
+                    title: "Param",
                     type: "text",
                     editable: false
                   },
@@ -138,7 +138,7 @@ export const LaunchInstancePage = () => {
                 const instance = await createInstance({
                   parent_pipeline: selectedPipeline.entity_id,
                   def: selectedPipeline.def,
-                  input_configuration: config
+                  input_params: config
                 })
 
                 navigate(`/instance/${instance.id}`)

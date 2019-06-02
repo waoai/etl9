@@ -54,15 +54,28 @@ async function main() {
 
     entityIdToFile = {}
     // TODO do this all in a single transaction
-    log(`deleting database definitions...`)
-    await db("definition").del()
+    log(`deleting database definitions that no longer exist...`)
+    await db("definition")
+      .whereNotIn(db.raw("def->>'name'"), documents.map(doc => doc.def.name))
+      .del()
 
     log("inserting documents as definitions...")
     for (const { def, path } of documents) {
-      log(`inserting def "${def.name}"...`)
-      const [{ entity_id }] = await db("definition")
-        .insert({ def })
-        .returning("entity_id")
+      let entity_id
+      try {
+        log(`inserting def "${def.name}"...`)
+        ;[{ entity_id }] = await db("definition")
+          .insert({ def })
+          .returning("entity_id")
+      } catch (e) {
+        log(`already found. updating instead...`)
+        if (e.toString().includes("duplicate key value")) {
+          ;[{ entity_id }] = await db("definition")
+            .update({ def })
+            .where(db.raw("def->>'name'"), def.name)
+            .returning("entity_id")
+        }
+      }
       entityIdToFile[entity_id] = { path, def }
     }
     log(`done`)

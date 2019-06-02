@@ -80,27 +80,42 @@ class StageComponent extends Rete.Component {
   worker(node, inputs, outputs) {}
 }
 
-export const Diagram = ({ nodes, stages }: any) => {
+export const Diagram = ({ nodes, stages, onConnectionCreated }: any) => {
   const [editor, changeEditor] = useState()
   const containerMountRef = useCallback(container => {
     if (!container) return
 
     const editor = new Rete.NodeEditor("demo@0.1.0", container)
-    const components = stages.map(s => new StageComponent(s)).concat([
-      new StageComponent({
-        name: "Value",
-        inputs: {},
-        outputs: {
-          output: { type: "any" }
-        }
-      })
-    ])
+    const components = stages
+      .map(s => new StageComponent(s))
+      .concat([
+        new StageComponent({
+          name: "Value",
+          inputs: {},
+          outputs: {
+            output: { type: "any" }
+          }
+        })
+      ])
     components.forEach(c => editor.register(c))
 
     editor.use(ConnectionPlugin)
-    editor.use(ReactRenderPlugin)
+    editor.use(ReactRenderPlugin, { component: MyNode })
     editor.use(ContextMenuPlugin)
-    editor.use(AutoArrangePlugin, { margin: { x: 50, y: 50 }, depth: 0 })
+    editor.use(AutoArrangePlugin, { margin: { x: 50, y: 80 }, depth: 0 })
+
+    let debounceTime = Date.now()
+    editor.on("connectioncreated", ({ input, output }) => {
+      if (Date.now() - debounceTime < 500) return
+      debounceTime = Date.now()
+      if (onConnectionCreated)
+        onConnectionCreated({
+          inputNodeId: input.node.id,
+          inputKey: input.key,
+          outputNodeId: output.node.id,
+          outputKey: output.key
+        })
+    })
 
     changeEditor(editor)
   }, [])

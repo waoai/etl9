@@ -7,7 +7,6 @@ import { makeStyles } from "@material-ui/styles"
 import { useAPI } from "../APIProvider"
 import ListSearch from "../ListSearch"
 import Button from "@material-ui/core/Button"
-import PipelineDiagram from "../PipelineDiagram"
 import PipelineEditor from "../PipelineEditor"
 import Instances from "../Instances"
 import useNavigation from "../../utils/use-navigation.js"
@@ -62,22 +61,14 @@ export const PipelinesPage = () => {
             <Button onClick={() => changeMode("instances")}>Instances</Button>
           </div>
           {mode === "editor" ? (
-            <>
-              <div
-                style={{ width: "100%", height: 400, border: "1px solid #ccc" }}
-              >
-                <PipelineDiagram
-                  stages={stages.map(s => s.def)}
-                  pipeline={selectedPipeline.def}
-                />
-              </div>
-              <div style={{ marginTop: 20 }}>
-                <PipelineEditor
-                  pipeline={selectedPipeline}
-                  onChange={changeSelectedPipeline}
-                />
-              </div>
-            </>
+            <div style={{ marginTop: 20 }}>
+              <PipelineEditor
+                showDiagram
+                stages={stages}
+                pipeline={selectedPipeline}
+                onChange={changeSelectedPipeline}
+              />
+            </div>
           ) : mode === "instances" ? (
             <>
               <Instances pipeline={selectedPipeline} />
