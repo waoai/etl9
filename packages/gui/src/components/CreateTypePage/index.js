@@ -8,6 +8,8 @@ import TextField from "@material-ui/core/TextField"
 import Button from "@material-ui/core/Button"
 import CodeTextArea from "../CodeTextArea"
 import TypeEditor from "../TypeEditor"
+import { useAPI } from "../APIProvider"
+import useNavigation from "../../utils/use-navigation.js"
 
 const useStyles = makeStyles({
   root: {
@@ -26,14 +28,39 @@ const useStyles = makeStyles({
 
 export const CreateTypePage = () => {
   const c = useStyles()
-  const [type, changeType] = useState({})
+  const [type, changeType] = useState({
+    kind: "Type",
+    name: "",
+    superstruct: '"string"'
+  })
+  const { navigate } = useNavigation()
+  const [error, changeError] = useState(null)
+  const [requestError, changeRequestError] = useState(null)
+
+  const { createType } = useAPI()
 
   return (
     <Page title="Create Type">
       <div className={c.root}>
-        <TypeEditor type={type} onChange={changeType} />
+        <TypeEditor type={type} onError={changeError} onChange={changeType} />
+        <div style={{ color: "#f00" }}>{requestError}</div>
         <div className={c.actions}>
-          <Button disabled={type.error || type.name === ""}>
+          <Button
+            onClick={async () => {
+              changeRequestError(null)
+              try {
+                await createType(type)
+              } catch (e) {
+                if (e.toString().includes("409")) {
+                  changeRequestError("Type with that name already exists")
+                } else {
+                  changeRequestError(e.toString())
+                }
+              }
+              navigate("/types")
+            }}
+            disabled={error || type.name === ""}
+          >
             Create Type "{type.name}"
           </Button>
         </div>

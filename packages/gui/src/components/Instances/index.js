@@ -8,13 +8,13 @@ import useNavigation from "../../utils/use-navigation.js"
 
 const useStyles = makeStyles({})
 
-export const PipelineInstances = ({ pipelineName }) => {
+export const Instances = ({ pipeline }) => {
   const c = useStyles()
   const { navigate } = useNavigation()
-  const { getPipelineInstances, deletePipelineInstance } = useAPI()
+  const { getInstances, deleteInstance } = useAPI()
   const [instances, changeInstances] = useState()
   useEffect(() => {
-    getPipelineInstances(pipelineName).then(instances => {
+    getInstances({ pipeline_parent: pipeline.entity_id }).then(instances => {
       changeInstances(instances)
     })
   }, [])
@@ -26,13 +26,14 @@ export const PipelineInstances = ({ pipelineName }) => {
           <div>no instances created yet</div>
         ) : (
           <WaterTable
-            tableName="Pipeline Instances"
+            canAddMore={false}
+            tableName="Instances"
             recordActions={["View"]}
             data={instances}
-            onDeleteRow={instance => deletePipelineInstance(instance)}
+            onDeleteRow={instance => deleteInstance(instance.id)}
             onClickRecordAction={(row, action) => {
               if (action === "View") {
-                navigate(`/pipeline-instance/${row.id}`)
+                navigate(`/instance/${row.id}`)
               }
             }}
           />
@@ -44,4 +45,4 @@ export const PipelineInstances = ({ pipelineName }) => {
   )
 }
 
-export default PipelineInstances
+export default Instances

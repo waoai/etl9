@@ -35,11 +35,11 @@ const useStyles = makeStyles({
 export const DashboardPage = () => {
   const c = useStyles()
   const { navigate } = useNavigation()
-  const { getPipelineInstances } = useAPI()
+  const { getInstances } = useAPI()
 
   const [instances, changeInstances] = useState()
   useEffect(() => {
-    getPipelineInstances().then(changeInstances)
+    getInstances().then(changeInstances)
   }, [])
 
   const statusBlocks = [
@@ -68,7 +68,7 @@ export const DashboardPage = () => {
               recordActions={["View"]}
               onClickRecordAction={(instance, action) => {
                 if (action === "View") {
-                  navigate(`/pipeline-instance/${instance.id}`)
+                  navigate(`/instance/${instance.id}`)
                 }
               }}
             />

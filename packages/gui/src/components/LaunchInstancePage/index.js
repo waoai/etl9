@@ -7,6 +7,7 @@ import { makeStyles } from "@material-ui/styles"
 import { useAPI } from "../APIProvider"
 import Button from "@material-ui/core/Button"
 import WaterTable from "react-watertable"
+import useNavigation from "../../utils/use-navigation.js"
 
 const useStyles = makeStyles({
   root: { padding: 20 },
@@ -19,7 +20,8 @@ const useStyles = makeStyles({
 
 export const LaunchInstancePage = () => {
   const c = useStyles()
-  const { getPipelines, getStages } = useAPI()
+  const { navigate, getURLQuery } = useNavigation()
+  const { getPipelines, getStages, createInstance } = useAPI()
   const [pipelines, changePipelines] = useState([])
   const [stages, changeStages] = useState([])
   const [configVars, changeConfigVars] = useState([])
@@ -27,6 +29,12 @@ export const LaunchInstancePage = () => {
   useEffect(() => {
     getPipelines().then(pipelines => {
       changePipelines(pipelines)
+      const qs = getURLQuery()
+      if (qs["pipeline_parent"] && !selectedPipeline) {
+        changeSelectedPipeline(
+          pipelines.find(p => p.entity_id === qs["pipeline_parent"])
+        )
+      }
     })
     getStages().then(stages => {
       changeStages(stages)
@@ -36,8 +44,8 @@ export const LaunchInstancePage = () => {
     () => {
       if (!selectedPipeline) return
       const configVars = []
-      for (const nodeKey in selectedPipeline.nodes) {
-        const node = selectedPipeline.nodes[nodeKey]
+      for (const nodeKey in selectedPipeline.def.nodes) {
+        const node = selectedPipeline.def.nodes[nodeKey]
         if (!node.inputs) continue
         for (const inputKey in node.inputs) {
           const input = node.inputs[inputKey]
@@ -62,14 +70,23 @@ export const LaunchInstancePage = () => {
           items={pipelines
             .map(pipeline => ({
               pipeline,
-              label: pipeline.name,
-              description: pipeline.description
+              label: pipeline.def.name,
+              description: pipeline.def.description
             }))
             .concat(
               stages.map(stage => ({
-                pipeline: stage, // TODO create standalone pipeline stage
-                label: `Standalone ${stage.name}`,
-                description: stage.description
+                pipeline: {
+                  name: `Standalone ${stage.def.name}`,
+                  description: stage.def.description,
+                  def: {
+                    stage: {
+                      name: stage.def.name,
+                      inputs: {}
+                    }
+                  }
+                },
+                label: `Standalone ${stage.def.name}`,
+                description: stage.def.description
               }))
             )}
           onSelect={item => changeSelectedPipeline(item.pipeline)}
@@ -105,11 +122,30 @@ export const LaunchInstancePage = () => {
                   }
                 }}
                 data={configVars}
+                onChangeData={newData => changeConfigVars(newData)}
               />
             )}
           </div>
           <div className={c.actions}>
-            <Button>Launch</Button>
+            <Button
+              onClick={async () => {
+                const config = configVars.reduce((acc, { key, value }) => {
+                  // TODO type checking
+                  acc[key] = value
+                  return acc
+                }, {})
+
+                const instance = await createInstance({
+                  parent_pipeline: selectedPipeline.entity_id,
+                  def: selectedPipeline.def,
+                  input_configuration: config
+                })
+
+                navigate(`/instance/${instance.id}`)
+              }}
+            >
+              Launch Instance
+            </Button>
           </div>
         </div>
       )}

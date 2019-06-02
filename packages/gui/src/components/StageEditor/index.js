@@ -11,7 +11,7 @@ const useStyles = makeStyles({})
 export const StageEditor = ({ stage, onChange, onError }: any) => {
   const c = useStyles()
   const [configString, changeConfigString] = useState(
-    yaml.safeDump({ kind: "Stage", ...stage })
+    yaml.safeDump({ kind: "Stage", ...stage.def })
   )
 
   let error, stageName
@@ -35,7 +35,10 @@ export const StageEditor = ({ stage, onChange, onError }: any) => {
   useEffect(
     () => {
       if (!error) {
-        onChange(yaml.safeLoad(configString))
+        onChange({
+          ...stage,
+          def: yaml.safeLoad(configString)
+        })
       }
     },
     [configString]

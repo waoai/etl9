@@ -72,8 +72,11 @@ CREATE VIEW pipeline_def AS
 
 CREATE TABLE instance (
   id text NOT NULL PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  parent_pipeline uuid references definition(entity_id),
+  input_configuration jsonb NOT NULL DEFAULT '{}',
   pipeline_def jsonb NOT NULL,
-  instance_state jsonb NOT NULL
+  instance_state jsonb,
+  created_at timestamptz NOT NULL DEFAULT current_timestamp
 );
 
 CREATE TABLE env_var (
@@ -82,65 +85,28 @@ CREATE TABLE env_var (
   encrypted boolean NOT NULL DEFAULT FALSE
 );
 
+CREATE TABLE log_entry (
+  log_item_id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
+  tags text[] NOT NULL DEFAULT '{}',
+  summary text NOT NULL,
+  info jsonb,
+  level text NOT NULL DEFAULT 'info',
+  created_at timestamptz NOT NULL DEFAULT current_timestamp
+);
 
--- CREATE TABLE typedef (
---   typedef_id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
---   name text NOT NULL UNIQUE,
---   def jsonb NOT NULL,
--- );
---
--- CREATE TABLE stagedef (
---   name text NOT NULL UNIQUE,
---   def jsonb NOT NULL
--- );
---
--- CREATE TABLE pipelinedef (
---   name text NOT NULL PRIMARY KEY,
---   def jsonb NOT NULL
--- );
---
---
--- CREATE TABLE pipeline (
---   pipeline_id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
---   nid serial NOT NULL UNIQUE,
---   pipeline_name text,
---   definition jsonb,
---   active boolean NOT NULL DEFAULT FALSE,
---   archived boolean NOT NULL DEFAULT FALSE,
---   created_at timestamp NOT NULL DEFAULT current_timestamp,
---   CHECK (NOT (active = TRUE AND archived = TRUE))
--- );
---
--- CREATE TABLE pipeline_stage (
---   pipeline_stage_id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
---   pipeline_id uuid references pipeline NOT NULL,
---   stage_name text NOT NULL,
---   stage_type text NOT NULL,
---   input_connections jsonb,
---   outputs jsonb,
---   state jsonb,
---   error text,
---   progress float NOT NULL DEFAULT 0.0,
---   paused boolean NOT NULL DEFAULT 'false',
---   complete boolean NOT NULL DEFAULT 'false',
---   created_at timestamp NOT NULL DEFAULT current_timestamp,
---   UNIQUE (pipeline_id, stage_name)
--- );
---
--- CREATE TABLE pipeline_stage_log (
---   pipeline_stage_log uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
---   pipeline_stage_id uuid references pipeline_stage,
---   info text NOT NULL,
---   created_at timestamp NOT NULL DEFAULT current_timestamp
--- );
 
--- CREATE TABLE execution_period (
---   execution_period_id uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
---   pipeline_stage_id uuid references pipeline NOT NULL,
---   active boolean NOT NULL DEFAULT 'true',
---   start_time timestamp NOT NULL DEFAULT current_timestamp,
---   end_time timestamp
--- );
+CREATE FUNCTION check_log_entry() RETURNS trigger AS $check_log_entry$
+    BEGIN
+        IF NEW.level NOT IN ('error', 'warning', 'info') THEN
+            RAISE EXCEPTION 'level must be "error", "warning" or "info"';
+        END IF;
+
+        RETURN NEW;
+    END;
+$check_log_entry$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_log_entry BEFORE INSERT OR UPDATE ON log_entry
+    FOR EACH ROW EXECUTE PROCEDURE check_log_entry();
 
 
     UPDATE metakeystore SET integer_value=1 WHERE key_id='db_version';

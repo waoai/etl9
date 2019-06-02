@@ -28,7 +28,7 @@ export const StagesPage = () => {
     getStages().then(stages => {
       changeStages(stages)
     })
-  })
+  }, [])
   const [selectedStage, changeSelectedStage] = useState()
   const [mode, changeMode] = useState("editor")
 
@@ -39,8 +39,8 @@ export const StagesPage = () => {
           placeholder="Search for Stage"
           items={stages.map(stage => ({
             stage,
-            label: stage.name,
-            description: stage.description
+            label: stage.def.name,
+            description: stage.def.description
           }))}
           onSelect={item => changeSelectedStage(item.stage)}
         />
@@ -79,11 +79,11 @@ export const StagesPage = () => {
               style={{ width: "100%", height: 400, border: "1px solid #ccc" }}
             >
               <PipelineDiagram
-                stages={[selectedStage]}
+                stages={[selectedStage.def]}
                 pipeline={{
                   nodes: {
                     stage: {
-                      name: selectedStage.name,
+                      name: selectedStage.def.name,
                       inputs: {}
                     }
                   }

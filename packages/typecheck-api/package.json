@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "main": "src/index.js",
   "scripts": {
-    "start": "micro-dev",
-    "start:prod": "micro",
+    "start": "micro-dev --port 9104",
+    "start:prod": "micro -l tcp://0.0.0.0:9104",
     "test": "ava"
   },
   "devDependencies": {

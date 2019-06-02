@@ -11,7 +11,7 @@ const useStyles = makeStyles({})
 export const PipelineEditor = ({ pipeline, onChange, onError }: any) => {
   const c = useStyles()
   const [configString, changeConfigString] = useState(() =>
-    yaml.safeDump({ kind: "Pipeline", ...pipeline })
+    yaml.safeDump({ kind: "Pipeline", ...pipeline.def })
   )
 
   let error
@@ -32,7 +32,10 @@ export const PipelineEditor = ({ pipeline, onChange, onError }: any) => {
   useEffect(
     () => {
       if (!error) {
-        onChange(yaml.safeLoad(configString))
+        onChange({
+          ...pipeline,
+          def: yaml.safeLoad(configString)
+        })
       }
     },
     [configString]

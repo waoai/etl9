@@ -9,7 +9,8 @@ import ListSearch from "../ListSearch"
 import Button from "@material-ui/core/Button"
 import PipelineDiagram from "../PipelineDiagram"
 import PipelineEditor from "../PipelineEditor"
-import PipelineInstances from "../PipelineInstances"
+import Instances from "../Instances"
+import useNavigation from "../../utils/use-navigation.js"
 
 const useStyles = makeStyles({
   root: { padding: 20 },
@@ -23,6 +24,7 @@ const useStyles = makeStyles({
 export const PipelinesPage = () => {
   const c = useStyles()
   const api = useAPI()
+  const { navigate } = useNavigation()
   const [pipelines, changePipelines] = useState([])
   const [stages, changeStages] = useState([])
   const { getPipelines, getStages } = useAPI()
@@ -42,12 +44,12 @@ export const PipelinesPage = () => {
       {!selectedPipeline ? (
         <ListSearch
           placeholder="Search for Pipeline"
-          items={pipelines.map(pipelines => ({
-            pipelines,
-            label: pipelines.name,
-            description: pipelines.description
+          items={pipelines.map(pipeline => ({
+            pipeline,
+            label: pipeline.def.name,
+            description: pipeline.def.description
           }))}
-          onSelect={item => changeSelectedPipeline(item.pipelines)}
+          onSelect={item => changeSelectedPipeline(item.pipeline)}
         />
       ) : (
         <div className={c.root}>
@@ -64,7 +66,10 @@ export const PipelinesPage = () => {
               <div
                 style={{ width: "100%", height: 400, border: "1px solid #ccc" }}
               >
-                <PipelineDiagram stages={stages} pipeline={selectedPipeline} />
+                <PipelineDiagram
+                  stages={stages.map(s => s.def)}
+                  pipeline={selectedPipeline.def}
+                />
               </div>
               <div style={{ marginTop: 20 }}>
                 <PipelineEditor
@@ -75,13 +80,36 @@ export const PipelinesPage = () => {
             </>
           ) : mode === "instances" ? (
             <>
-              <PipelineInstances pipelineName={selectedPipeline.name} />
+              <Instances pipeline={selectedPipeline} />
             </>
           ) : null}
           <div className={c.actions}>
-            <Button>Activate</Button>
-            <Button disabled>Archive</Button>
-            <Button>Save</Button>
+            <Button
+              onClick={async () => {
+                await api.deletePipeline(selectedPipeline.entity_id)
+                navigate("/pipelines")
+              }}
+            >
+              Delete
+            </Button>
+            <Button
+              onClick={async () => {
+                navigate(
+                  `/launch-instance?pipeline_parent=${
+                    selectedPipeline.entity_id
+                  }`
+                )
+              }}
+            >
+              Launch Instance
+            </Button>
+            <Button
+              onClick={async () => {
+                await api.modifyPipeline(selectedPipeline)
+              }}
+            >
+              Save
+            </Button>
           </div>
         </div>
       )}

@@ -16,6 +16,8 @@ import DashboardPage from "./components/DashboardPage"
 import EnvironmentPage from "./components/EnvironmentPage"
 import SettingsPage from "./components/SettingsPage"
 import InstancePage from "./components/InstancePage"
+import InstancesPage from "./components/InstancesPage"
+import ErrorsPage from "./components/ErrorsPage"
 
 function App() {
   return (
@@ -33,6 +35,8 @@ function App() {
           <Location path="/settings" handler={SettingsPage} />
           <Location path="/environment" handler={EnvironmentPage} />
           <Location path="/instance/*" handler={InstancePage} />
+          <Location path="/instances" handler={InstancesPage} />
+          <Location path="/errors" handler={ErrorsPage} />
         </Locations>
       </Theme>
     </APIProvider>

@@ -25,6 +25,7 @@ export const PipelineDiagram = ({
   stages: Array,
   pipeline: Pipeline
 }) => {
+  if (Object.keys(pipeline.nodes).length === 0) return null
   try {
     // Try to construct the rete node structure from the Pipeline format
 
@@ -39,8 +40,7 @@ export const PipelineDiagram = ({
           const inp:
             | { value: any }
             | { output: string, node: string }
-            | { key: string } =
-            node.inputs[inputKey]
+            | { key: string } = node.inputs[inputKey]
           if (inp.node) {
             nodeOutputConnections[inp.node] =
               nodeOutputConnections[inp.node] || {}

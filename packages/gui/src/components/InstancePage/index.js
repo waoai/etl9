@@ -28,22 +28,26 @@ const useStyles = makeStyles({
   overviewTable: {
     padding: 10
   },
-  stageInstances: {}
+  stageInstances: {},
+  notFound: { fontSize: 32, padding: 50, textAlign: "center" }
 })
 
 export const InstancePage = () => {
   const c = useStyles()
-  const { getURLParams } = useNavigation()
-  const { getPipelineInstances, getStages } = useAPI()
+  const { getURLParams, navigate } = useNavigation()
+  const { getInstances, deleteInstance, getStages } = useAPI()
 
   const instanceId = useMemo(() => {
     const { path } = getURLParams()
     return path[1]
   }, [])
 
+  const [notFound, changeNotFound] = useState(false)
   const [instance, changeInstance] = useState()
   const [stageInstances, changeStageInstances] = useState()
   const [stageDefinitions, changeStageDefinitions] = useState()
+
+  const instanceState = instance ? instance.instance_state || {} : {}
 
   useEffect(
     () => {
@@ -51,17 +55,18 @@ export const InstancePage = () => {
       getStages().then(stages => {
         changeStageDefinitions(stages)
       })
-      getPipelineInstances({ id: instanceId }).then(instances => {
+      getInstances({ id: instanceId }).then(instances => {
+        if (instances.length === 0) return changeNotFound(true)
         const instance = instances[0]
         changeStageInstances(
-          Object.keys(instance.stageStates)
+          Object.keys((instance.instance_state || {}).stageStates || {})
             .map(stageInstanceId => ({
               stageInstanceId,
               ...instance.stageStates[stageInstanceId]
             }))
             .map(si => {
               const inputDef =
-                instance.pipelineDefinition.nodes[si.stageInstanceId].inputs
+                instance.pipeline_def.nodes[si.stageInstanceId].inputs
               const input = {}
               for (const k in inputDef) {
                 if (inputDef[k].value) {
@@ -90,6 +95,14 @@ export const InstancePage = () => {
     [instanceId]
   )
 
+  if (notFound) {
+    return (
+      <Page title={`Pipeline Instance "${instanceId}"`}>
+        <div className={c.notFound}>Not Found</div>
+      </Page>
+    )
+  }
+
   return (
     <Page title={`Pipeline Instance "${instanceId}"`}>
       {!instance ? (
@@ -99,21 +112,33 @@ export const InstancePage = () => {
           <div className={c.header}>
             <div className={c.progress}>
               <span style={{ paddingRight: 10 }}>
-                Progress: {Math.floor(instance.progress * 100)}%
+                Progress:{" "}
+                {instanceState.progress
+                  ? `${Math.floor(instanceState.progress * 100)}%`
+                  : "Not Started"}
               </span>{" "}
-              Runtime: <TimeSince sinceTime={instance.createdAt} />
+              Runtime: <TimeSince sinceTime={instance.created_at} />
             </div>
             <div className={c.headerActions}>
               <Button disabled>Migrate</Button>
               <Button disabled>Reset</Button>
-              <Button disabled>Delete</Button>
+              <Button
+                onClick={async () => {
+                  await deleteInstance(instance.id)
+                  navigate("/instances")
+                }}
+              >
+                Delete
+              </Button>
             </div>
           </div>
           <div style={{ height: 400 }}>
-            <PipelineDiagram
-              stages={stageDefinitions}
-              pipeline={instance.pipelineDefinition}
-            />
+            {stageDefinitions && instance && (
+              <PipelineDiagram
+                stages={(stageDefinitions || []).map(s => s.def)}
+                pipeline={instance.pipeline_def}
+              />
+            )}
           </div>
           <div className={c.overviewTable}>
             <WaterTable

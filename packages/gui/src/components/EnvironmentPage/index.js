@@ -60,11 +60,9 @@ export const EnvironmentPage = () => {
   const c = useStyles()
   const { getEnvVars, saveEnvVars } = useAPI()
   const [envVars, changeEnvVars] = useState()
-  const [originalEnvVars, changeOriginalEnvVars] = useState()
   useEffect(() => {
     getEnvVars().then(envVars => {
       changeEnvVars(envVars.map(a => ({ ...a, hideValue: a.encrypted })))
-      changeOriginalEnvVars(envVars)
     })
   }, [])
   return (
@@ -78,8 +76,9 @@ export const EnvironmentPage = () => {
             <div className={classnames(c.rowValue, "header")}>Value</div>
             <div className={classnames(c.rowCheck, "header")}>Encrypted</div>
           </div>
-          {envVars.concat([{ name: "", value: "" }]).map(
-            ({ name, value, encrypted, hideValue, removed }, i) =>
+          {envVars
+            .concat([{ name: "", value: "" }])
+            .map(({ name, value, encrypted, hideValue, removed }, i) =>
               removed ? null : (
                 <div key={i} className={c.row}>
                   <div className={c.rowName}>
@@ -132,17 +131,24 @@ export const EnvironmentPage = () => {
                   </div>
                 </div>
               )
-          )}
+            )}
           <div className={c.actions}>
             <Button
               onClick={async () => {
                 await saveEnvVars(
-                  envVars.filter(ev => !ev.removed).map(ev => ({
-                    name: ev.name,
-                    value: ev.value,
-                    encrypted: ev.encrypted
-                  }))
+                  envVars
+                    .filter(ev => !ev.removed)
+                    .map(ev => ({
+                      name: ev.name,
+                      value: ev.value,
+                      encrypted: ev.encrypted
+                    }))
                 )
+                await getEnvVars().then(envVars => {
+                  changeEnvVars(
+                    envVars.map(a => ({ ...a, hideValue: a.encrypted }))
+                  )
+                })
               }}
             >
               Save

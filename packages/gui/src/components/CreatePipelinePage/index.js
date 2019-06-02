@@ -6,6 +6,8 @@ import { makeStyles } from "@material-ui/styles"
 import CodeTextArea from "../CodeTextArea"
 import Button from "@material-ui/core/Button"
 import PipelineEditor from "../PipelineEditor"
+import { useAPI } from "../APIProvider"
+import useNavigation from "../../utils/use-navigation.js"
 
 const useStyles = makeStyles({
   root: {
@@ -23,12 +25,17 @@ const useStyles = makeStyles({
 export const CreatePipelinePage = () => {
   const c = useStyles()
 
+  const { navigate } = useNavigation()
+  const { createPipeline } = useAPI()
+  const [createError, changeCreateError] = useState(null)
   const [error, changeError] = useState()
   const [pipeline, changePipeline] = useState({
-    kind: "Pipeline",
-    name: "MyPipelineName",
-    description: "Some pipeline description",
-    nodes: {}
+    def: {
+      kind: "Pipeline",
+      name: "MyPipelineName",
+      description: "Some pipeline description",
+      nodes: {}
+    }
   })
 
   return (
@@ -40,8 +47,23 @@ export const CreatePipelinePage = () => {
           onError={changeError}
         />
         <div className={c.actions}>
-          <Button disabled={error || pipeline.name === null}>
-            Create Pipeline "{pipeline.name ? pipeline.name : ""}"
+          <Button
+            onClick={async () => {
+              changeCreateError(null)
+              try {
+                await createPipeline(pipeline.def)
+                navigate("/pipelines")
+              } catch (e) {
+                if (e.toString().includes("409")) {
+                  changeCreateError("Stage name is already taken")
+                } else {
+                  changeCreateError(e.toString())
+                }
+              }
+            }}
+            disabled={error || pipeline.def.name === null}
+          >
+            Create Pipeline "{pipeline.def.name ? pipeline.def.name : ""}"
           </Button>
         </div>
       </div>

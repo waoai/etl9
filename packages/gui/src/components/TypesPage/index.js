@@ -8,6 +8,8 @@ import { useAPI } from "../APIProvider"
 import ListSearch from "../ListSearch"
 import Button from "@material-ui/core/Button"
 import TypeEditor from "../TypeEditor"
+import AreYouSureButton from "../AreYouSureButton"
+import useNavigation from "../../utils/use-navigation.js"
 
 const useStyles = makeStyles({
   root: { padding: 20 },
@@ -20,14 +22,15 @@ const useStyles = makeStyles({
 export const TypesPage = () => {
   const c = useStyles()
   const api = useAPI()
+  const { navigate } = useNavigation()
   const [searchValue, changeSearchValue] = useState("")
   const [types, changeTypes] = useState([])
-  const { getTypes } = useAPI()
+  const { getTypes, deleteType, modifyType } = useAPI()
   useEffect(() => {
     getTypes().then(types => {
       changeTypes(types)
     })
-  })
+  }, [])
 
   const [selectedType, changeSelectedType] = useState()
 
@@ -38,8 +41,8 @@ export const TypesPage = () => {
           placeholder="Search for Type"
           items={types.map(type => ({
             ...type,
-            label: type.name,
-            description: type.description
+            label: type.def.name,
+            description: type.def.description
           }))}
           onSelect={changeSelectedType}
         />
@@ -52,7 +55,22 @@ export const TypesPage = () => {
           </div>
           <TypeEditor type={selectedType} onChange={changeSelectedType} />
           <div className={c.actions}>
-            <Button onClick={async () => {}}>Save</Button>
+            <AreYouSureButton
+              onClick={async () => {
+                await deleteType(selectedType.entity_id)
+                navigate("/types")
+              }}
+            >
+              Delete
+            </AreYouSureButton>
+            <Button
+              onClick={async () => {
+                await modifyType(selectedType)
+                navigate("/types")
+              }}
+            >
+              Save
+            </Button>
           </div>
         </div>
       )}

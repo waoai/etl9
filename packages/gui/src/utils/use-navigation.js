@@ -7,6 +7,12 @@ export const useNavigation = () => {
     navigate: (href: string) => {
       environment.defaultEnvironment.navigate(href)
     },
+    getURLQuery: () => {
+      const usp = new URLSearchParams(window.location.search.slice(1))
+      const obj = {}
+      for (const [k, v] of usp.entries()) obj[k] = v
+      return (obj: any)
+    },
     getURLParams: () => {
       return {
         path: window.location.pathname.split("/").slice(1)
