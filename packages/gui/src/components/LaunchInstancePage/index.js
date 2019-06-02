@@ -138,7 +138,7 @@ export const LaunchInstancePage = () => {
                 const instance = await createInstance({
                   parent_pipeline: selectedPipeline.entity_id,
                   def: selectedPipeline.def,
-                  input_params: config
+                  params: config
                 })
 
                 navigate(`/instance/${instance.id}`)

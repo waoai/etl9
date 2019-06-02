@@ -54,14 +54,14 @@ const apiFuncs = {
   getTypes: () => axios.get("/api/db/type_def").then(res => res.data),
   getEnvVars: () => axios.get("/api/db/env_var").then(res => res.data),
   createPipeline: def => axios.post("/api/db/definition", { def }),
-  createInstance: ({ def, parent_pipeline, input_configuration }) =>
+  createInstance: ({ def, parent_pipeline, params }) =>
     axios
       .post(
         "/api/db/instance",
         {
           pipeline_def: def,
           parent_pipeline,
-          input_configuration
+          params
         },
         { headers: { Prefer: "return=representation" } }
       )
