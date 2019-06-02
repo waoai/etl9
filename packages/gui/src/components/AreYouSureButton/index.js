@@ -22,7 +22,18 @@ export default (props: any) => {
       }}
     >
       {props.children}
-      {clickedOnce ? " (Are you sure?)" : ""}
+      <span
+        style={{
+          display: "inline-block",
+          overflow: "hidden",
+          maxWidth: clickedOnce ? 100 : 0,
+          paddingLeft: 2,
+          transition: "max-width 500ms",
+          whiteSpace: "nowrap"
+        }}
+      >
+        (Are you sure?)
+      </span>
     </Button>
   )
 }

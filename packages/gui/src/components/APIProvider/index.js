@@ -94,7 +94,11 @@ const apiFuncs = {
     }
   },
   deleteInstance: instance_id =>
-    axios.delete(`/api/db/instance?id=eq.${instance_id}`)
+    axios.delete(`/api/db/instance?id=eq.${instance_id}`),
+  deleteInstance: instance_id =>
+    axios.patch(`/api/db/instance?id=eq.${instance_id}`, {
+      instance_state: {}
+    })
 }
 
 export const APIContext = createContext(mockFuncs)

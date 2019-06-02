@@ -12,6 +12,7 @@ import TimeSince from "../TimeSince"
 import { grey, green, red, blue } from "@material-ui/core/colors"
 import WaterTable from "react-watertable"
 import StageInstance from "./StageInstance.js"
+import AreYouSureButton from "../AreYouSureButton"
 
 const useStyles = makeStyles({
   header: {
@@ -35,7 +36,7 @@ const useStyles = makeStyles({
 export const InstancePage = () => {
   const c = useStyles()
   const { getURLParams, navigate } = useNavigation()
-  const { getInstances, deleteInstance, getStages } = useAPI()
+  const { getInstances, deleteInstance, resetInstance, getStages } = useAPI()
 
   const instanceId = useMemo(() => {
     const { path } = getURLParams()
@@ -44,6 +45,7 @@ export const InstancePage = () => {
 
   const [notFound, changeNotFound] = useState(false)
   const [instance, changeInstance] = useState()
+  const [refreshKey, changeRefreshKey] = useState()
   const [stageInstances, changeStageInstances] = useState()
   const [stageDefinitions, changeStageDefinitions] = useState()
 
@@ -92,7 +94,7 @@ export const InstancePage = () => {
         changeInstance(instance)
       })
     },
-    [instanceId]
+    [instanceId, refreshKey]
   )
 
   if (notFound) {
@@ -120,16 +122,31 @@ export const InstancePage = () => {
               Runtime: <TimeSince sinceTime={instance.created_at} />
             </div>
             <div className={c.headerActions}>
-              <Button disabled>Migrate</Button>
-              <Button disabled>Reset</Button>
               <Button
+                onClick={() => {
+                  navigate("/pipelines")
+                }}
+              >
+                Go to Parent Pipeline
+              </Button>
+              <Button onClick={() => changeRefreshKey(Date.now())}>
+                Refresh
+              </Button>
+              <AreYouSureButton
+                onClick={async () => {
+                  await resetInstance(instance.id)
+                }}
+              >
+                Reset
+              </AreYouSureButton>
+              <AreYouSureButton
                 onClick={async () => {
                   await deleteInstance(instance.id)
                   navigate("/instances")
                 }}
               >
                 Delete
-              </Button>
+              </AreYouSureButton>
             </div>
           </div>
           <div style={{ height: 400 }}>
