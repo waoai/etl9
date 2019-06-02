@@ -1,5 +1,6 @@
 kind: Stage
 name: LogOutput
+endpoint: "localhost:9105/logoutput"
 inputs:
   input:
     type: any

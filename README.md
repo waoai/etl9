@@ -104,17 +104,17 @@ In production, you'll want to use a persistent database external to the containe
 
 This repository is made up of several services managed by lerna. Here are the main services and their descriptions...
 
-| Service             | Port/Endpoint                     | Description                                        |
-| ------------------- | --------------------------------- | -------------------------------------------------- |
-| `gui`               | `:9100`, `/*`                     | NextJS user interface for managing pipelines       |
-| `master-controller` | `:9101`, `/api/master-controller` | Controls pipeline progression                      |
-| `database`          |                                   | Database with state of all active pipelines/stages |
-| `database-rest-api` | `:9102`, `/api/db`                | A REST API for the database.                       |
-| `stage-api`         | `:9103`, `/api/stage`             | Evoke stage function                               |
-| `typecheck-api`     | `:9104`, `/api/typecheck`         | Typecheck API                                      |
-| `pipeline-api`      | `:9105`, `/api/pipeline`          | Create or delete pipelines                         |
-| `config-sync`       |                                   | Monitor filesystem and load configuration files    |
-| `reverse-proxy`     | `:9123`, `*`                      | Reverse proxy, coordinates to correct services     |
+| Service               | Port/Endpoint                       | Description                                        |
+| --------------------- | ----------------------------------- | -------------------------------------------------- |
+| `gui`                 | `:9100`, `/*`                       | NextJS user interface for managing pipelines       |
+| `instance-controller` | `:9101`, `/api/instance-controller` | Controls instance lifecycle                        |
+| `database`            |                                     | Database with state of all active pipelines/stages |
+| `database-rest-api`   | `:9102`, `/api/db`                  | A REST API for the database.                       |
+| `stage-api`           | `:9103`, `/api/stage`               | Evoke stage function                               |
+| `typecheck-api`       | `:9104`, `/api/typecheck`           | Typecheck API                                      |
+| `builtin-stages`      | `:9105`, `/api/builtin-stages`      | Use ETL9 builtin stages.                           |
+| `config-sync`         |                                     | Monitor filesystem and load configuration files    |
+| `reverse-proxy`       | `:9123`, `*`                        | Reverse proxy, coordinates to correct services     |
 
 ## Instance Lifecycle
 
@@ -125,3 +125,51 @@ following steps until it's completed.
 2. If input is available for a stage, execute the stage function.
 3. Store the resulting state and output of each stage function.
 4. If all stages are complete, done. If not, repeat from step 1.
+
+## Builtin Stages
+
+- **LogOutput** Logs output to ETL9 log database for viewing in the ETL9 GUI.
+- **RunContainer** _in progress_ Run a (possibly long-running) docker container process. Requires container to have access to docker daemon.
+
+## Stage Function Input / Output
+
+A stage function receives a `POST` request with a JSON body containing the following contents...
+
+```javascript
+{
+  // ID of instance being handled
+  instance_id: string,
+
+  // Input stages
+  inputs: {
+    [InputKey: string]: {
+      value: any
+    }
+  },
+
+  // State returning from the last successful request from this instance
+  state: any
+}
+```
+
+The stage function should return an object of the following form...
+
+```javascript
+{
+  // Updated state
+  state?: any,
+
+  // Updated Output
+  output?: {
+    [OutputKey: string]: {
+      value: any
+    }
+  },
+
+  // Number between 0 and 1 indicating closeness to completion
+  progress?: number,
+
+  // Boolean indicating whether or not this stage is complete
+  complete?: boolean
+}
+```

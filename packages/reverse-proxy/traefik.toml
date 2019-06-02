@@ -24,8 +24,8 @@ defaultEntryPoints = ["http"]
 	[backends.typecheck-api]
 		[backends.typecheck-api.servers.server1]
 			url = "http://localhost:9104"
-	[backends.pipeline-api]
-		[backends.pipeline-api.servers.server1]
+	[backends.builtin-stages]
+		[backends.builtin-stages.servers.server1]
 			url = "http://localhost:9105"
 [frontends]
 	[frontends.gui]
@@ -48,7 +48,7 @@ defaultEntryPoints = ["http"]
 		backend="stage-api"
 		[frontends.stage-api.routes.test_1]
 			rule = "PathPrefixStrip: /api/stage"
-	[frontends.pipeline-api]
-		backend="pipeline-api"
-		[frontends.pipeline-api.routes.test_1]
-			rule = "PathPrefixStrip: /api/pipeline"
+	[frontends.builtin-stages]
+		backend="builtin-stages"
+		[frontends.builtin-stages.routes.test_1]
+			rule = "PathPrefixStrip: /api/builtin-stages"
