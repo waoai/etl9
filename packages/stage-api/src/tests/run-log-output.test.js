@@ -1,18 +1,14 @@
 // @flow
 
 import test from "ava"
-import getDB from "database"
-
 import micro from "micro"
 import http from "http"
 import listen from "test-listen"
-import app from "../"
-
 import got from "got"
+import app from "../"
+import getDB from "database"
 
-test("LogOutput should log to database", async t => {
-  const db = await getDB()
-
+test('run via stage function "log output"', async t => {
   const service = micro(app)
   const url = await listen(service)
 
@@ -31,11 +27,5 @@ test("LogOutput should log to database", async t => {
   })
 
   t.is(res.statusCode, 200)
-
-  const latestLog = await db("log_entry")
-    .orderBy("created_at", "desc")
-    .first()
-
-  t.truthy(latestLog)
-  t.is(latestLog.summary, "Test Message")
+  t.deepEqual(res.body, { complete: true })
 })

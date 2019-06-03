@@ -104,17 +104,19 @@ In production, you'll want to use a persistent database external to the containe
 
 This repository is made up of several services managed by lerna. Here are the main services and their descriptions...
 
-| Service               | Port/Endpoint                       | Description                                        |
-| --------------------- | ----------------------------------- | -------------------------------------------------- |
-| `gui`                 | `:9100`, `/*`                       | NextJS user interface for managing pipelines       |
-| `instance-controller` | `:9101`, `/api/instance-controller` | Controls instance lifecycle                        |
-| `database`            |                                     | Database with state of all active pipelines/stages |
-| `database-rest-api`   | `:9102`, `/api/db`                  | A REST API for the database.                       |
-| `stage-api`           | `:9103`, `/api/stage`               | Evoke stage function                               |
-| `typecheck-api`       | `:9104`, `/api/typecheck`           | Typecheck API                                      |
-| `builtin-stages`      | `:9105`, `/api/builtin-stages`      | Use ETL9 builtin stages.                           |
-| `config-sync`         |                                     | Monitor filesystem and load configuration files    |
-| `reverse-proxy`       | `:9123`, `*`                        | Reverse proxy, coordinates to correct services     |
+| Service               | Port/Endpoint                       | Description                                                  |
+| --------------------- | ----------------------------------- | ------------------------------------------------------------ |
+| `gui`                 | `:9100`, `/*`                       | NextJS user interface for managing pipelines                 |
+| `instance-controller` | `:9101`, `/api/instance-controller` | Controls instance lifecycle                                  |
+| `database`            |                                     | Database with state of all active pipelines/stages           |
+| `database-rest-api`   | `:9102`, `/api/db`                  | A REST API for the database. Does not perform type-checking. |
+| `stage-api`           | `:9103`, `/api/stage`               | Evoke stage function or create stages.                       |
+| `typecheck-api`       | `:9104`, `/api/typecheck`           | Typecheck API                                                |
+| `builtin-stages`      | `:9105`, `/api/builtin-stages`      | Use ETL9 builtin stages.                                     |
+| `instance-api`        | `:9106`, `/api/instance`            | Create an instance.                                          |
+| `pipeline-api`        | `:9107`, `/api/pipeline`            | Create or update a pipeline.                                 |
+| `config-sync`         |                                     | Monitor filesystem and load configuration files              |
+| `reverse-proxy`       | `:9123`, `*`                        | Reverse proxy, coordinates to correct services               |
 
 ## Instance Lifecycle
 

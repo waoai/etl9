@@ -1,0 +1,23 @@
+{
+  "name": "stage-api",
+  "version": "0.0.0",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "micro-dev --port 9103",
+    "start:prod": "micro -l tcp://0.0.0.0:9103",
+    "test": "ava"
+  },
+  "devDependencies": {
+    "ava": "^2.0.0",
+    "got": "^9.6.0",
+    "micro-dev": "^3.0.0",
+    "micro-visualize": "^3.0.1",
+    "test-listen": "^1.1.0"
+  },
+  "dependencies": {
+    "database": "file:../database",
+    "micro": "^9.3.4",
+    "safe-eval": "^0.4.1",
+    "superstruct": "^0.6.1"
+  }
+}
