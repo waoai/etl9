@@ -8,6 +8,7 @@ async function runInstance(
 ) {
   // Initialize state if not initialized
   if (!instance_state) {
+    instance_state = {}
     const stageInstances = {}
     for (const [stageId, stageInfo] of Object.entries(pipeline_def.nodes)) {
       // TODO make all the stage definition calls at once
@@ -17,6 +18,7 @@ async function runInstance(
         .first()).def
       stageInstances[stageId] = {
         stageName: stageInfo.name,
+        def: stageDef,
         inputs: stageInfo.inputs,
         outputs: null,
         progress: 0,
@@ -37,7 +39,7 @@ async function runInstance(
 
     // Can this stage be run?
     const inputsWithValues = {}
-    for (const [inputKey, input] in Object.entries(inputs)) {
+    for (const [inputKey, input] of Object.entries(inputs)) {
       if (input.node) {
         const nodeStageInstance = stageInstances[input.node]
         if (nodeStageInstance.complete || input.progressive) {
@@ -58,19 +60,40 @@ async function runInstance(
     if (stageInstance.error) continue
 
     // Hit the endpoint...
-    const res = await got(
-      `http://localhost:9123/api/stage/${stageInstance.def.name}`,
-      {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        json: true,
-        body: {
-          state: stageInstance.state,
-          inputs: inputsWithValues,
-          instance_id: id
+    const requestBody = {
+      state: stageInstance.state,
+      inputs: inputsWithValues,
+      instance_id: id
+    }
+    let res
+    try {
+      res = await got(
+        `http://localhost:9123/api/stage/${stageInstance.def.name}`,
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          json: true,
+          body: requestBody
         }
+      )
+    } catch (e) {
+      const info = {
+        statusCode: e.response.statusCode,
+        message: e.response.body,
+        requestBody
       }
-    )
+      const summary = `Error calling out to stage function "${
+        stageInstance.def.name
+      }". Code ${info.statusCode}. Response body "${info.message}"`
+      console.log(summary)
+      await db("log_entry").insert({
+        tags: [stageInstance.def.name, id, stageId],
+        summary,
+        info,
+        level: "error"
+      })
+      continue
+    }
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
       const { outputs, progress, state, error, complete } = res.data
@@ -91,3 +114,5 @@ async function runInstance(
     .update({ instance_state })
     .where("id", id)
 }
+
+module.exports = runInstance
