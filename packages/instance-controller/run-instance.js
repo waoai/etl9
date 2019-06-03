@@ -83,6 +83,7 @@ async function runInstance(
         statusCode: e.response.statusCode,
         message: e.response.body,
         requestBody,
+        stageId,
         instance_id: id
       }
       const summary = `Error in stage id "${stageId}" calling out to stage function "${
@@ -111,6 +112,7 @@ async function runInstance(
         statusCode: res.statusCode,
         message: res.data,
         requestBody,
+        stageId,
         instance_id: id
       }
       const summary = `Error response from stage function for instance "${id}", Stage Id: ${stageId}, Stage Name: ${
