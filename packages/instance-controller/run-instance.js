@@ -2,10 +2,12 @@
 
 const got = require("got")
 
+let iter = 0
 async function runInstance(
   { db },
   { instance_state, params, pipeline_def, id }
 ) {
+  iter++
   // Initialize state if not initialized
   if (!instance_state) {
     instance_state = {}
@@ -80,18 +82,20 @@ async function runInstance(
       const info = {
         statusCode: e.response.statusCode,
         message: e.response.body,
-        requestBody
+        requestBody,
+        instance_id: id
       }
-      const summary = `Error calling out to stage function "${
+      const summary = `Error in stage id "${stageId}" calling out to stage function "${
         stageInstance.def.name
       }". Code ${info.statusCode}. Response body "${info.message}"`
-      console.log(summary)
+      console.log(iter.toString().padStart(5, "0"), summary)
       await db("log_entry").insert({
         tags: [stageInstance.def.name, id, stageId],
         summary,
         info,
         level: "error"
       })
+      stageInstance.error = summary
       continue
     }
 
@@ -103,10 +107,24 @@ async function runInstance(
       if (error !== undefined) stageInstance.error = error
       if (complete !== undefined) stageInstance.complete = complete
     } else {
-      const summary = `error executing stage function for instance "${id}", Stage Id: ${stageId}, Stage Name: ${
+      const info = {
+        statusCode: res.statusCode,
+        message: res.data,
+        requestBody,
+        instance_id: id
+      }
+      const summary = `Error response from stage function for instance "${id}", Stage Id: ${stageId}, Stage Name: ${
         stageInstance.def.name
       }`
-      console.log(summary)
+      stageInstance.error = summary
+      console.log(iter.toString().padStart(5, "0"), summary)
+      await db("log_entry").insert({
+        tags: [stageInstance.def.name, id, stageId],
+        summary,
+        info,
+        level: "error"
+      })
+      continue
     }
   }
 
