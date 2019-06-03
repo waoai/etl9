@@ -28,3 +28,11 @@ windows:
     window_name: typecheck-api
     panes:
       - cd packages/typecheck-api && sleep 5 && yarn install && yarn start
+  - builtin-stages:
+    window_name: builtin-stages
+    panes:
+      - cd packages/builtin-stages && sleep 5 && yarn install && yarn start
+  - instance-controller:
+    window_name: instance-controller
+    panes:
+      - cd packages/instance-controller && sleep 5 && yarn install && yarn start

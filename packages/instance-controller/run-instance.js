@@ -1,5 +1,7 @@
 // @flow
 
+const got = require("got")
+
 async function runInstance(
   { db },
   { instance_state, params, pipeline_def, id }
@@ -55,8 +57,34 @@ async function runInstance(
 
     if (stageInstance.error) continue
 
-    // Hit the endpoint to run...
-    // TODO hit the stage api
+    // Hit the endpoint...
+    const res = await got(
+      `http://localhost:9123/api/stage/${stageInstance.def.name}`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        json: true,
+        body: {
+          state: stageInstance.state,
+          inputs: inputsWithValues,
+          instance_id: id
+        }
+      }
+    )
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      const { outputs, progress, state, error, complete } = res.data
+      if (outputs !== undefined) stageInstance.outputs = outputs
+      if (progress !== undefined) stageInstance.progress = progress
+      if (state !== undefined) stageInstance.state = state
+      if (error !== undefined) stageInstance.error = error
+      if (complete !== undefined) stageInstance.complete = complete
+    } else {
+      const summary = `error executing stage function for instance "${id}", Stage Id: ${stageId}, Stage Name: ${
+        stageInstance.def.name
+      }`
+      console.log(summary)
+    }
   }
 
   await db("instance")

@@ -37,7 +37,7 @@ IF (db_version=0) THEN
   updated_at timestamptz NOT NULL DEFAULT current_timestamp
 );
 
-CREATE UNIQUE INDEX definition_name ON definition((def ->> 'name'));
+CREATE UNIQUE INDEX definition_name ON definition(LOWER(def ->> 'name'));
 
 
 CREATE FUNCTION check_definition_update() RETURNS trigger AS $check_definition_update$

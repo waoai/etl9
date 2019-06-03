@@ -6,6 +6,7 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "database": "file:../database"
+    "database": "file:../database",
+    "got": "^9.6.0"
   }
 }
