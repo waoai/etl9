@@ -68,25 +68,24 @@ async function runInstance(
       instance_id: id
     }
     let res
+    const endpoint = `http://localhost:9123/api/stage/${stageInstance.def.name}`
     try {
-      res = await got(
-        `http://localhost:9123/api/stage/${stageInstance.def.name}`,
-        {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          json: true,
-          body: requestBody
-        }
-      )
+      res = await got(endpoint, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        json: true,
+        body: requestBody
+      })
     } catch (e) {
       const info = {
         statusCode: e.response.statusCode,
         message: e.response.body,
         requestBody,
         stageId,
+        endpoint,
         instance_id: id
       }
-      const summary = `Error in stage id "${stageId}" calling out to stage function "${
+      const summary = `Error in stage id "${stageId}" calling stage function "${
         stageInstance.def.name
       }". Code ${info.statusCode}. Response body "${info.message}"`
       console.log(iter.toString().padStart(5, "0"), summary)
@@ -100,22 +99,18 @@ async function runInstance(
       continue
     }
 
-    if (res.statusCode >= 200 && res.statusCode < 300) {
-      const { outputs, progress, state, error, complete } = res.data
-      if (outputs !== undefined) stageInstance.outputs = outputs
-      if (progress !== undefined) stageInstance.progress = progress
-      if (state !== undefined) stageInstance.state = state
-      if (error !== undefined) stageInstance.error = error
-      if (complete !== undefined) stageInstance.complete = complete
-    } else {
+    const requestError = async s => {
       const info = {
         statusCode: res.statusCode,
-        message: res.data,
+        endpoint,
+        message: res.body,
         requestBody,
         stageId,
         instance_id: id
       }
-      const summary = `Error response from stage function for instance "${id}", Stage Id: ${stageId}, Stage Name: ${
+      const summary = `Error ${
+        s ? `"${s}"` : ""
+      } from stage function for instance "${id}", Stage Id: ${stageId}, Stage Name: ${
         stageInstance.def.name
       }`
       stageInstance.error = summary
@@ -126,6 +121,27 @@ async function runInstance(
         info,
         level: "error"
       })
+    }
+
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      try {
+        const { outputs, progress, state, error, complete } = res.body
+        if (outputs !== undefined) stageInstance.outputs = outputs
+        if (progress !== undefined) stageInstance.progress = progress
+        if (state !== undefined) stageInstance.state = state
+        if (error !== undefined) stageInstance.error = error
+        if (complete !== undefined) stageInstance.complete = complete
+        stageInstance.responseTime = stageInstance.responseTime
+          ? (res.timings.end -
+              res.timings.start +
+              stageInstance.responseTime * 9) /
+            10
+          : res.timings.end - res.timings.start
+      } catch (e) {
+        await requestError(`Error parsing body: "${e.toString()}"`)
+      }
+    } else {
+      await requestError()
       continue
     }
   }

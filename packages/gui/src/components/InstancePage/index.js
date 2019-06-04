@@ -60,11 +60,12 @@ export const InstancePage = () => {
       getInstances({ id: instanceId }).then(instances => {
         if (instances.length === 0) return changeNotFound(true)
         const instance = instances[0]
+        const { stageInstances } = instance.instance_state || {}
         changeStageInstances(
-          Object.keys((instance.instance_state || {}).stageStates || {})
+          Object.keys(stageInstances)
             .map(stageInstanceId => ({
               stageInstanceId,
-              ...instance.stageStates[stageInstanceId]
+              ...stageInstances[stageInstanceId]
             }))
             .map(si => {
               const inputDef =
@@ -74,8 +75,8 @@ export const InstancePage = () => {
                 if (inputDef[k].value) {
                   input[k] = inputDef[k].value
                 } else if (inputDef[k].node) {
-                  input[k] = ((instance.stageStates[inputDef[k].node] || {})
-                    .output || {})[inputDef[k].value]
+                  input[k] = ((stageInstances[inputDef[k].node] || {}).output ||
+                    {})[inputDef[k].value]
                 }
               }
               return {

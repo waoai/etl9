@@ -38,7 +38,7 @@ module.exports = async (req, res) => {
   if (!reqBody.instance_id) reqBody.instance_id = "standalone-stage-api"
 
   const stageDef = await db("stage_def")
-    .where(db.raw("lower(name)"), stageName)
+    .where(db.raw("lower(name)"), stageName.toLowerCase())
     .first()
 
   if (!stageDef)
