@@ -38,7 +38,6 @@ async function runInstance(
     stageInstance.error = null
     const { def, inputs, state, complete } = stageInstance
     if (complete) continue
-    stageInstance.callCount = (stageInstance.callCount || 0) + 1
 
     // Can this stage be run?
     const inputsWithValues = {}
@@ -48,9 +47,9 @@ async function runInstance(
         if (nodeStageInstance.complete || input.progressive) {
           inputsWithValues[inputKey] = nodeStageInstance.outputs[input.output]
         } else {
-          stageInstance.error = `Waiting on "${input.node}".outputs["${
-            input.output
-          }"]`
+          stageInstance.error = {
+            summary: `Waiting on "${input.node}".outputs["${input.output}"]`
+          }
           break
         }
       } else if (input.param) {
@@ -72,6 +71,7 @@ async function runInstance(
     let res
     const endpoint = `http://localhost:9123/api/stage/${stageInstance.def.name}`
     try {
+      stageInstance.callCount = (stageInstance.callCount || 0) + 1
       res = await got(endpoint, {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -97,7 +97,7 @@ async function runInstance(
         info,
         level: "error"
       })
-      stageInstance.error = summary
+      stageInstance.error = { summary, ...info }
       continue
     }
 
@@ -115,7 +115,7 @@ async function runInstance(
       } from stage function for instance "${id}", Stage Id: ${stageId}, Stage Name: ${
         stageInstance.def.name
       }`
-      stageInstance.error = summary
+      stageInstance.error = { summary, ...info }
       console.log(iter.toString().padStart(5, "0"), summary)
       await db("log_entry").insert({
         tags: [stageInstance.def.name, id, stageId],

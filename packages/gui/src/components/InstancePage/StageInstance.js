@@ -67,13 +67,13 @@ const useStyles = makeStyles({
 export const StageInstance = ({
   instanceId,
   stageInstanceId,
-  output,
+  outputs,
   status,
   state,
   complete,
   responseTime,
   callCount,
-  input,
+  inputs,
   error
 }) => {
   const c = useStyles()
@@ -123,20 +123,20 @@ export const StageInstance = ({
                 )}
               </div>
               <div className="section">
-                {input && Object.keys(input).length > 0 ? (
+                {inputs && Object.keys(inputs).length > 0 ? (
                   <WaterObject
                     tableName={`${stageInstanceId} Inputs`}
-                    data={input}
+                    data={inputs}
                   />
                 ) : (
                   <div className={c.empty}>No Input</div>
                 )}
               </div>
               <div className="section">
-                {output && Object.keys(output).length > 0 ? (
+                {outputs && Object.keys(outputs).length > 0 ? (
                   <WaterObject
                     tableName={`${stageInstanceId} Outputs`}
-                    data={output}
+                    data={outputs}
                   />
                 ) : (
                   <div className={c.empty}>No Output</div>

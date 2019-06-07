@@ -55,9 +55,16 @@ async function main() {
     entityIdToFile = {}
     // TODO do this all in a single transaction
     log(`deleting database definitions that no longer exist...`)
-    await db("definition")
-      .whereNotIn(db.raw("def->>'name'"), documents.map(doc => doc.def.name))
-      .del()
+    const deleteQ = db("definition").whereNotIn(
+      db.raw("def->>'name'"),
+      documents.map(doc => doc.def.name)
+    )
+    console.log(
+      `deleting ${(await deleteQ.select(db.raw("def->>'name' as name")))
+        .map(a => a.name)
+        .join(",")}`
+    )
+    await deleteQ.clone().del()
 
     log("inserting documents as definitions...")
     for (const { def, path } of documents) {

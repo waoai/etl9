@@ -47,9 +47,9 @@ module.exports = async (req, res) => {
   for (const [inputKey, inputDef] of Object.entries(stageDef.def.inputs)) {
     try {
       if (typeMap[inputDef.type]) {
-        typeMap[inputDef.type](reqBody.inputs[inputKey])
+        typeMap[inputDef.type](reqBody.inputs[inputKey].value)
       } else {
-        struct(inputDef.type)(reqBody.inputs[inputKey])
+        struct(inputDef.type)(reqBody.inputs[inputKey].value)
       }
     } catch (e) {
       return send(
@@ -74,23 +74,26 @@ module.exports = async (req, res) => {
     return send(res, 500, `Couldn't call out to stage: ${e.response.body}`)
   }
 
-  for (const [outputKey, outputDef] of Object.entries(
-    stageDef.def.outputs || {}
-  )) {
-    try {
-      if (typeMap[outputDef.type]) {
-        typeMap[outputDef.type](stageRes.body.outputs[outputKey])
-      } else {
-        struct(outputDef.type)(stageRes.body.outputs[outputKey])
+  if (stageRes.body.outputs) {
+    for (const [outputKey, outputDef] of Object.entries(
+      stageDef.def.outputs || {}
+    )) {
+      if (!stageRes.body.outputs[outputKey]) continue
+      try {
+        if (typeMap[outputDef.type]) {
+          typeMap[outputDef.type](stageRes.body.outputs[outputKey].value)
+        } else {
+          struct(outputDef.type)(stageRes.body.outputs[outputKey].value)
+        }
+      } catch (e) {
+        return send(
+          res,
+          500,
+          `Output "${outputKey}" didn't match the correct type "${
+            outputDef.type
+          }"\n\n${e.toString()}`
+        )
       }
-    } catch (e) {
-      return send(
-        res,
-        500,
-        `Output "${outputKey}" didn't match the correct type "${
-          outputDef.type
-        }"\n\n${e.toString()}`
-      )
     }
   }
 

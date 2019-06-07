@@ -4,8 +4,9 @@ const { send, json } = require("micro")
 const got = require("got")
 
 module.exports = async (req, res) => {
-  const { instance_id, inputs, state = {} } = await json(req)
+  let { instance_id, inputs, state } = await json(req)
 
+  if (!state) state = {}
   if (!state.startTime) state.startTime = Date.now()
 
   if (inputs.delay.value) {
@@ -23,7 +24,7 @@ module.exports = async (req, res) => {
     complete: true,
     state,
     outputs: {
-      output: value
+      output: { value }
     }
   }
 }

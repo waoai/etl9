@@ -44,8 +44,8 @@ const apiFuncs = {
   getInstances: (o = {}) => {
     let reqUrl = "/api/db/instance"
     if (o.id) reqUrl = `/api/db/instance?id=eq.${o.id}`
-    if (o.parent_pipeline)
-      reqUrl = `/api/db/instance?parent_pipeline=eq.${o.parent_pipeline}`
+    if (o.pipelineName)
+      reqUrl = `/api/db/instance?pipeline_def->>name=eq.${o.pipelineName}`
     return axios.get(reqUrl).then(res => res.data)
   },
   getPipelines: () => axios.get("/api/db/pipeline_def").then(res => res.data),
@@ -54,13 +54,12 @@ const apiFuncs = {
   getTypes: () => axios.get("/api/db/type_def").then(res => res.data),
   getEnvVars: () => axios.get("/api/db/env_var").then(res => res.data),
   createPipeline: def => axios.post("/api/db/definition", { def }),
-  createInstance: ({ def, parent_pipeline, params }) =>
+  createInstance: ({ def, params }) =>
     axios
       .post(
         "/api/db/instance",
         {
           pipeline_def: def,
-          parent_pipeline,
           params
         },
         { headers: { Prefer: "return=representation" } }
@@ -82,9 +81,13 @@ const apiFuncs = {
     axios.delete(`/api/db/definition?entity_id=eq.${entity_id}`),
   deleteType: entity_id =>
     axios.delete(`/api/db/definition?entity_id=eq.${entity_id}`),
-  getLogs: tags =>
+  getLogs: (tags = [], limit = 20) =>
     axios
-      .get(`/api/db/log_entry?tags=cs.{${tags.join(",")}}`)
+      .get(
+        `/api/db/log_entry?limit=${limit}&tags=cs.{${tags.join(
+          ","
+        )}}&order=created_at.desc`
+      )
       .then(res => res.data),
   saveEnvVars: async vars => {
     await axios.delete("/api/db/env_var")

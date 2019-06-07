@@ -80,5 +80,5 @@ test("DummyInput should output", async t => {
   })
 
   t.assert(res3.body.complete)
-  t.assert(res3.body.outputs.output === "Test Output")
+  t.assert(res3.body.outputs.output.value === "Test Output")
 })

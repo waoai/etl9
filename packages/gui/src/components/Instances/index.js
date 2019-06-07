@@ -14,7 +14,7 @@ export const Instances = ({ pipeline }) => {
   const { getInstances, deleteInstance } = useAPI()
   const [instances, changeInstances] = useState()
   useEffect(() => {
-    getInstances({ pipeline_parent: pipeline.entity_id }).then(instances => {
+    getInstances({ pipelineName: pipeline.def.name }).then(instances => {
       changeInstances(instances)
     })
   }, [])

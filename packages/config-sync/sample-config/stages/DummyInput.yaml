@@ -1,0 +1,13 @@
+kind: Stage
+name: DummyInput
+endpoint: "http://localhost:9105/dummyinput"
+description: Output the input with the optional delay.
+inputs:
+  input:
+    type: any
+  delay:
+    type: number
+    optional: true
+outputs:
+  output:
+    type: any
