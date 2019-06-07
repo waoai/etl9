@@ -133,7 +133,7 @@ async function runInstance(
         if (state !== undefined) stageInstance.state = state
         if (error !== undefined) stageInstance.error = error
         if (complete !== undefined) stageInstance.complete = complete
-        if (complete && progress !== undefined) stageInstance.progress = 1
+        if (stageInstance.complete) stageInstance.progress = 1
         stageInstance.responseTime = stageInstance.responseTime
           ? (res.timings.end -
               res.timings.start +
@@ -148,6 +148,16 @@ async function runInstance(
       continue
     }
   }
+
+  // Compute progress
+  // TODO use average completion time for stages to compute more accurate
+  // progress
+  const progresses = []
+  for (const [stageId, stageInstance] of Object.entries(stageInstances)) {
+    progresses.push(stageInstance.progress || 0)
+  }
+  instance_state.progress =
+    progresses.reduce((acc, a) => acc + a) / progresses.length
 
   await db("instance")
     .update({ instance_state })

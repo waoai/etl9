@@ -105,6 +105,7 @@ export const StageInstance = ({
   responseTime,
   callCount,
   inputs,
+  progress,
   error
 }) => {
   const c = useStyles()
@@ -142,6 +143,10 @@ export const StageInstance = ({
               </div>
               <div className="leftTitle">Complete</div>
               <div className="leftValue">{complete ? `Yes` : `No`}</div>
+              <div className="leftTitle">Progress</div>
+              <div className="leftValue">
+                {Math.floor((progress || 0) * 100)}%
+              </div>
             </div>
             <div className="right">
               <div className="section">
