@@ -61,9 +61,9 @@ export const PipelineEditor = ({
         >
           <PipelineDiagram
             stages={stages.map(s => s.def)}
-            onChange={newPipeline => {
-              changeConfigString(yaml.safeDump(newPipeline))
-            }}
+            // onChange={newPipeline => {
+            //   changeConfigString(yaml.safeDump(newPipeline))
+            // }}
             pipeline={pipeline.def}
           />
         </div>
