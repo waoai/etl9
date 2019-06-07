@@ -19,7 +19,7 @@ const loadFirst = !process.env.LOAD_FIRST
   : ["yes", "true"].includes((process.env.LOAD_FIRST || "").toLowerCase())
 
 const writeMode = !process.env.WRITE_MODE
-  ? false
+  ? true
   : ["yes", "true"].includes((process.env.WRITE_MODE || "").toLowerCase())
 
 async function main() {
@@ -59,28 +59,38 @@ async function main() {
       db.raw("def->>'name'"),
       documents.map(doc => doc.def.name)
     )
-    console.log(
-      `deleting ${(await deleteQ.select(db.raw("def->>'name' as name")))
-        .map(a => a.name)
-        .join(",")}`
-    )
-    await deleteQ.clone().del()
+    const documentsToDelete = (await deleteQ.select(
+      db.raw("def->>'name' as name")
+    )).map(a => a.name)
 
-    log("inserting documents as definitions...")
+    if (documentsToDelete.length > 0) {
+      console.log(`deleting ${documentsToDelete.join(",")}`)
+      await deleteQ.clone().del()
+    } else {
+      console.log("no documents to delete")
+    }
+
+    log("updating definitions in db...")
     for (const { def, path } of documents) {
       let entity_id
       try {
-        log(`inserting def "${def.name}"...`)
         ;[{ entity_id }] = await db("definition")
           .insert({ def })
           .returning("entity_id")
+        log(`inserted def "${def.name}"...`)
       } catch (e) {
-        log(`already found. updating instead...`)
-        if (e.toString().includes("duplicate key value")) {
-          ;[{ entity_id }] = await db("definition")
-            .update({ def })
-            .where(db.raw("def->>'name'"), def.name)
-            .returning("entity_id")
+        const existingDef = (await db("definition")
+          .where(db.raw("def->>'name'"), def.name)
+          .select("def")
+          .first()).def
+        if (!isEqual(existingDef, def)) {
+          if (e.toString().includes("duplicate key value")) {
+            ;[{ entity_id }] = await db("definition")
+              .update({ def })
+              .where(db.raw("def->>'name'"), def.name)
+              .returning("entity_id")
+            log(`updated def "${def.name}"...`)
+          }
         }
       }
       entityIdToFile[entity_id] = { path, def }
