@@ -7,6 +7,7 @@ import WaterObject from "react-watertable/components/Waterobject"
 import Button from "@material-ui/core/Button"
 import Collapse from "@material-ui/core/Collapse"
 import OpenIcon from "@material-ui/icons/KeyboardArrowDown"
+import EntryLog from "../EntryLog"
 
 const useStyles = makeStyles({
   stageInstance: {
@@ -34,15 +35,16 @@ const useStyles = makeStyles({
         "& .left": {
           display: "flex",
           flexDirection: "column",
-          width: 120,
+          width: 140,
           "& .leftTitle": {
-            fontSize: 12,
+            fontSize: 11,
             fontWeight: "bold",
             textTransform: "uppercase",
-            marginTop: 10
+            marginTop: 10,
+            color: grey[800]
           },
           "& .leftValue": {
-            fontSize: 24
+            fontSize: 18
           }
         },
         "& .right": { display: "flex", flexDirection: "column", flexGrow: 1 }
@@ -63,10 +65,12 @@ const useStyles = makeStyles({
 })
 
 export const StageInstance = ({
+  instanceId,
   stageInstanceId,
   output,
   status,
   state,
+  complete,
   responseTime,
   callCount,
   input,
@@ -104,6 +108,8 @@ export const StageInstance = ({
                   ? "Good"
                   : "???"}
               </div>
+              <div className="leftTitle">Complete</div>
+              <div className="leftValue">{complete ? `Yes` : `No`}</div>
             </div>
             <div className="right">
               <div className="section">
@@ -145,6 +151,12 @@ export const StageInstance = ({
                 ) : (
                   <div className={c.empty}>No State</div>
                 )}
+              </div>
+              <div className="section">
+                <EntryLog
+                  title={stageInstanceId}
+                  tags={[stageInstanceId, instanceId]}
+                />
               </div>
             </div>
           </div>

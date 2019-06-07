@@ -4,7 +4,7 @@ const { send, json } = require("micro")
 const got = require("got")
 
 module.exports = async (req, res) => {
-  const { instance_id, inputs, state } = await json(req)
+  const { instance_id, stage_id, inputs, state } = await json(req)
 
   const v = inputs.input.value
 
@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
     headers: { "content-type": "application/json" },
     json: true,
     body: {
-      tags: [instance_id],
+      tags: [instance_id, "LogOutput", stage_id],
       summary:
         typeof v === "string"
           ? v.slice(0, 200)

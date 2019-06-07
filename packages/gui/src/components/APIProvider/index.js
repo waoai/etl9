@@ -23,7 +23,7 @@ const mockFuncs = {
   getPipelines: () => delayAndReturn(examples.pipelines),
   getStages: () => delayAndReturn(examples.stages),
   getTypes: () => delayAndReturn(examples.types),
-  getLogs: () => delayAndReturn([]),
+  getLogs: tags => delayAndReturn([]),
   getEnvVars: () => delayAndReturn(examples.envVars),
   createPipeline: def => Promise.resolve(null),
   createStage: def => Promise.resolve(null),
@@ -82,7 +82,10 @@ const apiFuncs = {
     axios.delete(`/api/db/definition?entity_id=eq.${entity_id}`),
   deleteType: entity_id =>
     axios.delete(`/api/db/definition?entity_id=eq.${entity_id}`),
-  getLogs: entity_id => axios.get(`/api/db/log_entry`).then(res => res.data),
+  getLogs: tags =>
+    axios
+      .get(`/api/db/log_entry?tags=cs.{${tags.join(",")}}`)
+      .then(res => res.data),
   saveEnvVars: async vars => {
     await axios.delete("/api/db/env_var")
     for (const v of vars) {

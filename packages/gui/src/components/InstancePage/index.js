@@ -60,7 +60,7 @@ export const InstancePage = () => {
       getInstances({ id: instanceId }).then(instances => {
         if (instances.length === 0) return changeNotFound(true)
         const instance = instances[0]
-        const { stageInstances } = instance.instance_state || {}
+        const { stageInstances = [] } = instance.instance_state || {}
         changeStageInstances(
           Object.keys(stageInstances)
             .map(stageInstanceId => ({
@@ -198,7 +198,11 @@ export const InstancePage = () => {
           </div>
           <div className={c.stageInstances}>
             {(stageInstances || []).map(si => (
-              <StageInstance key={si.stageInstanceId} {...si} />
+              <StageInstance
+                key={si.stageInstanceId}
+                instanceId={instanceId}
+                {...si}
+              />
             ))}
           </div>
         </>

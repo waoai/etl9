@@ -38,6 +38,7 @@ async function runInstance(
     stageInstance.error = null
     const { def, inputs, state, complete } = stageInstance
     if (complete) continue
+    stageInstance.callCount = (stageInstance.callCount || 0) + 1
 
     // Can this stage be run?
     const inputsWithValues = {}
@@ -65,6 +66,7 @@ async function runInstance(
     const requestBody = {
       state: stageInstance.state,
       inputs: inputsWithValues,
+      stage_id: stageId,
       instance_id: id
     }
     let res
@@ -131,6 +133,7 @@ async function runInstance(
         if (state !== undefined) stageInstance.state = state
         if (error !== undefined) stageInstance.error = error
         if (complete !== undefined) stageInstance.complete = complete
+        if (complete && progress !== undefined) stageInstance.progress = 1
         stageInstance.responseTime = stageInstance.responseTime
           ? (res.timings.end -
               res.timings.start +
