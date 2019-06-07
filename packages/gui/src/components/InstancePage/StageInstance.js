@@ -1,13 +1,41 @@
 // @flow
 
 import React, { useState } from "react"
-import { makeStyles } from "@material-ui/styles"
+import { makeStyles, withStyles } from "@material-ui/styles"
 import { grey, green, red } from "@material-ui/core/colors"
 import WaterObject from "react-watertable/components/Waterobject"
 import Button from "@material-ui/core/Button"
 import Collapse from "@material-ui/core/Collapse"
 import OpenIcon from "@material-ui/icons/KeyboardArrowDown"
 import EntryLog from "../EntryLog"
+import Tabs from "@material-ui/core/Tabs"
+import Tab from "@material-ui/core/Tab"
+
+const StyledTabs = withStyles({
+  indicator: {
+    display: "flex",
+    justifyContent: "center",
+    backgroundColor: "transparent",
+    "& > div": {
+      maxWidth: 40,
+      width: "100%",
+      backgroundColor: "#635ee7"
+    }
+  }
+})(props => <Tabs {...props} TabIndicatorProps={{ children: <div /> }} />)
+
+const StyledTab = withStyles({
+  root: {
+    textTransform: "none",
+    minWidth: 0,
+    fontWeight: "bold",
+    fontSize: 14,
+    color: "#fff",
+    "&:focus": {
+      opacity: 1
+    }
+  }
+})(props => <Tab {...props} />)
 
 const useStyles = makeStyles({
   stageInstance: {
@@ -29,6 +57,7 @@ const useStyles = makeStyles({
       }
     },
     "& .collapsedContent": {
+      height: 500,
       marginTop: 10,
       "& .content": {
         display: "flex",
@@ -64,6 +93,8 @@ const useStyles = makeStyles({
   }
 })
 
+const tabNames = ["Inputs", "Outputs", "Error", "State", "Logs"]
+
 export const StageInstance = ({
   instanceId,
   stageInstanceId,
@@ -78,6 +109,7 @@ export const StageInstance = ({
 }) => {
   const c = useStyles()
   const [open, changeOpen] = useState(false)
+  const [currentTab, changeTab] = useState(tabNames[0])
   return (
     <div className={c.stageInstance}>
       <Button onClick={() => changeOpen(!open)} fullWidth className="header">
@@ -113,51 +145,73 @@ export const StageInstance = ({
             </div>
             <div className="right">
               <div className="section">
-                {error && Object.keys(error).length > 0 ? (
-                  <WaterObject
-                    tableName={`${stageInstanceId} Error`}
-                    data={error}
+                <StyledTabs
+                  value={tabNames.indexOf(currentTab)}
+                  onChange={(e, n) => changeTab(tabNames[n])}
+                  textColor="primary"
+                  indicatorColor="primary"
+                >
+                  {tabNames.map(tn => (
+                    <StyledTab key={tn} label={tn} />
+                  ))}
+                </StyledTabs>
+              </div>
+              {currentTab === "Error" && (
+                <div className="section">
+                  {error && Object.keys(error).length > 0 ? (
+                    <WaterObject
+                      tableName={`${stageInstanceId} Error`}
+                      data={error}
+                    />
+                  ) : (
+                    <div className={c.empty}>No Error</div>
+                  )}
+                </div>
+              )}
+              {currentTab === "Inputs" && (
+                <div className="section">
+                  {inputs && Object.keys(inputs).length > 0 ? (
+                    <WaterObject
+                      tableName={`${stageInstanceId} Inputs`}
+                      data={inputs}
+                    />
+                  ) : (
+                    <div className={c.empty}>No Input</div>
+                  )}
+                </div>
+              )}
+              {currentTab === "Outputs" && (
+                <div className="section">
+                  {outputs && Object.keys(outputs).length > 0 ? (
+                    <WaterObject
+                      tableName={`${stageInstanceId} Outputs`}
+                      data={outputs}
+                    />
+                  ) : (
+                    <div className={c.empty}>No Output</div>
+                  )}
+                </div>
+              )}
+              {currentTab === "State" && (
+                <div className="section">
+                  {state && Object.keys(state).length > 0 ? (
+                    <WaterObject
+                      tableName={`${stageInstanceId} State`}
+                      data={state}
+                    />
+                  ) : (
+                    <div className={c.empty}>No State</div>
+                  )}
+                </div>
+              )}
+              {currentTab === "Logs" && (
+                <div className="section">
+                  <EntryLog
+                    title={stageInstanceId}
+                    tags={[stageInstanceId, instanceId]}
                   />
-                ) : (
-                  <div className={c.empty}>No Error</div>
-                )}
-              </div>
-              <div className="section">
-                {inputs && Object.keys(inputs).length > 0 ? (
-                  <WaterObject
-                    tableName={`${stageInstanceId} Inputs`}
-                    data={inputs}
-                  />
-                ) : (
-                  <div className={c.empty}>No Input</div>
-                )}
-              </div>
-              <div className="section">
-                {outputs && Object.keys(outputs).length > 0 ? (
-                  <WaterObject
-                    tableName={`${stageInstanceId} Outputs`}
-                    data={outputs}
-                  />
-                ) : (
-                  <div className={c.empty}>No Output</div>
-                )}
-              </div>
-              <div className="section">
-                {state && Object.keys(state).length > 0 ? (
-                  <WaterObject
-                    tableName={`${stageInstanceId} State`}
-                    data={state}
-                  />
-                ) : (
-                  <div className={c.empty}>No State</div>
-                )}
-              </div>
-              <div className="section">
-                <EntryLog
-                  title={stageInstanceId}
-                  tags={[stageInstanceId, instanceId]}
-                />
-              </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
