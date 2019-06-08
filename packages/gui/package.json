@@ -10,6 +10,7 @@
   "proxy": "http://localhost:9123",
   "scripts": {
     "start": "PORT=9100 react-scripts start",
+    "start:prod": "serve -s build -l 9100",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
