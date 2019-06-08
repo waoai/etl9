@@ -20,7 +20,7 @@ export default () => {
 
   const [instances, changeInstances] = useState()
   useEffect(() => {
-    getInstances().then(changeInstances)
+    getInstances({ minimal: true }).then(changeInstances)
   }, [])
 
   return (

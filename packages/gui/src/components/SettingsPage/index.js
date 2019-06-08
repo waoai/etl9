@@ -26,8 +26,8 @@ export const SettingsPage = () => {
   })
   return (
     <Page title="Settings">
-      <div className={c.sectionHeader}>Configuration</div>
-      <div className={c.sectionContent}>
+      <div className={c.sectionHeader}>Settings</div>
+      {/* <div className={c.sectionContent}>
         <div>
           <Checkbox
             value={exportSettings.encryptedInPlainText}
@@ -58,7 +58,7 @@ export const SettingsPage = () => {
       <div className={c.actions}>
         <Button disabled>Export as YAML Directory</Button>
         <Button disabled>Export as JSON</Button>
-      </div>
+      </div> */}
     </Page>
   )
 }

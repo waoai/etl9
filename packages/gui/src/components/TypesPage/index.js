@@ -26,13 +26,15 @@ export const TypesPage = () => {
   const [searchValue, changeSearchValue] = useState("")
   const [types, changeTypes] = useState([])
   const { getTypes, deleteType, modifyType } = useAPI()
-  useEffect(() => {
-    getTypes().then(types => {
-      changeTypes(types)
-    })
-  }, [])
-
   const [selectedType, changeSelectedType] = useState()
+  useEffect(
+    () => {
+      getTypes().then(types => {
+        changeTypes(types)
+      })
+    },
+    [selectedType === null]
+  )
 
   return (
     <Page title="Types">
@@ -40,11 +42,11 @@ export const TypesPage = () => {
         <ListSearch
           placeholder="Search for Type"
           items={types.map(type => ({
-            ...type,
+            type,
             label: type.def.name,
             description: type.def.description
           }))}
-          onSelect={changeSelectedType}
+          onSelect={a => changeSelectedType(a.type)}
         />
       ) : (
         <div className={c.root}>
@@ -58,7 +60,7 @@ export const TypesPage = () => {
             <AreYouSureButton
               onClick={async () => {
                 await deleteType(selectedType.entity_id)
-                navigate("/types")
+                changeSelectedType(null)
               }}
             >
               Delete
@@ -66,7 +68,7 @@ export const TypesPage = () => {
             <Button
               onClick={async () => {
                 await modifyType(selectedType)
-                navigate("/types")
+                changeSelectedType(null)
               }}
             >
               Save

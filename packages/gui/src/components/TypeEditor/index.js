@@ -23,10 +23,10 @@ export const TypeEditor = ({ type = {}, onChange, onError }) => {
 
   let error
   try {
-    if (!type.name.match(/[A-Z][a-zA-Z]+/))
+    if (!type.def.name.match(/[A-Z][a-zA-Z]+/))
       throw new Error("Type names should be CapitalCase")
 
-    safeEval(`struct(${type.superstruct})`, { struct })
+    safeEval(`struct(${type.def.superstruct})`, { struct })
   } catch (e) {
     error = e.toString()
   }
@@ -41,12 +41,16 @@ export const TypeEditor = ({ type = {}, onChange, onError }) => {
     <div className={c.root}>
       <TextField
         placeholder="Type Name"
-        onChange={e => onChange({ ...type, name: e.target.value })}
-        value={type.name || ""}
+        onChange={e =>
+          onChange({ ...type, def: { ...type.def, name: e.target.value } })
+        }
+        value={type.def.name || ""}
       />
       <CodeTextArea
-        onChange={v => onChange({ ...type, superstruct: v })}
-        value={type.superstruct || ""}
+        onChange={v =>
+          onChange({ ...type, def: { ...type.def, superstruct: v } })
+        }
+        value={type.def.superstruct || ""}
         error={error}
       />
     </div>

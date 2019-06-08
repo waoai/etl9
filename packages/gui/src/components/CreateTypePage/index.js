@@ -29,9 +29,11 @@ const useStyles = makeStyles({
 export const CreateTypePage = () => {
   const c = useStyles()
   const [type, changeType] = useState({
-    kind: "Type",
-    name: "",
-    superstruct: '"string"'
+    def: {
+      kind: "Type",
+      name: "",
+      superstruct: '"string"'
+    }
   })
   const { navigate } = useNavigation()
   const [error, changeError] = useState(null)
@@ -49,7 +51,7 @@ export const CreateTypePage = () => {
             onClick={async () => {
               changeRequestError(null)
               try {
-                await createType(type)
+                await createType(type.def)
               } catch (e) {
                 if (e.toString().includes("409")) {
                   changeRequestError("Type with that name already exists")
@@ -59,9 +61,9 @@ export const CreateTypePage = () => {
               }
               navigate("/types")
             }}
-            disabled={error || type.name === ""}
+            disabled={error || type.def.name === ""}
           >
-            Create Type "{type.name}"
+            Create Type "{type.def.name}"
           </Button>
         </div>
       </div>

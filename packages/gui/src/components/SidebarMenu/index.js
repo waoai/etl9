@@ -38,8 +38,8 @@ const items = [
   { label: "Create Type", href: "/create-type" },
   "sep",
   { label: "Environment", href: "/environment" },
-  { label: "Errors & Warnings", href: "/errors" },
-  { label: "Settings", href: "/settings" }
+  { label: "Errors & Warnings", href: "/errors" }
+  // { label: "Settings", href: "/settings" }
 ]
 
 export const SidebarMenu = ({ currentPageTitle }: any) => {

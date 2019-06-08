@@ -39,12 +39,12 @@ export const DashboardPage = () => {
 
   const [instances, changeInstances] = useState()
   useEffect(() => {
-    getInstances().then(changeInstances)
+    getInstances({ minimal: true }).then(changeInstances)
   }, [])
 
   const statusBlocks = [
-    { title: "Calls/Min", value: 103 },
-    { title: "Active Instances", value: 4 }
+    // { title: "Calls/Min", value: 103 },
+    { title: "Active Instances", value: instances ? instances.length : "..." }
   ]
 
   return (
