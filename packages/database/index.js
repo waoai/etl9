@@ -64,7 +64,9 @@ export default async ({ seed, testMode, user } = {}) => {
   }
 
   // upload migration
-  await pg.raw(migrationSQL)
+  if (testMode) {
+    await pg.raw(migrationSQL)
+  }
 
   if (seed) await seedFunc(pg)
 
