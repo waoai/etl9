@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "build": "lerna run --parallel build",
+    "build:docker": "cd packages/database && yarn install && cd ../.. && lerna bootstrap && lerna run --parallel build",
     "start:local": "POSTGRES_USER=postgres POSTGRES_PORT=5432 POSTGRES_DB=etl9 POSTGRES_HOST=localhost yarn start:prod",
     "start:prod": "concurrently --kill-others-on-fail \"npm:service:*\"",
     "service:gui": "cd packages/gui && yarn start:prod",
