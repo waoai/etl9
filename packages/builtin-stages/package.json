@@ -9,12 +9,12 @@
   },
   "devDependencies": {
     "ava": "^2.0.0",
-    "database": "file:../database",
     "micro-dev": "^3.0.0",
     "test-listen": "^1.1.0"
   },
   "dependencies": {
     "got": "^9.6.0",
+    "database": "file:../database",
     "micro": "^9.3.4",
     "microrouter": "^3.1.3"
   }
