@@ -1,4 +1,4 @@
-session_name: planner
+session_name: etl9
 windows:
   - cmd:
     window_name: cmd
