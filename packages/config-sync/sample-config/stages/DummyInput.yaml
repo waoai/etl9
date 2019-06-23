@@ -2,6 +2,7 @@ kind: Stage
 name: DummyInput
 endpoint: "http://localhost:9105/dummyinput"
 description: Output the input with the optional delay.
+builtin: yes
 inputs:
   input:
     type: any

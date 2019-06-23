@@ -10,6 +10,7 @@ const recursiveReadDir = require("recursive-readdir")
 const isEqual = require("lodash/isEqual")
 const cloneDeep = require("lodash/cloneDeep")
 
+const defaultTargetDir = resolve(join(__dirname, "sample-config"))
 const targetDir = resolve(
   process.env.TARGET_DIR || join(__dirname, "sample-config")
 )
@@ -22,8 +23,28 @@ const writeMode = !process.env.WRITE_MODE
   ? true
   : ["yes", "true"].includes((process.env.WRITE_MODE || "").toLowerCase())
 
+async function loadBuiltinDocuments() {
+  console.log("loading default documents...")
+  const defaultFiles = await recursiveReadDir(defaultTargetDir)
+  const documents = []
+  for (const fi of defaultFiles) {
+    if (fi.endsWith(".yaml")) {
+      const yamlDocs = yaml.safeLoadAll(fs.readFileSync(fi))
+      for (const doc of yamlDocs) {
+        if (doc.builtin) {
+          documents.push({ def: doc, path: fi })
+        }
+      }
+    }
+  }
+  console.log(`found ${documents.length} builtins`)
+  return documents
+}
+
 async function main() {
   console.log(`TARGET CONFIG DIRECTORY: ${targetDir}`)
+
+  const builtinDocuments = await loadBuiltinDocuments()
 
   const db = await getDB()
 
@@ -37,7 +58,7 @@ async function main() {
   async function loadDir() {
     const log = (...args) => console.log("load-from-dir>", ...args)
 
-    log("reading directory...")
+    log("reading target directory...")
     const files = await recursiveReadDir(targetDir)
 
     log(`${files.length} files found`)
@@ -51,6 +72,18 @@ async function main() {
       }
     }
     log(`${documents.length} yaml documents found`)
+
+    for (const builtinDoc of builtinDocuments) {
+      if (
+        !documents.some(
+          d =>
+            d.def.name === builtinDoc.def.name &&
+            d.def.kind === builtinDoc.def.kind
+        )
+      ) {
+        documents.push(builtinDoc)
+      }
+    }
 
     entityIdToFile = {}
     // TODO do this all in a single transaction
@@ -138,8 +171,8 @@ async function main() {
           contents[prevPath].some(d => d.name === prevDef.name)
         ) {
           // Replace the previous definition with the new definition
-          contents[prevPath] = contents[prevPath].map(d =>
-            d.name === prevDef.name ? newDef : d
+          contents[prevPath] = contents[prevPath].map(
+            d => (d.name === prevDef.name ? newDef : d)
           )
           changedFiles.add(prevPath)
           continue

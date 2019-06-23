@@ -1,6 +1,7 @@
 kind: Stage
 name: LogOutput
 endpoint: "http://localhost:9105/logoutput"
+builtin: yes
 inputs:
   input:
     type: any
