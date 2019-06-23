@@ -149,22 +149,6 @@ export const LaunchInstancePage = () => {
               configVarSchema && (
                 <Waterobject
                   tableName="Instance Configuration"
-                  // schema={{
-                  //   param: {
-                  //     title: "Param",
-                  //     type: "text",
-                  //     editable: false
-                  //   },
-                  //   type: {
-                  //     title: "Type",
-                  //     type: "text",
-                  //     editable: false
-                  //   },
-                  //   value: {
-                  //     title: "Value",
-                  //     type: "text"
-                  //   }
-                  // }}
                   schema={configVarSchema}
                   data={configVars}
                   onChangeData={newData => changeConfigVars(newData)}
