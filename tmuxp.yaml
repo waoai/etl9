@@ -28,6 +28,10 @@ windows:
     window_name: typecheck-api
     panes:
       - cd packages/typecheck-api && sleep 5 && yarn install && yarn start
+  - stage-api:
+    window_name: stage-api
+    panes:
+      - cd packages/stage-api && sleep 5 && yarn install && yarn start
   - builtin-stages:
     window_name: builtin-stages
     panes:

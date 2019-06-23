@@ -49,7 +49,7 @@ export const LaunchInstancePage = () => {
         if (!node.inputs) continue
         for (const inputKey in node.inputs) {
           const input = node.inputs[inputKey]
-          if (input.param) {
+          if (input.param && !input.param.startsWith("$")) {
             configVars.push({
               param: input.param,
               type: "string",
@@ -79,9 +79,17 @@ export const LaunchInstancePage = () => {
                   name: `Standalone ${stage.def.name}`,
                   description: stage.def.description,
                   def: {
-                    stage: {
-                      name: stage.def.name,
-                      inputs: {}
+                    nodes: {
+                      stage: {
+                        name: stage.def.name,
+                        inputs: Object.keys(stage.def.inputs).reduce(
+                          (acc, ik) => {
+                            acc[ik] = { param: ik }
+                            return acc
+                          },
+                          {}
+                        )
+                      }
                     }
                   }
                 },
@@ -100,38 +108,39 @@ export const LaunchInstancePage = () => {
             <div style={{ flexGrow: 1 }} />
           </div>
           <div>
-            {configVars && configVars.length > 0 && (
-              <WaterTable
-                canAddMore={false}
-                canDelete={false}
-                tableName="Instance Configuration"
-                schema={{
-                  param: {
-                    title: "Param",
-                    type: "text",
-                    editable: false
-                  },
-                  type: {
-                    title: "Type",
-                    type: "text",
-                    editable: false
-                  },
-                  value: {
-                    title: "Value",
-                    type: "text"
-                  }
-                }}
-                data={configVars}
-                onChangeData={newData => changeConfigVars(newData)}
-              />
-            )}
+            {configVars &&
+              configVars.length > 0 && (
+                <WaterTable
+                  canAddMore={false}
+                  canDelete={false}
+                  tableName="Instance Configuration"
+                  schema={{
+                    param: {
+                      title: "Param",
+                      type: "text",
+                      editable: false
+                    },
+                    type: {
+                      title: "Type",
+                      type: "text",
+                      editable: false
+                    },
+                    value: {
+                      title: "Value",
+                      type: "text"
+                    }
+                  }}
+                  data={configVars}
+                  onChangeData={newData => changeConfigVars(newData)}
+                />
+              )}
           </div>
           <div className={c.actions}>
             <Button
               onClick={async () => {
-                const config = configVars.reduce((acc, { key, value }) => {
+                const config = configVars.reduce((acc, { param, value }) => {
                   // TODO type checking
-                  acc[key] = value
+                  acc[param] = value
                   return acc
                 }, {})
 

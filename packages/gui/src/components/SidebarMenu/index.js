@@ -48,23 +48,24 @@ export const SidebarMenu = ({ currentPageTitle }: any) => {
   return (
     <div className={c.root}>
       <List>
-        {items.map(item =>
-          item === "sep" ? (
-            <Divider />
-          ) : (
-            <ListItem
-              button
-              onClick={() => navigate(item.href)}
-              key={item.label}
-              disabled={currentPageTitle === item.label}
-              className={classnames(
-                c.item,
-                currentPageTitle === item.label && c.selectedItem
-              )}
-            >
-              <ListItemText>{item.label}</ListItemText>
-            </ListItem>
-          )
+        {items.map(
+          (item, i) =>
+            item === "sep" ? (
+              <Divider key={i} />
+            ) : (
+              <ListItem
+                button
+                onClick={() => navigate(item.href)}
+                key={item.label}
+                disabled={currentPageTitle === item.label}
+                className={classnames(
+                  c.item,
+                  currentPageTitle === item.label && c.selectedItem
+                )}
+              >
+                <ListItemText>{item.label}</ListItemText>
+              </ListItem>
+            )
         )}
       </List>
     </div>
