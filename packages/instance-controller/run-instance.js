@@ -8,8 +8,14 @@ async function runInstance(
   { instance_state, params, pipeline_def, id }
 ) {
   iter++
+
+  // Pull environment variables
+  const { envVarMap } = await db("env_var")
+    .first()
+    .select(db.raw(`jsonb_object_agg(name, value) as "envVarMap"`))
+
   // Initialize state if not initialized
-  if (!instance_state) {
+  if (!instance_state || !instance_state.stageInstances) {
     instance_state = {}
     const stageInstances = {}
     for (const [stageId, stageInfo] of Object.entries(pipeline_def.nodes)) {
@@ -53,7 +59,14 @@ async function runInstance(
           break
         }
       } else if (input.param) {
-        inputsWithValues[inputKey] = { value: params[input.param] }
+        const value = params[input.param]
+        if (typeof value === "string" && value.startsWith("$")) {
+          inputsWithValues[inputKey] = {
+            value: envVarMap[value.slice(1)]
+          }
+        } else {
+          inputsWithValues[inputKey] = { value }
+        }
       } else if (input.value) {
         inputsWithValues[inputKey] = { value: input.value }
       }

@@ -56,13 +56,32 @@ const useStyles = makeStyles({
   }
 })
 
+const castTextToJSON = text => {
+  if (text.trim().startsWith("{")) {
+    return JSON.parse(text)
+  } else if (!isNaN(text)) {
+    return parseFloat(text)
+  } else {
+    return text
+  }
+}
+
 export const EnvironmentPage = () => {
   const c = useStyles()
   const { getEnvVars, saveEnvVars } = useAPI()
   const [envVars, changeEnvVars] = useState()
   useEffect(() => {
     getEnvVars().then(envVars => {
-      changeEnvVars(envVars.map(a => ({ ...a, hideValue: a.encrypted })))
+      changeEnvVars(
+        envVars.map(a => ({
+          ...a,
+          value:
+            typeof a.value === "object"
+              ? JSON.stringify(a.value)
+              : a.value || "",
+          hideValue: a.encrypted
+        }))
+      )
     })
   }, [])
   return (
@@ -76,9 +95,8 @@ export const EnvironmentPage = () => {
             <div className={classnames(c.rowValue, "header")}>Value</div>
             <div className={classnames(c.rowCheck, "header")}>Encrypted</div>
           </div>
-          {envVars
-            .concat([{ name: "", value: "" }])
-            .map(({ name, value, encrypted, hideValue, removed }, i) =>
+          {envVars.concat([{ name: "", value: "" }]).map(
+            ({ name, value, encrypted, hideValue, removed }, i) =>
               removed ? null : (
                 <div key={i} className={c.row}>
                   <div className={c.rowName}>
@@ -131,22 +149,27 @@ export const EnvironmentPage = () => {
                   </div>
                 </div>
               )
-            )}
+          )}
           <div className={c.actions}>
             <Button
               onClick={async () => {
                 await saveEnvVars(
-                  envVars
-                    .filter(ev => !ev.removed)
-                    .map(ev => ({
-                      name: ev.name,
-                      value: ev.value,
-                      encrypted: ev.encrypted
-                    }))
+                  envVars.filter(ev => !ev.removed).map(ev => ({
+                    name: ev.name,
+                    value: castTextToJSON(ev.value),
+                    encrypted: ev.encrypted
+                  }))
                 )
                 await getEnvVars().then(envVars => {
                   changeEnvVars(
-                    envVars.map(a => ({ ...a, hideValue: a.encrypted }))
+                    envVars.map(a => ({
+                      ...a,
+                      value:
+                        typeof a.value === "object"
+                          ? JSON.stringify(a.value)
+                          : a.value || "",
+                      hideValue: a.encrypted
+                    }))
                   )
                 })
               }}

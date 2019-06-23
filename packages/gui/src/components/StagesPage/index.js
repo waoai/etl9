@@ -71,7 +71,13 @@ export const StagesPage = () => {
                 onChange={changeSelectedStage}
               />
               <div className={c.actions}>
-                <Button onClick={async () => {}}>Save</Button>
+                <Button
+                  onClick={async () => {
+                    await api.modifyStage(selectedStage)
+                  }}
+                >
+                  Save
+                </Button>
               </div>
             </>
           ) : mode === "component" ? (

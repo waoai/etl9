@@ -1,6 +1,7 @@
 // @flow
 
 import React, {
+  Fragment,
   createContext,
   useContext,
   useState,
@@ -9,6 +10,8 @@ import React, {
 } from "react"
 import * as examples from "./examples"
 import axios from "axios"
+import { green, yellow, red } from "@material-ui/core/colors"
+import CircularProgress from "@material-ui/core/CircularProgress"
 
 const delayAndReturn = result => {
   return new Promise(resolve => {
@@ -112,7 +115,73 @@ const apiFuncs = {
 export const APIContext = createContext(mockFuncs)
 
 export const APIProvider = ({ children }: any) => {
-  return <APIContext.Provider value={apiFuncs}>{children}</APIContext.Provider>
+  const [{ methodName, status }, changeToastInfo] = useState({})
+  const [toastOpen, changeToastOpen] = useState(false)
+  const wrappedAPIFuncs = {}
+
+  for (const methodName in apiFuncs) {
+    wrappedAPIFuncs[methodName] = async (...args) => {
+      changeToastInfo({ methodName, status: "in-progress" })
+      changeToastOpen(true)
+      try {
+        const res = await apiFuncs[methodName](...args)
+        changeToastInfo({ methodName, status: "complete" })
+        setTimeout(() => {
+          changeToastOpen(false)
+        }, 500)
+        return res
+      } catch (e) {
+        changeToastInfo({ methodName, status: "error" })
+        setTimeout(() => {
+          changeToastOpen(false)
+        }, 500)
+        throw e
+      }
+    }
+  }
+
+  return (
+    <APIContext.Provider value={wrappedAPIFuncs}>
+      <Fragment>
+        {children}
+        {toastOpen && (
+          <div
+            style={{
+              position: "fixed",
+              pointerEvents: "none",
+              width: 220,
+              fontSize: 12,
+              fontFamily: "monospace",
+              fontWeight: "bold",
+              backgroundColor:
+                status === "complete"
+                  ? green[500]
+                  : status === "in-progress"
+                    ? yellow[600]
+                    : red[500],
+              color: "#fff",
+              left: 0,
+              right: 0,
+              bottom: 0,
+              padding: 4,
+              display: "flex",
+              alignItems: "center",
+              marginLeft: "auto",
+              marginRight: "auto",
+              justifyContent: "center"
+            }}
+          >
+            {methodName}
+            {status === "in-progress" && (
+              <CircularProgress
+                style={{ marginLeft: 10, width: 16, height: 16, color: "#fff" }}
+              />
+            )}
+          </div>
+        )}
+      </Fragment>
+    </APIContext.Provider>
+  )
 }
 
 export const useAPI = () => {

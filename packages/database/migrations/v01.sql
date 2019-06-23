@@ -48,7 +48,7 @@ CREATE TABLE instance (
 
 CREATE TABLE env_var (
   name text NOT NULL PRIMARY KEY,
-  value text NOT NULL,
+  value jsonb NOT NULL,
   encrypted boolean NOT NULL DEFAULT FALSE
 );
 
