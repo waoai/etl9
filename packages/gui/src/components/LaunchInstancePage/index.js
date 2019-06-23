@@ -6,7 +6,7 @@ import ListSearch from "../ListSearch"
 import { makeStyles } from "@material-ui/styles"
 import { useAPI } from "../APIProvider"
 import Button from "@material-ui/core/Button"
-import WaterTable from "react-watertable"
+import Waterobject from "react-watertable/components/Waterobject"
 import useNavigation from "../../utils/use-navigation.js"
 
 const useStyles = makeStyles({
@@ -21,10 +21,12 @@ const useStyles = makeStyles({
 export const LaunchInstancePage = () => {
   const c = useStyles()
   const { navigate, getURLQuery } = useNavigation()
-  const { getPipelines, getStages, createInstance } = useAPI()
+  const { getPipelines, getStages, getTypes, createInstance } = useAPI()
   const [pipelines, changePipelines] = useState([])
   const [stages, changeStages] = useState([])
-  const [configVars, changeConfigVars] = useState([])
+  const [typeMap, changeTypeMap] = useState([])
+  const [configVars, changeConfigVars] = useState(null)
+  const [configVarSchema, changeConfigVarSchema] = useState(null)
   const [selectedPipeline, changeSelectedPipeline] = useState()
   useEffect(() => {
     getPipelines().then(pipelines => {
@@ -39,26 +41,61 @@ export const LaunchInstancePage = () => {
     getStages().then(stages => {
       changeStages(stages)
     })
+    getTypes().then(types => {
+      const typeMap = {}
+      for (const type of types) {
+        typeMap[type.def.name] = type.def.superstruct
+      }
+      typeMap["string"] = "string"
+      typeMap["number"] = "number"
+      typeMap["any"] = "any"
+      typeMap["object"] = "object"
+      changeTypeMap(typeMap)
+    })
   }, [])
   useEffect(
     () => {
       if (!selectedPipeline) return
-      const configVars = []
+      const configVarSchema = {}
       for (const nodeKey in selectedPipeline.def.nodes) {
         const node = selectedPipeline.def.nodes[nodeKey]
         if (!node.inputs) continue
         for (const inputKey in node.inputs) {
           const input = node.inputs[inputKey]
           if (input.param && !input.param.startsWith("$")) {
-            configVars.push({
-              param: input.param,
-              type: "string",
-              value: ""
-            })
+            // Determine what type this parameter is supposed to be by looking
+            // at it's stage stage
+            const stage = stages.find(st => st.name === node.name)
+            const typeNameOrExpr = stage.def.inputs[inputKey].type
+
+            const typeExpr =
+              (typeMap[typeNameOrExpr] || "").trim() || typeNameOrExpr
+
+            // TODO better expression evaluation
+            if (typeExpr) {
+              configVarSchema[input.param] = {
+                title: input.param,
+                ...(typeExpr.startsWith("[")
+                  ? { type: "json-array" }
+                  : typeExpr.startsWith("{")
+                    ? { type: "json" }
+                    : typeExpr === "number"
+                      ? { type: "text" }
+                      : typeExpr === "string"
+                        ? { type: "text" }
+                        : { type: "json" })
+              }
+            } else {
+              configVarSchema[input.param] = {
+                title: input.param,
+                type: "json"
+              }
+            }
           }
         }
       }
-      changeConfigVars(configVars)
+      changeConfigVars({})
+      changeConfigVarSchema(configVarSchema)
     },
     [selectedPipeline]
   )
@@ -109,27 +146,26 @@ export const LaunchInstancePage = () => {
           </div>
           <div>
             {configVars &&
-              configVars.length > 0 && (
-                <WaterTable
-                  canAddMore={false}
-                  canDelete={false}
+              configVarSchema && (
+                <Waterobject
                   tableName="Instance Configuration"
-                  schema={{
-                    param: {
-                      title: "Param",
-                      type: "text",
-                      editable: false
-                    },
-                    type: {
-                      title: "Type",
-                      type: "text",
-                      editable: false
-                    },
-                    value: {
-                      title: "Value",
-                      type: "text"
-                    }
-                  }}
+                  // schema={{
+                  //   param: {
+                  //     title: "Param",
+                  //     type: "text",
+                  //     editable: false
+                  //   },
+                  //   type: {
+                  //     title: "Type",
+                  //     type: "text",
+                  //     editable: false
+                  //   },
+                  //   value: {
+                  //     title: "Value",
+                  //     type: "text"
+                  //   }
+                  // }}
+                  schema={configVarSchema}
                   data={configVars}
                   onChangeData={newData => changeConfigVars(newData)}
                 />
