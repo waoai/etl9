@@ -73,17 +73,20 @@ export const LaunchInstancePage = () => {
 
             // TODO better expression evaluation
             if (typeExpr) {
+              const defaultType = typeExpr.startsWith("[")
+                ? "json-array"
+                : typeExpr.startsWith("{")
+                ? "json"
+                : typeExpr === "number"
+                ? "text"
+                : typeExpr === "string"
+                ? "text"
+                : "json"
+
               configVarSchema[input.param] = {
                 title: input.param,
-                ...(typeExpr.startsWith("[")
-                  ? { type: "json-array" }
-                  : typeExpr.startsWith("{")
-                    ? { type: "json" }
-                    : typeExpr === "number"
-                      ? { type: "text" }
-                      : typeExpr === "string"
-                        ? { type: "text" }
-                        : { type: "json" })
+                type: "dynamic",
+                defaultType
               }
             } else {
               configVarSchema[input.param] = {
@@ -145,15 +148,14 @@ export const LaunchInstancePage = () => {
             <div style={{ flexGrow: 1 }} />
           </div>
           <div>
-            {configVars &&
-              configVarSchema && (
-                <Waterobject
-                  tableName="Instance Configuration"
-                  schema={configVarSchema}
-                  data={configVars}
-                  onChangeData={newData => changeConfigVars(newData)}
-                />
-              )}
+            {configVars && configVarSchema && (
+              <Waterobject
+                tableName="Instance Configuration"
+                schema={configVarSchema}
+                data={configVars}
+                onChangeData={newData => changeConfigVars(newData)}
+              />
+            )}
           </div>
           <div className={c.actions}>
             <Button

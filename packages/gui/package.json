@@ -57,7 +57,7 @@
     "react-mde": "^7.3.2",
     "react-router-component": "^0.39.1",
     "react-select": "^2.4.3",
-    "react-watertable": "^0.1.14",
+    "react-watertable": "^0.1.20",
     "rete": "1.2.2",
     "rete-area-plugin": "^0.2.1",
     "rete-auto-arrange-plugin": "^0.3.0",

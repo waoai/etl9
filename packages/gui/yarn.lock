@@ -4804,7 +4804,7 @@ file-loader@3.0.1, file-loader@^3.0.1:
     loader-utils "^1.0.2"
     schema-utils "^1.0.0"
 
-file-saver@^2.0.2:
+file-saver@^2.0.1, file-saver@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/file-saver/-/file-saver-2.0.2.tgz#06d6e728a9ea2df2cce2f8d9e84dfcdc338ec17a"
 
@@ -8887,7 +8887,7 @@ react-draggable@^3.1.1:
     classnames "^2.2.5"
     prop-types "^15.6.0"
 
-react-dropzone@^10.1.5:
+react-dropzone@^10.1.0, react-dropzone@^10.1.5:
   version "10.1.5"
   resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-10.1.5.tgz#5f2817ab924b270010c7034fe01f49b6240b9c91"
   dependencies:
@@ -8956,6 +8956,11 @@ react-is@^16.6.3, react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4:
 react-lifecycles-compat@^3.0.0, react-lifecycles-compat@^3.0.2, react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
+
+react-mde@^7.0.4:
+  version "7.4.1"
+  resolved "https://registry.yarnpkg.com/react-mde/-/react-mde-7.4.1.tgz#20ed0d6ca28b9ba619fb89355a983865855240c1"
+  integrity sha512-Xr7UWVDRzXLEVkAuFQlKbwH7fvmiYeNbHVjOyMg7PGLc5q0I/puZazOdKdPj/KObfPR5XbQ1PdiNwLSE/Lv8+Q==
 
 react-mde@^7.3.2:
   version "7.3.2"
@@ -9069,6 +9074,19 @@ react-scripts@3.0.1:
   optionalDependencies:
     fsevents "2.0.6"
 
+react-select@^2.4.2:
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/react-select/-/react-select-2.4.4.tgz#ba72468ef1060c7d46fbb862b0748f96491f1f73"
+  integrity sha512-C4QPLgy9h42J/KkdrpVxNmkY6p4lb49fsrbDk/hRcZpX7JvZPNb6mGj+c5SzyEtBv1DmQ9oPH4NmhAFvCrg8Jw==
+  dependencies:
+    classnames "^2.2.5"
+    emotion "^9.1.2"
+    memoize-one "^5.0.0"
+    prop-types "^15.6.0"
+    raf "^3.4.0"
+    react-input-autosize "^2.2.1"
+    react-transition-group "^2.2.1"
+
 react-select@^2.4.3:
   version "2.4.3"
   resolved "https://registry.yarnpkg.com/react-select/-/react-select-2.4.3.tgz#62efdf76d7e33e9bde22d907a0cc8abd0aeab656"
@@ -9107,9 +9125,21 @@ react-transition-group@^2.2.1:
     prop-types "^15.6.2"
     react-lifecycles-compat "^3.0.4"
 
-react-watertable@^0.1.14:
-  version "0.1.14"
-  resolved "https://registry.yarnpkg.com/react-watertable/-/react-watertable-0.1.14.tgz#1df50b34ecad6d663a3dc48034004ec2974b4463"
+react-watertable@^0.1.20:
+  version "0.1.20"
+  resolved "https://registry.yarnpkg.com/react-watertable/-/react-watertable-0.1.20.tgz#dcdd103491b92b576b5330342367537337a69a5f"
+  integrity sha512-ig5D/lYlQfcFhEdZHQXNjs8WKXDJFOwEYu/uylIWIJyTe2J7dQ3e/Fnt4K0xwK/igSVT+LyWkIVVWyAykJDU3g==
+  dependencies:
+    "@rehooks/window-size" "^1.0.2"
+    brace "^0.11.1"
+    color-convert "^2.0.0"
+    file-saver "^2.0.1"
+    jsoneditor-react "^1.0.0"
+    react-contextmenu "^2.11.0"
+    react-dropzone "^10.1.0"
+    react-mde "^7.0.4"
+    react-select "^2.4.2"
+    showdown "^1.9.0"
 
 react@^16.7.0-alpha.0, react@^16.8.1, react@^16.8.6:
   version "16.8.6"
