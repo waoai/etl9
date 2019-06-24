@@ -9,7 +9,7 @@ import { makeStyles } from "@material-ui/styles"
 import PipelineDiagram from "../PipelineDiagram"
 import Button from "@material-ui/core/Button"
 import TimeSince from "../TimeSince"
-import { grey, green, red, blue } from "@material-ui/core/colors"
+import { grey, green, red, blue, yellow } from "@material-ui/core/colors"
 import WaterTable from "react-watertable"
 import StageInstance from "./StageInstance.js"
 import AreYouSureButton from "../AreYouSureButton"
@@ -85,10 +85,13 @@ export const InstancePage = () => {
                 status: si.complete
                   ? "complete"
                   : si.error
-                  ? "error"
-                  : si.progress > 0
-                  ? "running"
-                  : "not-started"
+                    ? si.error.summary &&
+                      si.error.summary.includes("Waiting on")
+                      ? "waiting"
+                      : "error"
+                    : si.progress > 0
+                      ? "running"
+                      : "not-started"
               }
             })
         )
@@ -151,12 +154,13 @@ export const InstancePage = () => {
             </div>
           </div>
           <div style={{ height: 400 }}>
-            {stageDefinitions && instance && (
-              <PipelineDiagram
-                stages={(stageDefinitions || []).map(s => s.def)}
-                pipeline={instance.pipeline_def}
-              />
-            )}
+            {stageDefinitions &&
+              instance && (
+                <PipelineDiagram
+                  stages={(stageDefinitions || []).map(s => s.def)}
+                  pipeline={instance.pipeline_def}
+                />
+              )}
           </div>
           <div className={c.overviewTable}>
             <WaterTable
@@ -179,6 +183,7 @@ export const InstancePage = () => {
                   options: [
                     { value: "complete", label: "Complete", color: green[500] },
                     { value: "error", label: "Error", color: red[500] },
+                    { value: "waiting", label: "Waiting", color: yellow[500] },
                     { value: "running", label: "Running", color: green[500] },
                     {
                       value: "not-started",

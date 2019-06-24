@@ -22,9 +22,9 @@ export const LaunchInstancePage = () => {
   const c = useStyles()
   const { navigate, getURLQuery } = useNavigation()
   const { getPipelines, getStages, getTypes, createInstance } = useAPI()
-  const [pipelines, changePipelines] = useState([])
-  const [stages, changeStages] = useState([])
-  const [typeMap, changeTypeMap] = useState([])
+  const [pipelines, changePipelines] = useState(null)
+  const [stages, changeStages] = useState(null)
+  const [typeMap, changeTypeMap] = useState(null)
   const [configVars, changeConfigVars] = useState(null)
   const [configVarSchema, changeConfigVarSchema] = useState(null)
   const [selectedPipeline, changeSelectedPipeline] = useState()
@@ -53,9 +53,11 @@ export const LaunchInstancePage = () => {
       changeTypeMap(typeMap)
     })
   }, [])
+  const isLoaded = stages && pipelines && typeMap
   useEffect(
     () => {
       if (!selectedPipeline) return
+      if (!isLoaded) return
       const configVarSchema = {}
       for (const nodeKey in selectedPipeline.def.nodes) {
         const node = selectedPipeline.def.nodes[nodeKey]
@@ -66,6 +68,8 @@ export const LaunchInstancePage = () => {
             // Determine what type this parameter is supposed to be by looking
             // at it's stage stage
             const stage = stages.find(st => st.name === node.name)
+            console.log({ stages })
+            if (!stage) throw new Error(`Could not find stage "${node.name}"`)
             const typeNameOrExpr = stage.def.inputs[inputKey].type
 
             const typeExpr =
@@ -76,12 +80,12 @@ export const LaunchInstancePage = () => {
               const defaultType = typeExpr.startsWith("[")
                 ? "json-array"
                 : typeExpr.startsWith("{")
-                ? "json"
-                : typeExpr === "number"
-                ? "text"
-                : typeExpr === "string"
-                ? "text"
-                : "json"
+                  ? "json"
+                  : typeExpr === "number"
+                    ? "text"
+                    : typeExpr === "string"
+                      ? "text"
+                      : "json"
 
               configVarSchema[input.param] = {
                 title: input.param,
@@ -100,11 +104,13 @@ export const LaunchInstancePage = () => {
       changeConfigVars({})
       changeConfigVarSchema(configVarSchema)
     },
-    [selectedPipeline]
+    [selectedPipeline, isLoaded]
   )
   return (
     <Page title="Launch Instance">
-      {!selectedPipeline ? (
+      {!isLoaded ? (
+        "loading"
+      ) : !selectedPipeline ? (
         <ListSearch
           placeholder="Search for Pipeline"
           items={pipelines
@@ -148,27 +154,22 @@ export const LaunchInstancePage = () => {
             <div style={{ flexGrow: 1 }} />
           </div>
           <div>
-            {configVars && configVarSchema && (
-              <Waterobject
-                tableName="Instance Configuration"
-                schema={configVarSchema}
-                data={configVars}
-                onChangeData={newData => changeConfigVars(newData)}
-              />
-            )}
+            {configVars &&
+              configVarSchema && (
+                <Waterobject
+                  tableName="Instance Configuration"
+                  schema={configVarSchema}
+                  data={configVars}
+                  onChangeData={newData => changeConfigVars(newData)}
+                />
+              )}
           </div>
           <div className={c.actions}>
             <Button
               onClick={async () => {
-                const config = configVars.reduce((acc, { param, value }) => {
-                  // TODO type checking
-                  acc[param] = value
-                  return acc
-                }, {})
-
                 const instance = await createInstance({
                   def: selectedPipeline.def,
-                  params: config
+                  params: configVars
                 })
 
                 navigate(`/instance/${instance.id}`)

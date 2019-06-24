@@ -17,7 +17,8 @@
     "service:reverse-proxy": "cd packages/reverse-proxy && yarn start:prod"
   },
   "devDependencies": {
-    "lerna": "^3.13.4"
+    "lerna": "^3.13.4",
+    "react-watertable": "^0.1.20"
   },
   "dependencies": {
     "concurrently": "^4.1.0"
