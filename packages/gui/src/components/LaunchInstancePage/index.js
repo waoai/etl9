@@ -8,6 +8,7 @@ import { useAPI } from "../APIProvider"
 import Button from "@material-ui/core/Button"
 import Waterobject from "react-watertable/components/Waterobject"
 import useNavigation from "../../utils/use-navigation.js"
+import TypeErrorBox from "../TypeErrorBox"
 
 const useStyles = makeStyles({
   root: { padding: 20 },
@@ -54,58 +55,62 @@ export const LaunchInstancePage = () => {
     })
   }, [])
   const isLoaded = stages && pipelines && typeMap
-  useEffect(
-    () => {
-      if (!selectedPipeline) return
-      if (!isLoaded) return
-      const configVarSchema = {}
-      for (const nodeKey in selectedPipeline.def.nodes) {
-        const node = selectedPipeline.def.nodes[nodeKey]
-        if (!node.inputs) continue
-        for (const inputKey in node.inputs) {
-          const input = node.inputs[inputKey]
-          if (input.param && !input.param.startsWith("$")) {
-            // Determine what type this parameter is supposed to be by looking
-            // at it's stage stage
-            const stage = stages.find(st => st.name === node.name)
-            console.log({ stages })
-            if (!stage) throw new Error(`Could not find stage "${node.name}"`)
-            const typeNameOrExpr = stage.def.inputs[inputKey].type
+  useEffect(() => {
+    if (!selectedPipeline) return
+    if (!isLoaded) return
+    const configVarSchema = {}
+    for (const nodeKey in selectedPipeline.def.nodes) {
+      const node = selectedPipeline.def.nodes[nodeKey]
+      if (!node.inputs) continue
+      for (const inputKey in node.inputs) {
+        const input = node.inputs[inputKey]
+        if (input.param && !input.param.startsWith("$")) {
+          // Determine what type this parameter is supposed to be by looking
+          // at it's stage stage
+          const stage = stages.find(st => st.name === node.name)
 
-            const typeExpr =
-              (typeMap[typeNameOrExpr] || "").trim() || typeNameOrExpr
+          if (!stage) throw new Error(`Could not find stage "${node.name}"`)
+          const stageInputDef = stage.def.inputs[inputKey]
 
-            // TODO better expression evaluation
-            if (typeExpr) {
-              const defaultType = typeExpr.startsWith("[")
-                ? "json-array"
-                : typeExpr.startsWith("{")
-                  ? "json"
-                  : typeExpr === "number"
-                    ? "text"
-                    : typeExpr === "string"
-                      ? "text"
-                      : "json"
+          const typeNameOrExpr = stageInputDef.type
+          const isOptional = Boolean(stageInputDef.optional)
 
-              configVarSchema[input.param] = {
-                title: input.param,
-                type: "dynamic",
-                defaultType
-              }
-            } else {
-              configVarSchema[input.param] = {
-                title: input.param,
-                type: "json"
-              }
+          const typeExpr =
+            (typeMap[typeNameOrExpr] || "").trim() || typeNameOrExpr
+
+          // TODO better expression evaluation
+          if (typeExpr) {
+            const defaultType = typeExpr.startsWith("[")
+              ? "json-array"
+              : typeExpr.startsWith("{")
+              ? "json"
+              : typeExpr === "number"
+              ? "text"
+              : typeExpr === "string"
+              ? "text"
+              : "json"
+
+            configVarSchema[input.param] = {
+              title: input.param,
+              type: "dynamic",
+              defaultType,
+              optional: isOptional,
+              typeExpr: typeExpr
+            }
+          } else {
+            configVarSchema[input.param] = {
+              title: input.param,
+              optional: isOptional,
+              type: "json",
+              typeExpr: "any"
             }
           }
         }
       }
-      changeConfigVars({})
-      changeConfigVarSchema(configVarSchema)
-    },
-    [selectedPipeline, isLoaded]
-  )
+    }
+    changeConfigVars({})
+    changeConfigVarSchema(configVarSchema)
+  }, [selectedPipeline, isLoaded])
   return (
     <Page title="Launch Instance">
       {!isLoaded ? (
@@ -154,15 +159,28 @@ export const LaunchInstancePage = () => {
             <div style={{ flexGrow: 1 }} />
           </div>
           <div>
-            {configVars &&
-              configVarSchema && (
-                <Waterobject
-                  tableName="Instance Configuration"
-                  schema={configVarSchema}
-                  data={configVars}
-                  onChangeData={newData => changeConfigVars(newData)}
+            {configVars && configVarSchema && (
+              <Waterobject
+                tableName="Instance Configuration"
+                schema={configVarSchema}
+                data={configVars}
+                onChange={newData => {
+                  changeConfigVars(newData)
+                }}
+              />
+            )}
+          </div>
+          <div className={c.errorContainer}>
+            {configVarSchema &&
+              Object.entries(configVarSchema).map(([k, v]) => (
+                <TypeErrorBox
+                  key={k}
+                  typeName={k}
+                  typeExpr={configVarSchema[k].typeExpr}
+                  optional={configVarSchema[k].optional}
+                  value={configVars[k]}
                 />
-              )}
+              ))}
           </div>
           <div className={c.actions}>
             <Button
