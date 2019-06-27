@@ -147,7 +147,7 @@ export const InstancePage = () => {
                   changeRefreshKey(Date.now())
                 }}
               >
-                {instanceState.paused ? "Unpause" : "Paused"}
+                {instanceState.paused ? "Unpause" : "Pause"}
               </Button>
               <Button onClick={() => changeRefreshKey(Date.now())}>
                 Refresh

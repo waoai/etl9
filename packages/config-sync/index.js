@@ -150,11 +150,9 @@ async function main() {
     const dirContents = cloneDeep(contents)
 
     log("reading definitions from database...")
-    const newDefs = await db("definition").where(
-      "updated_at",
-      ">",
-      moment.utc(lastDefScan || 0)
-    )
+    const newDefs = await db("definition")
+      .where("updated_at", ">", moment.utc(lastDefScan || 0))
+      .where(db.raw("def->>'builtin'"), false)
     log(`${newDefs.length} updated definitions found`)
 
     lastDefScan = Date.now()
@@ -171,8 +169,8 @@ async function main() {
           contents[prevPath].some(d => d.name === prevDef.name)
         ) {
           // Replace the previous definition with the new definition
-          contents[prevPath] = contents[prevPath].map(
-            d => (d.name === prevDef.name ? newDef : d)
+          contents[prevPath] = contents[prevPath].map(d =>
+            d.name === prevDef.name ? newDef : d
           )
           changedFiles.add(prevPath)
           continue
