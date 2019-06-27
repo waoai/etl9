@@ -40,7 +40,8 @@ const mockFuncs = {
   deleteStage: def => Promise.resolve(null),
   deleteType: def => Promise.resolve(null),
   saveEnvVars: def => Promise.resolve(null),
-  deleteInstance: def => Promise.resolve(null)
+  deleteInstance: def => Promise.resolve(null),
+  modifyInstance: ({ instance_state, instance_id }) => Promise.resolve(null)
 }
 
 const apiFuncs = {
@@ -109,7 +110,9 @@ const apiFuncs = {
   resetInstance: instance_id =>
     axios.patch(`/api/db/instance?id=eq.${instance_id}`, {
       instance_state: {}
-    })
+    }),
+  modifyInstance: ({ instance_state, instance_id }) =>
+    axios.patch(`/api/db/instance?id=eq.${instance_id}`, { instance_state })
 }
 
 export const APIContext = createContext(mockFuncs)
@@ -157,8 +160,8 @@ export const APIProvider = ({ children }: any) => {
                 status === "complete"
                   ? green[500]
                   : status === "in-progress"
-                    ? yellow[600]
-                    : red[500],
+                  ? yellow[600]
+                  : red[500],
               color: "#fff",
               left: 0,
               right: 0,

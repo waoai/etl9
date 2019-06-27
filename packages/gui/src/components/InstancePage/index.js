@@ -11,6 +11,7 @@ import Button from "@material-ui/core/Button"
 import TimeSince from "../TimeSince"
 import { grey, green, red, blue, yellow } from "@material-ui/core/colors"
 import WaterTable from "react-watertable"
+import WaterObject from "react-watertable/components/Waterobject"
 import StageInstance from "./StageInstance.js"
 import AreYouSureButton from "../AreYouSureButton"
 
@@ -30,13 +31,22 @@ const useStyles = makeStyles({
     padding: 10
   },
   stageInstances: {},
-  notFound: { fontSize: 32, padding: 50, textAlign: "center" }
+  notFound: { fontSize: 32, padding: 50, textAlign: "center" },
+  parameterTable: {
+    padding: 10
+  }
 })
 
 export const InstancePage = () => {
   const c = useStyles()
   const { getURLParams, navigate } = useNavigation()
-  const { getInstances, deleteInstance, resetInstance, getStages } = useAPI()
+  const {
+    getInstances,
+    deleteInstance,
+    modifyInstance,
+    resetInstance,
+    getStages
+  } = useAPI()
 
   const instanceId = useMemo(() => {
     const { path } = getURLParams()
@@ -51,55 +61,51 @@ export const InstancePage = () => {
 
   const instanceState = instance ? instance.instance_state || {} : {}
 
-  useEffect(
-    () => {
-      if (!instanceId) return
-      getStages().then(stages => {
-        changeStageDefinitions(stages)
-      })
-      getInstances({ id: instanceId }).then(instances => {
-        if (instances.length === 0) return changeNotFound(true)
-        const instance = instances[0]
-        const { stageInstances = [] } = instance.instance_state || {}
-        changeStageInstances(
-          Object.keys(stageInstances)
-            .map(stageInstanceId => ({
-              stageInstanceId,
-              ...stageInstances[stageInstanceId]
-            }))
-            .map(si => {
-              const inputDef =
-                instance.pipeline_def.nodes[si.stageInstanceId].inputs
-              const input = {}
-              for (const k in inputDef) {
-                if (inputDef[k].value) {
-                  input[k] = inputDef[k].value
-                } else if (inputDef[k].node) {
-                  input[k] = ((stageInstances[inputDef[k].node] || {}).output ||
-                    {})[inputDef[k].value]
-                }
+  useEffect(() => {
+    if (!instanceId) return
+    getStages().then(stages => {
+      changeStageDefinitions(stages)
+    })
+    getInstances({ id: instanceId }).then(instances => {
+      if (instances.length === 0) return changeNotFound(true)
+      const instance = instances[0]
+      const { stageInstances = [] } = instance.instance_state || {}
+      changeStageInstances(
+        Object.keys(stageInstances)
+          .map(stageInstanceId => ({
+            stageInstanceId,
+            ...stageInstances[stageInstanceId]
+          }))
+          .map(si => {
+            const inputDef =
+              instance.pipeline_def.nodes[si.stageInstanceId].inputs
+            const input = {}
+            for (const k in inputDef) {
+              if (inputDef[k].value) {
+                input[k] = inputDef[k].value
+              } else if (inputDef[k].node) {
+                input[k] = ((stageInstances[inputDef[k].node] || {}).output ||
+                  {})[inputDef[k].value]
               }
-              return {
-                ...si,
-                input,
-                status: si.complete
-                  ? "complete"
-                  : si.error
-                    ? si.error.summary &&
-                      si.error.summary.includes("Waiting on")
-                      ? "waiting"
-                      : "error"
-                    : si.progress > 0
-                      ? "running"
-                      : "not-started"
-              }
-            })
-        )
-        changeInstance(instance)
-      })
-    },
-    [instanceId, refreshKey]
-  )
+            }
+            return {
+              ...si,
+              input,
+              status: si.complete
+                ? "complete"
+                : si.error
+                ? si.error.summary && si.error.summary.includes("Waiting on")
+                  ? "waiting"
+                  : "error"
+                : si.callCount > 0
+                ? "running"
+                : "not-started"
+            }
+          })
+      )
+      changeInstance(instance)
+    })
+  }, [instanceId, refreshKey])
 
   if (notFound) {
     return (
@@ -126,12 +132,22 @@ export const InstancePage = () => {
               Runtime: <TimeSince sinceTime={instance.created_at} />
             </div>
             <div className={c.headerActions}>
+              {/* <Button onClick={() => changeParamDialogOpen(true)}>
+                View Params
+              </Button> */}
               <Button
-                onClick={() => {
-                  navigate("/pipelines")
+                onClick={async () => {
+                  await modifyInstance({
+                    instance_id: instanceId,
+                    instance_state: {
+                      ...instanceState,
+                      paused: !instanceState.paused
+                    }
+                  })
+                  changeRefreshKey(Date.now())
                 }}
               >
-                Go to Parent Pipeline
+                {instanceState.paused ? "Unpause" : "Paused"}
               </Button>
               <Button onClick={() => changeRefreshKey(Date.now())}>
                 Refresh
@@ -139,6 +155,7 @@ export const InstancePage = () => {
               <AreYouSureButton
                 onClick={async () => {
                   await resetInstance(instance.id)
+                  changeRefreshKey(Date.now())
                 }}
               >
                 Reset
@@ -153,14 +170,13 @@ export const InstancePage = () => {
               </AreYouSureButton>
             </div>
           </div>
-          <div style={{ height: 400 }}>
-            {stageDefinitions &&
-              instance && (
-                <PipelineDiagram
-                  stages={(stageDefinitions || []).map(s => s.def)}
-                  pipeline={instance.pipeline_def}
-                />
-              )}
+          <div style={{ height: 400, backgroundColor: "#f8f8f8" }}>
+            {stageDefinitions && instance && (
+              <PipelineDiagram
+                stages={(stageDefinitions || []).map(s => s.def)}
+                pipeline={instance.pipeline_def}
+              />
+            )}
           </div>
           <div className={c.overviewTable}>
             <WaterTable
@@ -199,6 +215,13 @@ export const InstancePage = () => {
               data={stageInstances || []}
               canDelete={false}
               canAddMore={false}
+            />
+          </div>
+          <div className={c.parameterTable}>
+            <WaterObject
+              tableName="Params"
+              canAddMore={false}
+              data={instance.params}
             />
           </div>
           <div className={c.stageInstances}>

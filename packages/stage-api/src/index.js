@@ -4,6 +4,7 @@ const { send, json } = require("micro")
 const got = require("got")
 const getDB = require("database").default
 const { struct } = require("superstruct")
+const safeEval = require("safe-eval")
 
 let db
 async function getCachedDB() {
@@ -22,7 +23,13 @@ async function getTypes(db) {
       try {
         typeMap[type.def.name] = struct(type.def.superstruct)
       } catch (e) {
-        console.log(`Failure to parse type "${type.def.name}"`)
+        try {
+          typeMap[type.def.name] = struct(
+            safeEval(type.def.superstruct, { struct })
+          )
+        } catch (e) {
+          console.log(`Failure to parse type "${type.def.name}"`)
+        }
       }
     }
   }
@@ -55,7 +62,7 @@ module.exports = async (req, res) => {
       return send(
         res,
         400,
-        `Input "${inputKey}" didn't match the correct type "${
+        `Stage API: Input "${inputKey}" didn't match the correct type "${
           inputDef.type
         }"\n\n${e.toString()}`
       )
@@ -64,6 +71,8 @@ module.exports = async (req, res) => {
 
   let stageRes
   try {
+    if (!stageDef.def.endpoint) throw new Error("endpoint not specified")
+
     stageRes = await got(stageDef.def.endpoint, {
       method: "POST",
       json: true,
@@ -71,7 +80,21 @@ module.exports = async (req, res) => {
       body: reqBody
     })
   } catch (e) {
-    return send(res, 500, `Couldn't call out to stage: ${e.response.body}`)
+    return send(
+      res,
+      500,
+      `Stage API: Couldn't call out to stage: ${e.toString()}, ${JSON.stringify(
+        e.response && e.response.body
+      )}`
+    )
+  }
+
+  if (!stageRes) {
+    return send(
+      res,
+      500,
+      `Stage API: Couldn't call out to stage, stage function didn't respond.`
+    )
   }
 
   if (stageRes.body.outputs) {
@@ -89,9 +112,11 @@ module.exports = async (req, res) => {
         return send(
           res,
           500,
-          `Output "${outputKey}" didn't match the correct type "${
+          `Stage API: Output "${outputKey}" didn't match the correct type "${
             outputDef.type
-          }"\n\n${e.toString()}`
+          }"\n\n${e.toString()}\n\n${outputKey}: ${JSON.stringify(
+            stageRes.body.outputs[outputKey]
+          )}`
         )
       }
     }

@@ -111,6 +111,7 @@ async function runInstance(
         level: "error"
       })
       stageInstance.error = { summary, ...info }
+      instance_state.paused = true
       continue
     }
 

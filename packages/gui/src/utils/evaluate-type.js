@@ -9,7 +9,8 @@ export default (typeExpr: string, value: any) => {
       struct,
       any: "any",
       string: "string",
-      number: "number"
+      number: "number",
+      boolean: "boolean"
     })
   } catch (e) {
     error = `Error evaluating type:\n${e.toString()}`
