@@ -36,6 +36,20 @@ async function getTypes(db) {
   return typeMap
 }
 
+async function replaceEnvVars(db, str) {
+  if (str.trim().startsWith("$")) {
+    try {
+      return (await db("env_var")
+        .where("name", str.trim().slice(1))
+        .first()).value
+    } catch (e) {
+      throw new Error(`Env var "${str.trim().slice(1)}" not found`)
+    }
+  } else {
+    return str
+  }
+}
+
 module.exports = async (req, res) => {
   const db = await getCachedDB()
   const reqBody = await json(req)
@@ -73,7 +87,7 @@ module.exports = async (req, res) => {
   try {
     if (!stageDef.def.endpoint) throw new Error("endpoint not specified")
 
-    stageRes = await got(stageDef.def.endpoint, {
+    stageRes = await got(await replaceEnvVars(db, stageDef.def.endpoint), {
       method: "POST",
       json: true,
       headers: { "content-type": "application/json" },
