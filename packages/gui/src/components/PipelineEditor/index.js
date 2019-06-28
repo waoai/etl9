@@ -30,23 +30,17 @@ export const PipelineEditor = ({
   } catch (e) {
     error = e.toString()
   }
-  useEffect(
-    () => {
-      if (onError) onError(error)
-    },
-    [error]
-  )
-  useEffect(
-    () => {
-      if (!error) {
-        onChange({
-          ...pipeline,
-          def: yaml.safeLoad(configString)
-        })
-      }
-    },
-    [configString]
-  )
+  useEffect(() => {
+    if (onError) onError(error)
+  }, [error])
+  useEffect(() => {
+    if (!error) {
+      onChange({
+        ...pipeline,
+        def: yaml.safeLoad(configString)
+      })
+    }
+  }, [configString])
 
   return (
     <div>

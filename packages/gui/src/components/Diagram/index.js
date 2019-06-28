@@ -6,7 +6,7 @@ import ReactRenderPlugin from "rete-react-render-plugin"
 import ConnectionPlugin from "rete-connection-plugin"
 import ContextMenuPlugin from "rete-context-menu-plugin"
 import AreaPlugin from "rete-area-plugin"
-import AutoArrangePlugin from "rete-auto-arrange-plugin"
+import AutoArrangePlugin from "@seveibar/rete-auto-arrange-plugin/build/auto-arrange-plugin.common.js"
 import MyControl from "./MyControl.js"
 import MyNode from "./MyNode.js"
 import hash from "object-hash"
@@ -120,20 +120,17 @@ export const Diagram = ({ nodes, stages, onConnectionCreated }: any) => {
     changeEditor(editor)
   }, [])
 
-  useEffect(
-    () => {
-      if (editor) {
-        editor.fromJSON(nodes)
+  useEffect(() => {
+    if (editor) {
+      editor.fromJSON(nodes)
+      editor.view.resize()
+      setTimeout(() => {
         editor.view.resize()
-        setTimeout(() => {
-          editor.view.resize()
-          editor.trigger("arrange", {})
-          AreaPlugin.zoomAt(editor)
-        }, 50)
-      }
-    },
-    [hash(nodes), hash(stages), Boolean(editor)]
-  )
+        editor.trigger("arrange", {})
+        AreaPlugin.zoomAt(editor)
+      }, 50)
+    }
+  }, [hash(nodes), hash(stages), Boolean(editor)])
 
   return (
     <div style={{ textAlign: "left", width: "100%", height: "100%" }}>
