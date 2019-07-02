@@ -150,9 +150,11 @@ async function main() {
     const dirContents = cloneDeep(contents)
 
     log("reading definitions from database...")
-    const newDefs = await db("definition")
-      .where("updated_at", ">", moment.utc(lastDefScan || 0))
-      .where(db.raw("def->>'builtin'"), false)
+    const newDefs = (await db("definition").where(
+      "updated_at",
+      ">",
+      moment.utc(lastDefScan || 0)
+    )).filter(({ def }) => def.builtin !== true)
     log(`${newDefs.length} updated definitions found`)
 
     lastDefScan = Date.now()

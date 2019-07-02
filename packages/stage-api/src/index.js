@@ -66,11 +66,15 @@ module.exports = async (req, res) => {
     return send(res, 404, `Stage "${stageName}" not found (not case-sensitive)`)
 
   for (const [inputKey, inputDef] of Object.entries(stageDef.def.inputs)) {
+    const inputVal = reqBody.inputs[inputKey]
+      ? reqBody.inputs[inputKey].value
+      : undefined
+    if (inputVal === undefined && inputDef.optional) continue
     try {
       if (typeMap[inputDef.type]) {
-        typeMap[inputDef.type](reqBody.inputs[inputKey].value)
+        typeMap[inputDef.type](inputVal)
       } else {
-        struct(inputDef.type)(reqBody.inputs[inputKey].value)
+        struct(inputDef.type)(inputVal)
       }
     } catch (e) {
       return send(
@@ -78,7 +82,7 @@ module.exports = async (req, res) => {
         400,
         `Stage API: Input "${inputKey}" didn't match the correct type "${
           inputDef.type
-        }"\n\n${e.toString()}`
+        }"\n\n${e.toString()}\n\n`
       )
     }
   }
@@ -111,6 +115,7 @@ module.exports = async (req, res) => {
     )
   }
 
+  // Check output types
   if (stageRes.body.outputs) {
     for (const [outputKey, outputDef] of Object.entries(
       stageDef.def.outputs || {}
@@ -130,6 +135,8 @@ module.exports = async (req, res) => {
             outputDef.type
           }"\n\n${e.toString()}\n\n${outputKey}: ${JSON.stringify(
             stageRes.body.outputs[outputKey]
+              ? stageRes.body.outputs[outputKey].value
+              : undefined
           )}`
         )
       }

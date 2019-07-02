@@ -54,7 +54,7 @@ class StageComponent extends Rete.Component {
       const inp = this.stage.inputs[inputKey]
       const reteInput = new Rete.Input(
         inputKey,
-        `${inputKey}[${inp.type}]`,
+        `${inp.optional === true ? "" : "*"}${inputKey}[${inp.type}]`,
         genericSocket,
         false
       )
