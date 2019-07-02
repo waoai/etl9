@@ -12,7 +12,7 @@ import MyNode from "./MyNode.js"
 import hash from "object-hash"
 
 class SimpleControl extends Rete.Control {
-  constructor(emitter, key, name, type, value) {
+  constructor(emitter, key, name, type, value, optional) {
     super(key)
     this.render = "react"
     this.component = () => {
@@ -23,7 +23,10 @@ class SimpleControl extends Rete.Control {
             flexDirection: "column"
           }}
         >
-          <div style={{ color: "#fff", paddingRight: 4 }}>{name}</div>
+          <div style={{ color: "#fff", paddingRight: 4 }}>
+            {optional === true ? "" : "*"}
+            {name}
+          </div>
           <input
             placeholder={`[${type}]`}
             style={{
@@ -63,7 +66,8 @@ class StageComponent extends Rete.Component {
         "control",
         inputKey,
         inp.type,
-        node.data[inputKey]
+        node.data[inputKey],
+        inp.optional
       )
       reteInput.addControl(reteInputControl)
       node.addInput(reteInput)
