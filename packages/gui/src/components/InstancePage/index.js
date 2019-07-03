@@ -61,6 +61,17 @@ export const InstancePage = () => {
 
   const instanceState = instance ? instance.instance_state || {} : {}
 
+  // TODO enable this once Watertable can update intelligently
+  // Monitor refresh key, update every 2 seconds
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     changeRefreshKey(Date.now())
+  //   }, 2000)
+  //   return () => {
+  //     clearInterval(interval)
+  //   }
+  // }, [])
+
   useEffect(() => {
     if (!instanceId) return
     getStages().then(stages => {
@@ -180,6 +191,7 @@ export const InstancePage = () => {
           </div>
           <div className={c.overviewTable}>
             <WaterTable
+              key={refreshKey}
               tableName="Stage Instances Overview"
               schema={{
                 stageInstanceId: {
@@ -219,6 +231,7 @@ export const InstancePage = () => {
           </div>
           <div className={c.parameterTable}>
             <WaterObject
+              key={refreshKey}
               tableName="Params"
               canAddMore={false}
               data={instance.params}

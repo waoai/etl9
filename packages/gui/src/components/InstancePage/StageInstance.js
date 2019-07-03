@@ -165,6 +165,7 @@ export const StageInstance = ({
                 <div className="section">
                   {error && Object.keys(error).length > 0 ? (
                     <WaterObject
+                      key={(error || {}).summary}
                       tableName={`${stageInstanceId} Error`}
                       data={error}
                     />
