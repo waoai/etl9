@@ -45,6 +45,13 @@ async function runInstance(
     const { def, inputs, state, complete } = stageInstance
     if (complete) continue
 
+    if (
+      stageInstance.delay &&
+      stageInstance.delay.waitUntil &&
+      Date.now() < stageInstance.delay.waitUntil
+    )
+      continue
+
     // Can this stage be run?
     const inputsWithValues = {}
     for (const [inputKey, input] of Object.entries(inputs)) {
@@ -148,6 +155,33 @@ async function runInstance(
         if (error !== undefined) stageInstance.error = error
         if (complete !== undefined) stageInstance.complete = complete
         if (stageInstance.complete) stageInstance.progress = 1
+        stageInstance.delay = stageInstance.delay || {
+          firstResponseTimestamp: Date.now()
+        }
+        stageInstance.delay.lastResponseTimestamp = Date.now()
+
+        const {
+          firstResponseTimestamp,
+          lastResponseTimestamp
+        } = stageInstance.delay
+
+        const progressRate =
+          (stageInstance.progress + 0.0001) /
+          (lastResponseTimestamp - firstResponseTimestamp)
+
+        if (stageInstance.pollFrequency) {
+          stageInstance.delay.waitUntil =
+            Date.now() + stageInstance.pollFrequency
+        } else {
+          stageInstance.delay.waitUntil =
+            Date.now() +
+            Math.min(
+              30 * 60 * 60 * 1000, // 30 minutes
+              (lastResponseTimestamp - firstResponseTimestamp) / 2, // Half the total run time
+              (1 - stageInstance.progress) / progressRate / 2 + 1000 // time_until_complete/2 + 1 second
+            )
+        }
+
         stageInstance.responseTime = stageInstance.responseTime
           ? (res.timings.end -
               res.timings.start +
