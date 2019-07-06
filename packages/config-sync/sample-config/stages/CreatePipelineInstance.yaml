@@ -1,0 +1,11 @@
+kind: Stage
+name: CreatePipelineInstance
+endpoint: "http://localhost:9105/createpipelineinstance"
+description: Create a pipeline instances with parameters.
+builtin: yes
+inputs:
+  pipelineName:
+    type: string
+  params:
+    type: ["any"]
+    progressive: true

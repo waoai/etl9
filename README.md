@@ -113,8 +113,6 @@ This repository is made up of several services managed by lerna. Here are the ma
 | `stage-api`           | `:9103`, `/api/stage`               | Evoke stage function or create stages.                       |
 | `typecheck-api`       | `:9104`, `/api/typecheck`           | Typecheck API                                                |
 | `builtin-stages`      | `:9105`, `/api/builtin-stages`      | Use ETL9 builtin stages.                                     |
-| `instance-api`        | `:9106`, `/api/instance`            | Create an instance.                                          |
-| `pipeline-api`        | `:9107`, `/api/pipeline`            | Create or update a pipeline.                                 |
 | `config-sync`         |                                     | Monitor filesystem and load configuration files              |
 | `reverse-proxy`       | `:9123`, `*`                        | Reverse proxy, coordinates to correct services               |
 
@@ -123,10 +121,10 @@ This repository is made up of several services managed by lerna. Here are the ma
 An instance is created from a pipeline definition. The instance will perform the
 following steps until it's completed.
 
-1. Iterate over all it's stages.
-2. If input is available for a stage, execute the stage function.
-3. Store the resulting state and output of each stage function.
-4. If all stages are complete, done. If not, repeat from step 1.
+1.  Iterate over all it's stages.
+2.  If input is available for a stage, execute the stage function.
+3.  Store the resulting state and output of each stage function.
+4.  If all stages are complete, done. If not, repeat from step 1.
 
 ## Builtin Stages
 

@@ -28,6 +28,7 @@ export const PipelineDiagram = ({
   pipeline: Pipeline,
   onChange: Pipeline => any
 }) => {
+  if (!pipeline || !pipeline.nodes) return null
   if (Object.keys(pipeline.nodes).length === 0) return null
   try {
     // Try to construct the rete node structure from the Pipeline format
