@@ -1,5 +1,5 @@
 FROM traefik:v1.7.5-alpine as traefik
-FROM node:10-jessie as main
+FROM node:12-jessie as main
 
 COPY --from=traefik /usr/local/bin/traefik /usr/local/bin/traefik
 
