@@ -1,8 +1,9 @@
 kind: Stage
 name: LogOutput
-endpoint: "http://localhost:9105/logoutput"
-builtin: yes
 inputs:
   input:
     type: any
+    progressive: true
+builtin: 'yes'
+endpoint: 'http://localhost:9105/logoutput'
 description: Log Output to ETL9 Server

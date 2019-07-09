@@ -57,7 +57,13 @@ async function runInstance(
     for (const [inputKey, input] of Object.entries(inputs)) {
       if (input.node) {
         const nodeStageInstance = stageInstances[input.node]
-        if (nodeStageInstance.complete || input.progressive) {
+        const inputDef = def.inputs[inputKey]
+        const outputDef = nodeStageInstance.def.outputs[input.output]
+        if (
+          nodeStageInstance.outputs &&
+          (nodeStageInstance.complete ||
+            (outputDef.progressive && inputDef.progressive))
+        ) {
           inputsWithValues[inputKey] = nodeStageInstance.outputs[input.output]
         } else {
           stageInstance.error = {
@@ -149,7 +155,20 @@ async function runInstance(
     if (res.statusCode >= 200 && res.statusCode < 300) {
       try {
         const { outputs, progress, state, error, complete } = res.body
-        if (outputs !== undefined) stageInstance.outputs = outputs
+        if (outputs !== undefined) {
+          // Add progressive flags to output (if missing)
+          for (const [outputKey, outputVal] of Object.entries(outputs)) {
+            const outputDef = stageInstance.def.outputs[outputKey]
+            if (outputDef.progressive) {
+              outputs[outputKey] = {
+                complete: Boolean(complete),
+                ...outputVal,
+                progressive: true
+              }
+            }
+          }
+          stageInstance.outputs = outputs
+        }
         if (progress !== undefined) stageInstance.progress = progress
         if (state !== undefined) stageInstance.state = state
         if (error !== undefined) stageInstance.error = error

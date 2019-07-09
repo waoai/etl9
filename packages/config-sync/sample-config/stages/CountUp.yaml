@@ -1,0 +1,19 @@
+kind: Stage
+name: CountUp
+inputs:
+  max:
+    type: number
+    optional: true
+  start:
+    type: number
+    optional: true
+  frequency:
+    type: number
+    optional: true
+outputs:
+  count:
+    type:
+      - number
+    progressive: true
+endpoint: 'http://localhost:9105/countup'
+description: Outputs a progressive number array.

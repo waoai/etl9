@@ -25,5 +25,7 @@ module.exports = async (req, res) => {
     }
   })
 
-  return { complete: true }
+  return {
+    complete: inputs.input.progressive && !inputs.input.complete ? false : true
+  }
 }
