@@ -13,6 +13,7 @@ import Tab from "@material-ui/core/Tab"
 import PipelineEditor from "../PipelineEditor"
 import yaml from "js-yaml"
 import CodeTextArea from "../CodeTextArea"
+import TimeUntil from "../TimeUntil"
 
 const StyledTabs = withStyles({
   indicator: {
@@ -108,6 +109,7 @@ export const StageInstance = ({
   responseTime,
   callCount,
   inputs,
+  delay,
   progress,
   error,
   def
@@ -152,6 +154,14 @@ export const StageInstance = ({
               <div className="leftValue">
                 {Math.floor((progress || 0) * 100)}%
               </div>
+              {!complete && delay && delay.waitUntil && (
+                <>
+                  <div className="leftTitle">Next Call</div>
+                  <div className="leftValue">
+                    <TimeUntil time={delay.waitUntil} />
+                  </div>
+                </>
+              )}
             </div>
             <div className="right">
               <div className="section">

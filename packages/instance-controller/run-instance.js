@@ -195,7 +195,7 @@ async function runInstance(
           stageInstance.delay.waitUntil =
             Date.now() +
             Math.min(
-              5 * 60 * 60 * 1000, // 5 minutes
+              5 * 60 * 1000, // 5 minutes
               (lastResponseTimestamp - firstResponseTimestamp) / 2, // Half the total run time
               (1 - stageInstance.progress) / progressRate / 2 + 1000 // time_until_complete/2 + 1 second
             )
