@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState } from "react"
+import React, { useState, useMemo } from "react"
 import { makeStyles, withStyles } from "@material-ui/styles"
 import { grey, green, red } from "@material-ui/core/colors"
 import WaterObject from "react-watertable/components/Waterobject"
@@ -10,6 +10,9 @@ import OpenIcon from "@material-ui/icons/KeyboardArrowDown"
 import EntryLog from "../EntryLog"
 import Tabs from "@material-ui/core/Tabs"
 import Tab from "@material-ui/core/Tab"
+import PipelineEditor from "../PipelineEditor"
+import yaml from "js-yaml"
+import CodeTextArea from "../CodeTextArea"
 
 const StyledTabs = withStyles({
   indicator: {
@@ -93,7 +96,7 @@ const useStyles = makeStyles({
   }
 })
 
-const tabNames = ["Inputs", "Outputs", "Error", "State", "Logs"]
+const tabNames = ["Inputs", "Outputs", "Error", "State", "Logs", "Definition"]
 
 export const StageInstance = ({
   instanceId,
@@ -106,11 +109,13 @@ export const StageInstance = ({
   callCount,
   inputs,
   progress,
-  error
+  error,
+  def
 }) => {
   const c = useStyles()
   const [open, changeOpen] = useState(false)
   const [currentTab, changeTab] = useState(tabNames[0])
+  const configString = useMemo(() => yaml.safeDump(def))
   return (
     <div className={c.stageInstance}>
       <Button onClick={() => changeOpen(!open)} fullWidth className="header">
@@ -216,6 +221,16 @@ export const StageInstance = ({
                     title={stageInstanceId}
                     tags={[stageInstanceId, instanceId]}
                   />
+                </div>
+              )}
+              {currentTab === "Definition" && (
+                <div className="section" style={{ padding: 10 }}>
+                  <div style={{ paddingBottom: 10 }}>
+                    <Button href={`/stages/${def.name}`} variant="outlined">
+                      Go to "{def.name}" Definition
+                    </Button>
+                  </div>
+                  <CodeTextArea value={configString} />
                 </div>
               )}
             </div>

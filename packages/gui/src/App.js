@@ -28,6 +28,7 @@ function App() {
           <Location path="/launch-instance" handler={LaunchInstancePage} />
           <Location path="/pipelines" handler={PipelinesPage} />
           <Location path="/stages" handler={StagesPage} />
+          <Location path="/stages/*" handler={StagesPage} />
           <Location path="/types" handler={TypesPage} />
           <Location path="/create-pipeline" handler={CreatePipelinePage} />
           <Location path="/create-stage" handler={CreateStagePage} />

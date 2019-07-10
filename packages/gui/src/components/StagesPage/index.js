@@ -9,6 +9,7 @@ import ListSearch from "../ListSearch"
 import Button from "@material-ui/core/Button"
 import StageEditor from "../StageEditor"
 import PipelineDiagram from "../PipelineDiagram"
+import useNavigation from "../../utils/use-navigation.js"
 
 const useStyles = makeStyles({
   root: { padding: 20 },
@@ -22,15 +23,27 @@ const useStyles = makeStyles({
 export const StagesPage = () => {
   const c = useStyles()
   const api = useAPI()
+  const { navigate } = useNavigation()
+  const [selectedStage, changeSelectedStage] = useState()
+  const [mode, changeMode] = useState("editor")
   const [stages, changeStages] = useState([])
   const { getStages } = useAPI()
+
   useEffect(() => {
     getStages().then(stages => {
       changeStages(stages)
+      const paths = window.location.pathname.split("/")
+      if (paths.length === 3) {
+        const [_0, _1, stageName] = paths
+        changeSelectedStage(stages.find(s => s.def.name === stageName))
+      }
     })
   }, [])
-  const [selectedStage, changeSelectedStage] = useState()
-  const [mode, changeMode] = useState("editor")
+  useEffect(() => {
+    if (selectedStage) {
+      navigate(`/stages/${selectedStage.def.name}`)
+    }
+  }, [selectedStage && selectedStage.def.name])
 
   return (
     <Page title="Stages">
