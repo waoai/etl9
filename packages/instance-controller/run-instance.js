@@ -154,7 +154,14 @@ async function runInstance(
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
       try {
-        const { outputs, progress, state, error, complete } = res.body
+        const {
+          outputs,
+          progress,
+          state,
+          error,
+          complete,
+          pollFrequency
+        } = res.body
         if (outputs !== undefined) {
           // Add progressive flags to output (if missing)
           for (const [outputKey, outputVal] of Object.entries(outputs)) {
@@ -169,6 +176,8 @@ async function runInstance(
           }
           stageInstance.outputs = outputs
         }
+
+        stageInstance.pollFrequency = pollFrequency
         if (progress !== undefined) stageInstance.progress = progress
         if (state !== undefined) stageInstance.state = state
         if (error !== undefined) stageInstance.error = error
