@@ -67,9 +67,13 @@ async function runInstance(
           inputsWithValues[inputKey] = nodeStageInstance.outputs[input.output]
         } else {
           stageInstance.error = {
-            summary: `Waiting on "${input.node}".outputs["${input.output}"]${
-              outputDef.progressive ? "(progressive)" : ""
-            } -> "${stageInstance.name}".inputs["${inputKey}"]${
+            summary: `Waiting on "${input.node}".outputs["${input.output}"](${[
+              outputDef.progressive && "progressive",
+              nodeStageInstance.outputs && "started",
+              input.waiting === false ? "nowait" : false
+            ]
+              .filter(Boolean)
+              .join(",")}) -> "${stageInstance.name}".inputs["${inputKey}"]${
               inputDef.progressive ? "(progressive)" : ""
             }`
           }

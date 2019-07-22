@@ -70,7 +70,7 @@ module.exports = async () => {
   }
 
   const stageAPI = require("../../stage-api")
-  ret.stageAPIURL = await listen(micro(stageAPI))
+  ret.stageAPIURL = (await listen(micro(stageAPI))) + "/"
 
   ret.destroy = async () => {
     await ret.db.destroy()

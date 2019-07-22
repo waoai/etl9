@@ -23,6 +23,11 @@ test("simple standalone instance should take input and output it", async t => {
         somestring: {
           type: "StringType"
         }
+      },
+      outputs: {
+        someoutput: {
+          type: "StringType"
+        }
       }
     }
   })
@@ -49,19 +54,32 @@ test("simple standalone instance should take input and output it", async t => {
   const $bodySentToEndpoint = new Promise(resolve => {
     server1.callback = body => {
       resolve(body)
-      return {}
+      return {
+        complete: true,
+        outputs: {
+          someoutput: {
+            value: body.inputs.somestring.value
+          }
+        }
+      }
     }
   })
 
   await runController({ db, stageAPIURL })
 
-  const bodySentToEndpoint = await $bodySentToEndpoint
+  // const bodySentToEndpoint = await $bodySentToEndpoint
 
   let instance = await db("instance")
     .where({ id: "testinstance" })
     .first()
 
-  t.assert(instance === false)
+  const { instance_state: state } = instance
+
+  t.assert(state.progress === 1)
+  t.assert(state.stageInstances.input2output)
+  t.deepEqual(state.stageInstances.input2output.outputs, {
+    someoutput: { value: "Simple Test Correct Output" }
+  })
 
   await destroy()
 })

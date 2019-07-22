@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "start:prod": "node src/index.js"
+    "start:prod": "node src/index.js",
+    "test": "ava --verbose --fail-fast --serial tests/**/*.test.js"
   },
   "dependencies": {
     "database": "file:../database",

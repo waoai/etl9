@@ -2,31 +2,31 @@ import test from "ava"
 import getFixture from "../fixture"
 import request from "request-promise"
 
-// test("simple fixture should initialize", async t => {
-//   const { db, server1, destroy } = await getFixture()
-//
-//   t.pass("fixture runs")
-//
-//   await destroy()
-// })
-//
-// test("simple fixture should create servers for callbacks", async t => {
-//   const { db, server1, destroy } = await getFixture()
-//
-//   server1.callback = async params => {
-//     return { hello: params.target }
-//   }
-//
-//   const res = await request.post(server1.url, {
-//     json: true,
-//     body: { target: "world" }
-//   })
-//
-//   t.assert(res.hello === "world")
-//
-//   await destroy()
-// })
-//
+test("simple fixture should initialize", async t => {
+  const { db, server1, destroy } = await getFixture()
+
+  t.pass("fixture runs")
+
+  await destroy()
+})
+
+test("simple fixture should create servers for callbacks", async t => {
+  const { db, server1, destroy } = await getFixture()
+
+  server1.callback = async params => {
+    return { hello: params.target }
+  }
+
+  const res = await request.post(server1.url, {
+    json: true,
+    body: { target: "world" }
+  })
+
+  t.assert(res.hello === "world")
+
+  await destroy()
+})
+
 test("simple fixture should create stage api", async t => {
   const { db, server1, stageAPIURL, destroy } = await getFixture()
 
@@ -49,7 +49,7 @@ test("simple fixture should create stage api", async t => {
     }
   })
 
-  const res = await request(`${stageAPIURL}/logoutput`, {
+  const res = await request(`${stageAPIURL}logoutput`, {
     method: "POST",
     json: true,
     headers: { "content-type": "application/json" },
