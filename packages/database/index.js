@@ -1,94 +1,21 @@
 // @flow
 
-import knex from "knex"
-import migrationSQL from "./migrate.sql"
-import seedFunc from "./seed"
+const path = require("path")
+const qspg = require("qspg").default
+const runSeed = require("./seed")
 
-const getConnectionInfo = (database, user) => ({
-  host: process.env.POSTGRES_HOST || "localhost",
-  user: user || process.env.POSTGRES_USER || "postgres",
-  password: process.env.POSTGRES_PASS || "",
-  database
-})
+module.exports = async ({ testMode = false, seed = false }) => {
+  const conn = await qspg({
+    migrationsDir: path.resolve(__dirname, "./migrations"),
 
-const createDatabase = async dbName => {
-  try {
-    let conn = await knex({
-      client: "pg",
-      connection: getConnectionInfo("postgres")
-    })
-    await conn.raw(`CREATE DATABASE ${dbName}`)
-    await conn.destroy()
-  } catch (e) {}
-}
-
-const deleteDatabase = async dbName => {
-  try {
-    let conn = await knex({
-      client: "pg",
-      connection: getConnectionInfo("postgres")
-    })
-    await conn.raw(`DROP DATABASE ${dbName}`)
-    await conn.destroy()
-  } catch (e) {}
-}
-
-export default async ({ seed, testMode, user } = {}) => {
-  testMode =
-    testMode === undefined ? Boolean(process.env.USE_TEST_DB) : testMode
-
-  const dbName = !testMode
-    ? process.env.POSTGRES_DB || "etl9"
-    : `testdb_${Math.random()
-        .toString(36)
-        .slice(7)}`
-
-  if (testMode) {
-    console.log(`\n---\nUsing Test DB: ${dbName}, User: ${user || "none"}\n---`)
-    // Overwrite environment variables so subsequent calls use this db
-    process.env.POSTGRES_DB = dbName
-  }
-
-  await createDatabase(dbName)
-
-  let pg = knex({
-    client: "pg",
-    connection: getConnectionInfo(dbName)
+    // Optional: If set to true, QSPG will create a database with a randomized name, this is
+    // great for unit tests. Defaults to true only if USE_TEST_DB env var is set.
+    testMode
   })
 
-  // test connection
-  try {
-    await pg.raw("select 1+1 as result")
-  } catch (e) {
-    throw new Error("Could not connect to database\n\n" + e.toString())
+  if (seed) {
+    await runSeed(conn)
   }
 
-  // upload migration
-  if (testMode) {
-    await pg.raw(migrationSQL)
-  }
-
-  if (seed) await seedFunc(pg)
-
-  if (user) {
-    await pg.destroy()
-    pg = knex({ client: "pg", connection: getConnectionInfo(dbName, user) })
-    // test connection
-    try {
-      await pg.raw("select 1+1 as result")
-    } catch (e) {
-      throw new Error(
-        `Could not connect to database as "${user}"\n\n${e.toString()}`
-      )
-    }
-  }
-
-  // override pg.destroy so we can delete the test database
-  const _destroy = pg.destroy
-  pg.destroy = async () => {
-    await _destroy()
-    if (testMode) await deleteDatabase(dbName)
-  }
-
-  return pg
+  return conn
 }

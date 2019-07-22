@@ -1,9 +1,9 @@
 // @flow
 
-import getDB from "../"
-import { definitions, envVars } from "./examples"
+const getDB = require("../")
+const { definitions, envVars } = require("./examples")
 
-export default async db => {
+module.exports = async db => {
   if (!db) db = await getDB()
   const defCount = parseInt((await db("definition").count())[0].count)
   console.log(`${defCount} definitions found`)
@@ -15,7 +15,11 @@ export default async db => {
   }
   console.log("creating seed environment variables...")
   for (const envVar of envVars) {
-    await db("env_var").insert(envVar)
+    await db("env_var").insert({
+      name: envVar.name,
+      value: JSON.stringify(envVar.value),
+      encrypted: envVar.encrypted
+    })
   }
   console.log("disconnecting from database...")
   await db.destroy()

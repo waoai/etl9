@@ -1,35 +1,17 @@
 {
   "name": "database",
   "version": "0.0.0",
-  "main": "build/bundle.js",
+  "main": "index.js",
   "scripts": {
-    "build": "node ./migrations/build-migration && webpack",
-    "build:docker": "npm run build",
-    "test": "npm run build && tape tests/**/*.js",
-    "start:prod": "node migrate.js",
-    "start:postgres": "docker run --net host -it postgres -E",
-    "drop": "psql -h localhost -U postgres -c 'DROP DATABASE etl9' || exit 0",
-    "init:dev": "npm run create && npm run migrate && npm run seed",
-    "create": "psql -h localhost -U postgres -c 'CREATE DATABASE etl9'",
-    "migrate": "psql -h localhost -U postgres -d etl9 -f migrate.sql",
-    "seed": "npm run build && node build/seed",
-    "reset": "npm run build && npm run drop && npm run create && npm run migrate && node build/seed"
+    "test": "ava ./tests/test.js"
+  },
+  "dependencies": {
+    "moment": "^2.24.0",
+    "qspg": "^1.0.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.5",
-    "@babel/plugin-transform-flow-strip-types": "^7.0.0",
-    "babel-loader": "^8.0.4",
-    "csv-parse": "^2.4.0",
-    "knex": "^0.14.4",
-    "leaked-handles": "^5.2.0",
-    "moment": "^2.24.0",
-    "pg": "^7.4.1",
-    "raw-loader": "^0.5.1",
-    "request": "^2.85.0",
-    "request-promise": "^4.2.2",
-    "tape": "^4.9.0",
-    "webpack": "^4.25.1",
-    "webpack-cli": "^3.1.2",
-    "webpack-node-externals": "^1.7.2"
+    "ava": "^2.2.0",
+    "micro": "^9.3.4",
+    "test-listen": "^1.1.0"
   }
 }

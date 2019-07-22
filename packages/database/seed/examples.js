@@ -1,8 +1,8 @@
 // @flow
 
-import moment from "moment"
+const moment = require("moment")
 
-export const definitions = [
+const definitions = [
   {
     kind: "Pipeline",
     name: "S3TestPipeline",
@@ -154,7 +154,7 @@ export const definitions = [
   }
 ]
 
-export const envVars = [
+const envVars = [
   {
     name: "DEFAULT_OUTPUT_BUCKET",
     value: "s3://example-bucket"
@@ -169,3 +169,5 @@ export const envVars = [
     encrypted: true
   }
 ]
+
+module.exports = { envVars, definitions }
