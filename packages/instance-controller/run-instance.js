@@ -166,6 +166,7 @@ async function runInstance(
           // Add progressive flags to output (if missing)
           for (const [outputKey, outputVal] of Object.entries(outputs)) {
             const outputDef = stageInstance.def.outputs[outputKey]
+            if (!outputDef) continue
             if (outputDef.progressive) {
               outputs[outputKey] = {
                 complete: Boolean(complete),
