@@ -4,7 +4,7 @@ const got = require("got")
 
 let iter = 0
 async function runInstance(
-  { db, stageAPIURL = "http://localhost:9123/api/stage/" },
+  { db, stageAPIURL = "http://localhost:9123/api/stage/", alwaysPoll = false },
   { instance_state, params, pipeline_def, id }
 ) {
   iter++
@@ -46,6 +46,7 @@ async function runInstance(
     if (complete) continue
 
     if (
+      !alwaysPoll &&
       stageInstance.delay &&
       stageInstance.delay.waitUntil &&
       Date.now() < stageInstance.delay.waitUntil
@@ -54,33 +55,51 @@ async function runInstance(
 
     // Can this stage be run?
     const inputsWithValues = {}
-    for (const [inputKey, input] of Object.entries(inputs)) {
-      if (input.node) {
-        const nodeStageInstance = stageInstances[input.node]
-        const inputDef = def.inputs[inputKey]
-        const outputDef = nodeStageInstance.def.outputs[input.output]
-        if (
-          (nodeStageInstance.outputs || input.waiting === false) &&
-          (nodeStageInstance.complete ||
-            (outputDef.progressive && inputDef.progressive))
-        ) {
-          inputsWithValues[inputKey] = nodeStageInstance.outputs[input.output]
-        } else {
+    for (const [inputKey, connectionDef] of Object.entries(inputs)) {
+      if (connectionDef.node) {
+        const pushingStageInstance = stageInstances[connectionDef.node]
+        const pushingOutputDef =
+          pushingStageInstance.def.outputs[connectionDef.output]
+        const myInputDef = def.inputs[inputKey]
+
+        if (!myInputDef) {
           stageInstance.error = {
-            summary: `Waiting on "${input.node}".outputs["${input.output}"](${[
-              outputDef.progressive && "progressive",
-              nodeStageInstance.outputs && "started",
-              input.waiting === false ? "nowait" : false
-            ]
-              .filter(Boolean)
-              .join(",")}) -> "${stageInstance.name}".inputs["${inputKey}"]${
-              inputDef.progressive ? "(progressive)" : ""
-            }`
+            summary: `No input definition within "${
+              def.name
+            }" for "${inputKey}"`
           }
           break
         }
-      } else if (input.param) {
-        const value = params[input.param]
+
+        if (
+          connectionDef.waitForOutput === false &&
+          !pushingStageInstance.outputs
+        ) {
+          continue
+        }
+
+        if (
+          pushingStageInstance.outputs &&
+          (pushingStageInstance.complete ||
+            (pushingOutputDef.progressive && myInputDef.progressive))
+        ) {
+          inputsWithValues[inputKey] =
+            pushingStageInstance.outputs[connectionDef.output]
+        } else {
+          stageInstance.error = {
+            summary: `Waiting on "${connectionDef.node}".outputs["${
+              connectionDef.output
+            }"] -> "${stageId}".inputs["${inputKey}"]`,
+            info: {
+              outputDef: pushingOutputDef,
+              inputDef: myInputDef,
+              connectionDef
+            }
+          }
+          break
+        }
+      } else if (connectionDef.param) {
+        const value = params[connectionDef.param]
         if (typeof value === "string" && value.startsWith("$")) {
           inputsWithValues[inputKey] = {
             value: envVarMap[value.slice(1)]
@@ -88,8 +107,8 @@ async function runInstance(
         } else {
           inputsWithValues[inputKey] = { value }
         }
-      } else if (input.value) {
-        inputsWithValues[inputKey] = { value: input.value }
+      } else if (connectionDef.value) {
+        inputsWithValues[inputKey] = { value: connectionDef.value }
       }
     }
 

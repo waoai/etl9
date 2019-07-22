@@ -1,6 +1,5 @@
 import test from "ava"
 import getFixture from "../fixture"
-import request from "request-promise"
 import runController from "../../src/update-loop.js"
 
 test("simple standalone instance should take input and output it", async t => {

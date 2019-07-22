@@ -44,40 +44,6 @@ test("progressive stages pass data to eachother before completion", async t => {
     }
   })
 
-  // Second multiplies numbers by two AND an independent counter
-  server2.callback = ({ inputs, state }) => {
-    if (!state) state = { counter: 0 }
-    return {
-      state: { counter: state.counter + 1 },
-      outputs: {
-        counter: { value: state.counter },
-        multipliedNumbers: inputs.numbers
-          ? { value: inputs.numbers.value.map(n => n * 2) }
-          : undefined
-      }
-    }
-  }
-  await db("definition").insert({
-    def: {
-      kind: "Stage",
-      name: "MultiplierAndCounter",
-      endpoint: server2.url,
-      inputs: {
-        numbers: {
-          type: ["number"],
-          optional: true,
-          progressive: true
-        }
-      },
-      outputs: {
-        multipliedNumbers: {
-          type: ["number"],
-          optional: true
-        }
-      }
-    }
-  })
-
   // Construct a pipeline where the MultiplierAndCounter don't wait
   await db("instance").insert({
     id: "testinstance",
@@ -91,60 +57,34 @@ test("progressive stages pass data to eachother before completion", async t => {
         delay: {
           name: "Counter",
           inputs: {
-            maxCount: { value: 2 }
+            maxCount: { value: 5 }
           }
         },
         count: {
           name: "Counter",
           inputs: {
             maxCount: { value: 5 },
-            waitFor: { node: "delay", output: "numbers" }
-          }
-        },
-        countandmult: {
-          name: "MultiplierAndCounter",
-          inputs: {
-            numbers: {
-              node: "count",
-              output: "numbers"
-            }
+            waitFor: { node: "delay", output: "numbers", waitForOutput: false }
           }
         }
       }
     }
   })
 
-  let count, delay, countandmult
+  let count, delay
   const run = async () => {
     await runController({ db, stageAPIURL, alwaysPoll: true })
-    ;({ count, delay, countandmult } = (await db("instance")
+    ;({ count, delay } = (await db("instance")
       .where({ id: "testinstance" })
       .first()).instance_state.stageInstances)
   }
 
   await run()
-  t.assert(count.state === null)
-  t.assert(countandmult.state === null)
   t.deepEqual(delay.state, { counter: 1 })
   t.assert(delay.callCount === 1)
+  // Instead of waiting for the delay to complete, the counter stage with
+  // waitForOutput === false will begin it's execution.
+  t.assert(count.callCount === 1)
 
-  await run()
-  t.deepEqual(delay.state, { counter: 2 })
-  t.assert(delay.complete)
-  t.assert(count.state === null)
-  t.assert(countandmult.state === null)
-
-  for (let i = 0; i < 5; i++) {
-    t.assert(count.complete === false)
-    await run()
-    t.deepEqual(count.state, { counter: i + 1 })
-    t.assert(countandmult.state.counter === i + 1)
-    t.deepEqual(
-      countandmult.outputs.multipliedNumbers.value,
-      range(i).map(n => n * 2)
-    )
-  }
-
-  t.assert(count.complete)
   await destroy()
 })
