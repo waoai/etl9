@@ -4,7 +4,7 @@ const got = require("got")
 
 let iter = 0
 async function runInstance(
-  { db },
+  { db, stageAPIURL = "http://localhost:9123/api/stage/" },
   { instance_state, params, pipeline_def, id }
 ) {
   iter++
@@ -99,7 +99,7 @@ async function runInstance(
       instance_id: id
     }
     let res
-    const endpoint = `http://localhost:9123/api/stage/${stageInstance.def.name}`
+    const endpoint = `${stageAPIURL}${stageInstance.def.name}`
     try {
       stageInstance.callCount = (stageInstance.callCount || 0) + 1
       res = await got(endpoint, {
@@ -110,8 +110,8 @@ async function runInstance(
       })
     } catch (e) {
       const info = {
-        statusCode: e.response.statusCode,
-        message: e.response.body,
+        statusCode: e.response && e.response.statusCode,
+        message: e.response && e.response.body,
         requestBody,
         stageId,
         endpoint,

@@ -1,7 +1,7 @@
 // @flow
 
 const { join, dirname, resolve } = require("path")
-const getDB = require("database").default
+const getDB = require("database")
 const watch = require("watch")
 const yaml = require("js-yaml")
 const fs = require("fs")
@@ -171,8 +171,8 @@ async function main() {
           contents[prevPath].some(d => d.name === prevDef.name)
         ) {
           // Replace the previous definition with the new definition
-          contents[prevPath] = contents[prevPath].map(d =>
-            d.name === prevDef.name ? newDef : d
+          contents[prevPath] = contents[prevPath].map(
+            d => (d.name === prevDef.name ? newDef : d)
           )
           changedFiles.add(prevPath)
           continue

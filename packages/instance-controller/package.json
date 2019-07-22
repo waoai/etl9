@@ -3,11 +3,18 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "start:prod": "node index.js"
+    "start": "node src/index.js",
+    "start:prod": "node src/index.js"
   },
   "dependencies": {
     "database": "file:../database",
     "got": "^9.6.0"
+  },
+  "devDependencies": {
+    "ava": "^2.2.0",
+    "micro": "^9.3.4",
+    "micro-visualize": "^3.0.1",
+    "request-promise": "^4.2.4",
+    "test-listen": "^1.1.0"
   }
 }

@@ -4,7 +4,7 @@ const path = require("path")
 const qspg = require("qspg").default
 const runSeed = require("./seed")
 
-module.exports = async ({ testMode = false, seed = false }) => {
+module.exports = async ({ testMode = false, seed = false } = {}) => {
   const conn = await qspg({
     migrationsDir: path.resolve(__dirname, "./migrations"),
 

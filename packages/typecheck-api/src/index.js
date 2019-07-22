@@ -1,7 +1,7 @@
 // @flow
 
 const { json, send } = require("micro")
-const getDB = require("database").default
+const getDB = require("database")
 const { struct } = require("superstruct")
 const visualize = require("micro-visualize")
 const safeEval = require("safe-eval")

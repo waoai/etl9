@@ -2,7 +2,7 @@
 
 const { send, json } = require("micro")
 const got = require("got")
-const getDB = require("database").default
+const getDB = require("database")
 const { struct } = require("superstruct")
 const safeEval = require("safe-eval")
 
