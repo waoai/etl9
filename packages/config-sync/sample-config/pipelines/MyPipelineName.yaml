@@ -1,0 +1,9 @@
+kind: Pipeline
+name: MyPipelineName
+nodes:
+  logger:
+    name: LogOutput
+    inputs:
+      input:
+        param: output
+description: Some pipeline description

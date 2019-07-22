@@ -1,0 +1,9 @@
+kind: Pipeline
+name: LoggingPipeline
+nodes:
+  logger:
+    name: LogOutput
+    inputs:
+      input:
+        param: output
+description: Logs the parameter "output"
