@@ -5,6 +5,7 @@ const qspg = require("qspg").default
 const runSeed = require("./seed")
 
 module.exports = async ({ testMode = false, seed = false } = {}) => {
+  if (!process.env.POSTGRES_DB) process.env.POSTGRES_DB = "etl9"
   const conn = await qspg({
     migrationsDir: path.resolve(__dirname, "./migrations"),
 

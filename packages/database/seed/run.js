@@ -1,1 +1,1 @@
-require("./index").default()
+require("./index")()

@@ -64,9 +64,7 @@ async function runInstance(
 
         if (!myInputDef) {
           stageInstance.error = {
-            summary: `No input definition within "${
-              def.name
-            }" for "${inputKey}"`
+            summary: `No input definition within "${def.name}" for "${inputKey}"`
           }
           break
         }
@@ -87,9 +85,7 @@ async function runInstance(
             pushingStageInstance.outputs[connectionDef.output]
         } else {
           stageInstance.error = {
-            summary: `Waiting on "${connectionDef.node}".outputs["${
-              connectionDef.output
-            }"] -> "${stageId}".inputs["${inputKey}"]`,
+            summary: `Waiting on "${connectionDef.node}".outputs["${connectionDef.output}"] -> "${stageId}".inputs["${inputKey}"]`,
             info: {
               outputDef: pushingOutputDef,
               inputDef: myInputDef,
@@ -140,9 +136,7 @@ async function runInstance(
         endpoint,
         instance_id: id
       }
-      const summary = `Error in stage id "${stageId}" calling stage function "${
-        stageInstance.def.name
-      }". Code ${info.statusCode}. Response body "${info.message}"`
+      const summary = `Error in stage id "${stageId}" calling stage function "${stageInstance.def.name}". Code ${info.statusCode}. Response body "${info.message}"`
       console.log(iter.toString().padStart(5, "0"), summary)
       await db("log_entry").insert({
         tags: [stageInstance.def.name, id, stageId],

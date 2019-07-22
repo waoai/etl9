@@ -880,6 +880,9 @@ currently-unhandled@^0.4.1:
 
 "database@file:../database":
   version "0.0.0"
+  dependencies:
+    moment "^2.24.0"
+    qspg "^1.0.6"
 
 date-time@^2.1.0:
   version "2.1.0"
@@ -2572,9 +2575,10 @@ punycode@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
 
-qspg@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/qspg/-/qspg-1.0.4.tgz#ffcc8fa85d3143a05def5ea29e8f26572ff104a9"
+qspg@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/qspg/-/qspg-1.0.6.tgz#e8c1ad3a2d3a10b5f30ec2e4bb1e65e4f0fadc91"
+  integrity sha512-8gXHxMtKQkcwWZlFpnMVHRpHxqH3gk2EXlDCBfHpszqHUemX91B3f+6C7rVXhFHgn7ii/9dYiX/JDQdNbxqQ7w==
   dependencies:
     knex "^0.19.0"
     pg "^7.11.0"

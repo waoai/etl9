@@ -3,12 +3,13 @@
   "version": "0.0.0",
   "main": "index.js",
   "scripts": {
-    "start:prod": "qspg update ./migrations",
+    "start:prod": "POSTGRES_DB=etl9 qspg update ./migrations",
+    "seed": "node seed/run.js",
     "test": "ava ./tests/test.js"
   },
   "dependencies": {
     "moment": "^2.24.0",
-    "qspg": "^1.0.4"
+    "qspg": "^1.0.6"
   },
   "devDependencies": {
     "ava": "^2.2.0",
