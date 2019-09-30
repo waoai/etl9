@@ -5,7 +5,7 @@
 Simple all-in-one container for FaaS-based ETL pipelines.
 
 ```bash
-docker run -p 9123:9123 -v $(pwd)/etl9-config:config etl9
+docker run -p 9123:9123 -v $(pwd)/etl9-config:config workaroundonline/etl9
 ```
 
 - Simple Declarative Interface
