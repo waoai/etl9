@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
 
   if (!state) state = { lastCreatedInstanceIndex: -1, createdInstanceIds: [] }
 
-  if (params.length <= state.lastCreatedInstanceIndex + 1) return {}
+  if (params.length <= state.lastCreatedInstanceIndex + 1) return { state, pollFrequency: 1000 * 10 }
   // Get latest pipeline definition
   const pipelineDefs = await request({
     uri: "http://localhost:9102/pipeline_def",
