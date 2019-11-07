@@ -61,7 +61,7 @@ export const CreateTypePage = () => {
               }
               navigate("/types")
             }}
-            disabled={error || type.def.name === ""}
+            disabled={Boolean(error || type.def.name === "")}
           >
             Create Type "{type.def.name}"
           </Button>
