@@ -2,10 +2,8 @@
   "name": "reverse-proxy",
   "version": "0.0.0",
   "scripts": {
-    "start": "npm run start:dev",
-    "start:prod": "traefik -c ./traefik.toml",
-    "start:dev": "traefik -l INFO -c ./traefik.toml",
-    "start:debug": "traefik -l DEBUG -c ./traefik.toml"
+    "start": "traefik --configfile ./traefik.yaml",
+    "start:prod": "traefik --configfile ./traefik.yaml"
   },
   "dependencies": {}
 }

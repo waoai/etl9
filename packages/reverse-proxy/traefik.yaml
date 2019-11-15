@@ -1,0 +1,59 @@
+entryPoints:
+  web:
+    address: :9123
+
+log:
+  level: DEBUG
+
+api:
+  dashboard: true
+  insecure: true
+
+http:
+  routers:
+    to-gui:
+      service: gui
+    to-master-controller:
+      rule: "PathPrefix(`/api/master-controller`)"
+      middlewares: ["strip-first-prefix"]
+      service: master-controller
+    to-stage-api:
+      rule: "PathPrefix(`/api/stage`)"
+      middlewares: ["strip-first-prefix"]
+      service: stage-api
+    to-database-rest-api:
+      rule: "PathPrefix(`/api/db`)"
+      middlewares: ["strip-first-prefix"]
+      service: database-rest-api
+    to-typecheck-api:
+      rule: "PathPrefix(`/api/typecheck`)"
+      middlewares: ["strip-first-prefix"]
+      service: typecheck-api
+    to-builtin-stages:
+      rule: "PathPrefix(`/api/builtin-stages`)"
+      middlewares: ["strip-first-prefix"]
+      service: builtin-stages
+
+  middlewares:
+    strip-first-prefix:
+      stripPrefix:
+        prefixes:
+          - /api/master-controller
+          - /api/stage
+          - /api/builtin-stages
+          - /api/db
+          - /api/typecheck
+
+  services:
+    gui:
+      url: "http://localhost:9100"
+    master-controller:
+      url: "http://localhost:9101"
+    database-rest-api:
+      url: "http://localhost:9102"
+    stage-api:
+      url: "http://localhost:9103"
+    typecheck-api:
+      url: "http://localhost:9104"
+    builtin-stages:
+      url: "http://localhost:9105"
