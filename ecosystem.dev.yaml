@@ -10,7 +10,7 @@ apps:
     script: yarn
     args: start
     autorestart: true
-    watch: false
+    watch: packages/instance-controller
     cwd: packages/instance-controller
 
   - name: database

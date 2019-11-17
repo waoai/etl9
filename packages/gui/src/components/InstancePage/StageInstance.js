@@ -25,6 +25,9 @@ const StyledTabs = withStyles({
       width: "100%",
       backgroundColor: "#635ee7"
     }
+  },
+  root: {
+    color: "#000"
   }
 })(props => <Tabs {...props} TabIndicatorProps={{ children: <div /> }} />)
 
@@ -34,7 +37,7 @@ const StyledTab = withStyles({
     minWidth: 0,
     fontWeight: "bold",
     fontSize: 14,
-    color: "#fff",
+    color: grey[600],
     "&:focus": {
       opacity: 1
     }
