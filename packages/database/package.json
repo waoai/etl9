@@ -1,6 +1,6 @@
 {
   "name": "database",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "index.js",
   "scripts": {
     "start:prod": "POSTGRES_DB=etl9 qspg update ./migrations",
@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "moment": "^2.24.0",
-    "qspg": "^1.0.6"
+    "qspg": "^1.0.8"
   },
   "devDependencies": {
     "ava": "^2.2.0",

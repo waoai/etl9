@@ -4,7 +4,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "start": "node index.js",
+    "start": "POSTGRES_DB=etl9 node index.js",
     "start:prod": "node index.js"
   },
   "dependencies": {

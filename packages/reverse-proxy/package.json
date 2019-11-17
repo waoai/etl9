@@ -2,8 +2,8 @@
   "name": "reverse-proxy",
   "version": "0.0.0",
   "scripts": {
-    "start": "traefik --configfile ./traefik.yaml",
-    "start:prod": "traefik --configfile ./traefik.yaml"
+    "start": "traefik --configfile ./static-config.yaml",
+    "start:prod": "traefik --configfile ./static-config.yaml"
   },
   "dependencies": {}
 }

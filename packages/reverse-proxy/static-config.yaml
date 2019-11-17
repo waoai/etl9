@@ -1,0 +1,15 @@
+entryPoints:
+  web:
+    address: :9123
+
+log:
+  level: DEBUG
+
+api:
+  dashboard: true
+  insecure: true
+
+providers:
+  file:
+    watch: true
+    filename: "dynamic-config.yaml"

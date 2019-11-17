@@ -4,17 +4,9 @@
   "scripts": {
     "build": "lerna run --parallel build",
     "build:docker": "lerna exec npm install && lerna run --parallel build",
-    "start:local": "POSTGRES_USER=postgres POSTGRES_PORT=5432 POSTGRES_DB=etl9 POSTGRES_HOST=localhost yarn start:prod",
-    "start:prod": "concurrently --kill-others-on-fail \"npm:service:*\"",
-    "service:gui": "cd packages/gui && yarn start:prod",
-    "service:instance-controller": "cd packages/instance-controller && yarn start:prod",
-    "service:database": "cd packages/database && yarn start:prod",
-    "service:database-rest-api": "cd packages/database-rest-api && yarn start:prod",
-    "service:stage-api": "cd packages/stage-api && yarn start:prod",
-    "service:typecheck-api": "cd packages/typecheck-api && yarn start:prod",
-    "service:builtin-stages": "cd packages/builtin-stages && yarn start:prod",
-    "service:config-sync": "cd packages/config-sync && yarn start:prod",
-    "service:reverse-proxy": "cd packages/reverse-proxy && yarn start:prod"
+    "start": "POSTGRES_USER=postgres POSTGRES_PORT=5432 POSTGRES_DB=etl9 POSTGRES_HOST=localhost pm2 start ecosystem.dev.yaml",
+    "start:prod": "pm2 start ecosystem.yaml",
+    "postinstall": "lerna exec -- yarn install"
   },
   "devDependencies": {
     "lerna": "^3.13.4",

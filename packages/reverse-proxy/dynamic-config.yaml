@@ -1,18 +1,8 @@
-entryPoints:
-  web:
-    address: :9123
-
-log:
-  level: DEBUG
-
-api:
-  dashboard: true
-  insecure: true
-
 http:
   routers:
     to-gui:
       service: gui
+      rule: "PathPrefix(`/`)"
     to-master-controller:
       rule: "PathPrefix(`/api/master-controller`)"
       middlewares: ["strip-first-prefix"]
