@@ -49,10 +49,16 @@ const apiFuncs = {
     let reqUrl = "/api/db/instance"
     if (o.id) reqUrl = `/api/db/instance?id=eq.${o.id}`
     if (o.pipelineName)
-      reqUrl = `/api/db/instance?pipeline_def->>name=eq.${o.pipelineName}`
+      reqUrl = `/api/db/instance?pipeline_def->>name=eq.${o.pipelineName}&select=id,pipeline_def->>name,created_at,instance_state->paused`
     if (o.minimal)
-      reqUrl = `/api/db/instance?select=id,pipeline_def->>name,created_at`
-    return axios.get(reqUrl).then(res => res.data)
+      reqUrl = `/api/db/instance?select=id,pipeline_def->>name,created_at,instance_state->paused`
+    return axios.get(reqUrl).then(res =>
+      res.data.map(instance => {
+        if (instance.paused === undefined || instance.paused === null)
+          instance.paused = false
+        return instance
+      })
+    )
   },
   getPipelines: () => axios.get("/api/db/pipeline_def").then(res => res.data),
 

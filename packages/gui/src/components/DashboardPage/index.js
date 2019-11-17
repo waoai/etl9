@@ -6,6 +6,7 @@ import { makeStyles } from "@material-ui/styles"
 import WaterTable from "react-watertable"
 import { useAPI } from "../APIProvider"
 import useNavigation from "../../utils/use-navigation.js"
+import Instances from "../Instances"
 
 const useStyles = makeStyles({
   root: {
@@ -35,16 +36,10 @@ const useStyles = makeStyles({
 export const DashboardPage = () => {
   const c = useStyles()
   const { navigate } = useNavigation()
-  const { getInstances } = useAPI()
-
-  const [instances, changeInstances] = useState()
-  useEffect(() => {
-    getInstances({ minimal: true }).then(changeInstances)
-  }, [])
 
   const statusBlocks = [
     // { title: "Calls/Min", value: 103 },
-    { title: "Active Instances", value: instances ? instances.length : "..." }
+    // { title: "Active Instances", value: instances ? instances.length : "..." }
   ]
 
   return (
@@ -59,22 +54,7 @@ export const DashboardPage = () => {
           ))}
         </div>
         <div className={c.instances}>
-          {instances && instances.length > 0 ? (
-            <WaterTable
-              canDelete={false}
-              canAddMore={false}
-              tableName="Instances"
-              data={instances}
-              recordActions={["View"]}
-              onClickRecordAction={(instance, action) => {
-                if (action === "View") {
-                  navigate(`/instance/${instance.id}`)
-                }
-              }}
-            />
-          ) : (
-            <div className={c.empty}>No Instances</div>
-          )}
+          <Instances />
         </div>
       </div>
     </Page>
