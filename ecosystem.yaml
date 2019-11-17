@@ -1,0 +1,63 @@
+apps:
+  - name: gui
+    script: yarn
+    args: start:prod:prod
+    autorestart: true
+    watch: false
+    cwd: packages/gui
+
+  - name: instance-controller
+    script: yarn
+    args: start:prod
+    autorestart: true
+    watch: false
+    cwd: packages/instance-controller
+
+  - name: database
+    script: yarn
+    args: start:prod:prod
+    autorestart: false
+    watch: false
+    cwd: packages/database
+
+  - name: database-rest-api
+    script: yarn
+    args: start:prod
+    autorestart: true
+    watch: false
+    cwd: packages/database-rest-api
+
+  - name: stage-api
+    script: yarn
+    args: start:prod
+    autorestart: true
+    watch: false
+    cwd: packages/stage-api
+
+  - name: typecheck-api
+    script: yarn
+    args: start:prod
+    autorestart: true
+    watch: false
+    cwd: packages/typecheck-api
+
+  - name: builtin-stages
+    script: yarn
+    args: start:prod
+    autorestart: true
+    watch: false
+    cwd: packages/builtin-stages
+
+  - name: config-sync
+    script: yarn
+    args: start:prod
+    autorestart: true
+    watch: false
+    cwd: packages/config-sync
+
+  - name: reverse-proxy
+    script: yarn
+    args: start:prod
+    autorestart: true
+    watch: false
+    cwd: packages/reverse-proxy
