@@ -1,0 +1,21 @@
+kind: Stage
+name: ETL9Event
+inputs:
+  event:
+    type: string
+outputs:
+  logs:
+    type:
+      - any
+    progressive: true
+endpoint: 'http://localhost:9105/etl9event'
+description: |
+  Outputs logs for specific ETL9 Events.
+
+  It works by scanning the log entries (including errors
+  and information) and looking for a log entry that
+  is tagged with a specified event.
+
+  For example, you can use `StagePausedOnError` on to
+  execute something (perhaps an email to an administrator)
+  if a stage is paused due to an error.
