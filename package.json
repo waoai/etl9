@@ -2,11 +2,10 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "build": "lerna run --parallel build",
-    "build:docker": "lerna exec npm install && lerna run --parallel build",
+    "build": "lerna exec -- yarn build",
     "start": "POSTGRES_USER=postgres POSTGRES_PORT=5432 POSTGRES_DB=etl9 POSTGRES_HOST=localhost pm2 start ecosystem.dev.yaml",
-    "start:prod": "pm2 start ecosystem.yaml",
-    "postinstall": "lerna exec -- yarn install"
+    "start:prod": "pm2-runtime start ecosystem.yaml",
+    "postinstall": "lerna exec --concurrency 1 -- yarn install"
   },
   "devDependencies": {
     "lerna": "^3.13.4"

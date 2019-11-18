@@ -5,7 +5,8 @@
   "scripts": {
     "start": "micro-dev --port 9103",
     "start:prod": "micro -l tcp://0.0.0.0:9103",
-    "test": "ava"
+    "test": "ava",
+    "build": "echo 'no build task'"
   },
   "devDependencies": {
     "ava": "^2.0.0",

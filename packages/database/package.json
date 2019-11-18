@@ -4,6 +4,8 @@
   "main": "index.js",
   "scripts": {
     "start:prod": "POSTGRES_DB=etl9 qspg update ./migrations",
+    "start": "POSTGRES_DB=etl9 qspg update ./migrations",
+    "build": "echo 'no build task'",
     "seed": "node seed/run.js",
     "test": "ava ./tests/test.js"
   },

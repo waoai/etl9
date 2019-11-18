@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "start": "POSTGRES_DB=etl9 node index.js",
-    "start:prod": "node index.js"
+    "start:prod": "node index.js",
+    "build": "echo 'no build task'"
   },
   "dependencies": {
     "database": "file:../database",

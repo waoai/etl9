@@ -4,6 +4,7 @@
   "scripts": {
     "start": "POSTGRES_USER=postgres POSTGRES_PASS=\"\" POSTGRES_HOST=localhost POSTGRES_PORT=5432 POSTGRES_DB=etl9 postgrest ./postgrest.conf",
     "start:prod": "postgrest ./postgrest.conf",
+    "build": "echo 'no build task'",
     "test": "tape tests/**/*.test.js"
   },
   "devDependencies": {

@@ -17,6 +17,7 @@ WORKDIR /root
 
 COPY . .
 
-RUN yarn install && yarn build:docker
+RUN yarn install
+RUN yarn build
 
 CMD yarn start:prod
