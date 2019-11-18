@@ -1,5 +1,6 @@
 kind: Stage
 name: ETL9Event
+builtin: yes
 inputs:
   event:
     type: string
@@ -8,7 +9,7 @@ outputs:
     type:
       - any
     progressive: true
-endpoint: 'http://localhost:9105/etl9event'
+endpoint: "http://localhost:9105/etl9event"
 description: |
   Outputs logs for specific ETL9 Events.
 
