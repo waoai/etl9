@@ -8,11 +8,11 @@ export const TimeSince = ({ sinceTime }) => {
     const d = moment.duration(
       moment.utc().valueOf() - moment(sinceTime).valueOf()
     )
-    const [h, m, s] = [d.hours(), d.minutes(), d.seconds()]
+    const [days, h, m, s] = [d.days(), d.hours(), d.minutes(), d.seconds()]
     if (h > 0)
-      return `${h}:${m.toString().padStart(2, "0")}:${s
+      return `${days ? `${days}d ` : ""}${h}h ${m
         .toString()
-        .padStart(2, "0")}`
+        .padStart(2, "0")}m ${s.toString().padStart(2, "0")}s`
     if (m > 0) return `${m}:${s.toString().padStart(2, "0")}`
     return `${s}s`
   }
