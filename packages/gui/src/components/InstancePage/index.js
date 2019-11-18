@@ -50,7 +50,7 @@ export const InstancePage = () => {
 
   const instanceId = useMemo(() => {
     const { path } = getURLParams()
-    return path[1]
+    return decodeURIComponent(path[1])
   }, [])
 
   const [notFound, changeNotFound] = useState(false)

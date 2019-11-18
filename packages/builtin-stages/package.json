@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "database": "file:../database",
+    "flat": "^5.0.0",
     "got": "^9.6.0",
     "micro": "^9.3.4",
     "microrouter": "^3.1.3",

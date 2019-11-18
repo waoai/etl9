@@ -62,7 +62,10 @@ export const Instances = ({ pipeline }) => {
               ) : (
                 <PauseIcon style={{ marginRight: 16 }} />
               )}
-              <TitleText>{instance.name}</TitleText>
+              <TitleText>
+                {instance.id}
+                {instance.name ? ` (${instance.name})` : ""}
+              </TitleText>
               <div>{moment(instance.created_at).fromNow()}</div>
             </InstanceContainer>
           ))

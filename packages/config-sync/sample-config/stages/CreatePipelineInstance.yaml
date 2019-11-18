@@ -6,6 +6,9 @@ builtin: yes
 inputs:
   pipelineName:
     type: string
+  instanceName:
+    type: string
+    optional: true
   params:
     type: ["any"]
     progressive: true
