@@ -9,8 +9,5 @@
   },
   "devDependencies": {
     "lerna": "^3.13.4"
-  },
-  "dependencies": {
-    "pm2": "^4.1.2"
   }
 }

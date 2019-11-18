@@ -1,5 +1,6 @@
 FROM traefik:v2.0.5 as traefik
-FROM node:12-stretch as main
+# FROM node:12-stretch as main
+FROM keymetrics/pm2:12-stretch as main
 
 COPY --from=traefik /usr/local/bin/traefik /usr/local/bin/traefik
 
