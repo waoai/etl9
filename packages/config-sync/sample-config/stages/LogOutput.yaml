@@ -5,5 +5,8 @@ inputs:
     type: any
     progressive: true
 builtin: 'yes'
+outputs:
+  is_complete:
+    type: boolean
 endpoint: 'http://localhost:9105/logoutput'
 description: Log Output to ETL9 Server

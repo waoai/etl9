@@ -6,4 +6,10 @@ nodes:
     inputs:
       input:
         param: output
+  completion_logger:
+    name: LogOutput
+    inputs:
+      input:
+        node: logger
+        output: is_complete
 description: Some pipeline description

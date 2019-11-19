@@ -10,7 +10,7 @@ type Pipeline = {
     [nodeName: string]: {
       name: string,
       inputs: {
-        [inputKey: string]:
+        [inputKey: string]: 
           | { value: any }
           | { node: string, output: string }
           | { param: string }
@@ -24,7 +24,7 @@ export const PipelineDiagram = ({
   pipeline,
   onChange = () => null
 }: {
-  stages: Array,
+  stages: Array<Object>,
   pipeline: Pipeline,
   onChange: Pipeline => any
 }) => {

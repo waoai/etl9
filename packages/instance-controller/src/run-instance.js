@@ -64,9 +64,7 @@ async function runInstance(
 
         if (!myInputDef) {
           stageInstance.error = {
-            summary: `No input definition within "${
-              def.name
-            }" for "${inputKey}"`
+            summary: `No input definition within "${def.name}" for "${inputKey}"`
           }
           break
         }
@@ -87,9 +85,7 @@ async function runInstance(
             pushingStageInstance.outputs[connectionDef.output]
         } else {
           stageInstance.error = {
-            summary: `Waiting on "${connectionDef.node}".outputs["${
-              connectionDef.output
-            }"] -> "${stageId}".inputs["${inputKey}"]`,
+            summary: `Waiting on "${connectionDef.node}".outputs["${connectionDef.output}"] -> "${stageId}".inputs["${inputKey}"]`,
             info: {
               outputDef: pushingOutputDef,
               inputDef: myInputDef,
@@ -140,9 +136,7 @@ async function runInstance(
         endpoint,
         instance_id: id
       }
-      const summary = `Error in stage id "${stageId}" calling stage function "${
-        stageInstance.def.name
-      }". Code ${info.statusCode}. Response body "${info.message}"`
+      const summary = `Error in stage id "${stageId}" calling stage function "${stageInstance.def.name}". Code ${info.statusCode}. Response body "${info.message}"`
       console.log(iter.toString().padStart(5, "0"), summary)
       await db("log_entry").insert({
         tags: [stageInstance.def.name, id, stageId, "StagePausedOnError"],
@@ -189,6 +183,7 @@ async function runInstance(
           complete,
           pollFrequency
         } = res.body
+        if (!stageInstance.outputs) stageInstance.outputs = {}
         if (outputs !== undefined) {
           // Add progressive flags to output (if missing)
           for (const [outputKey, outputVal] of Object.entries(outputs)) {
@@ -202,8 +197,12 @@ async function runInstance(
               }
             }
           }
-          stageInstance.outputs = outputs
+          stageInstance.outputs = outputs || {}
         }
+        if (stageInstance.def.outputs.complete)
+          stageInstance.outputs.complete = { value: Boolean(complete) }
+        if (stageInstance.def.outputs.is_complete)
+          stageInstance.outputs.is_complete = { value: Boolean(complete) }
 
         stageInstance.pollFrequency = pollFrequency
         if (progress !== undefined) stageInstance.progress = progress
