@@ -30,6 +30,7 @@ async function runInstance(
         inputs: stageInfo.inputs,
         outputs: null,
         progress: 0,
+        retries: 0,
         complete: false,
         error: null,
         state: null
@@ -41,7 +42,10 @@ async function runInstance(
   // Iterate over each stage instance, if it can be run, hit the endpoint
   const { stageInstances } = instance_state
   for (const [stageId, stageInstance] of Object.entries(stageInstances)) {
-    stageInstance.error = null
+    if (stageInstance.error && stageInstance.error.clearAtNextTick) {
+      stageInstance.error = null
+    }
+
     const { def, inputs, state, complete } = stageInstance
     if (complete) continue
 
@@ -90,7 +94,8 @@ async function runInstance(
               outputDef: pushingOutputDef,
               inputDef: myInputDef,
               connectionDef
-            }
+            },
+            clearAtNextTick: true
           }
           break
         }
@@ -108,7 +113,19 @@ async function runInstance(
       }
     }
 
-    if (stageInstance.error) continue
+    // Clear error or skip this stage instance
+    if (stageInstance.error) {
+      if (!stageInstance.retries) stageInstance.retries = 0
+      // TODO configurable retry time
+      if (
+        stageInstance.error.time &&
+        Date.now() > 1000 * stageInstance.retries + stageInstance.error.time
+      ) {
+        stageInstance.retries += 1
+        stageInstance.error = null
+      }
+      continue
+    }
 
     // Hit the endpoint...
     const requestBody = {
@@ -134,9 +151,14 @@ async function runInstance(
         requestBody,
         stageId,
         endpoint,
-        instance_id: id
+        instance_id: id,
+        time: Date.now()
       }
-      const summary = `Error in stage id "${stageId}" calling stage function "${stageInstance.def.name}". Code ${info.statusCode}. Response body "${info.message}"`
+      const summary = `Error in stage id "${stageId}" calling stage function "${
+        stageInstance.def.name
+      }". Code ${info.statusCode}. Response body "${
+        info.message
+      }". ${stageInstance.retries || 0} retries`
       console.log(iter.toString().padStart(5, "0"), summary)
       await db("log_entry").insert({
         tags: [stageInstance.def.name, id, stageId, "StagePausedOnError"],
@@ -145,7 +167,9 @@ async function runInstance(
         level: "error"
       })
       stageInstance.error = { summary, ...info }
-      instance_state.paused = true
+      if (stageInstance.retries >= 5) {
+        instance_state.paused = true
+      }
       continue
     }
 
@@ -156,14 +180,18 @@ async function runInstance(
         message: res.body,
         requestBody,
         stageId,
-        instance_id: id
+        instance_id: id,
+        time: Date.now()
       }
-      const summary = `Error ${
+      const summary = `Request error in stage id ${stageId}: ${
         s ? `"${s}"` : ""
       } from stage function for instance "${id}", Stage Id: ${stageId}, Stage Name: ${
         stageInstance.def.name
-      }`
+      } with ${stageInstance.retries || 0} retries`
       stageInstance.error = { summary, ...info }
+      if (stageInstance.retries >= 5) {
+        instance_state.paused = true
+      }
       console.log(iter.toString().padStart(5, "0"), summary)
       await db("log_entry").insert({
         tags: [stageInstance.def.name, id, stageId],
@@ -199,9 +227,9 @@ async function runInstance(
           }
           stageInstance.outputs = outputs || {}
         }
-        if (stageInstance.def.outputs.complete)
+        if ((stageInstance.def.outputs || {}).complete)
           stageInstance.outputs.complete = { value: Boolean(complete) }
-        if (stageInstance.def.outputs.is_complete)
+        if ((stageInstance.def.outputs || {}).is_complete)
           stageInstance.outputs.is_complete = { value: Boolean(complete) }
 
         stageInstance.pollFrequency = pollFrequency
