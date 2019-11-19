@@ -169,6 +169,7 @@ async function runInstance(
       stageInstance.error = { summary, ...info }
       if (stageInstance.retries >= 5) {
         instance_state.paused = true
+        stageInstance.retries = 0
       }
       continue
     }
@@ -191,6 +192,7 @@ async function runInstance(
       stageInstance.error = { summary, ...info }
       if (stageInstance.retries >= 5) {
         instance_state.paused = true
+        stageInstance.retries = 0
       }
       console.log(iter.toString().padStart(5, "0"), summary)
       await db("log_entry").insert({
