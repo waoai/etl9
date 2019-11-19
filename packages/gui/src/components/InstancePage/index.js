@@ -148,17 +148,21 @@ export const InstancePage = () => {
               </Button> */}
               <Button
                 onClick={async () => {
+                  const newState = {
+                    ...instanceState,
+                    paused: !instanceState.paused
+                  }
+                  for (const k in newState.stageInstances) {
+                    newState.stageInstances[k].error = null
+                  }
                   await modifyInstance({
                     instance_id: instanceId,
-                    instance_state: {
-                      ...instanceState,
-                      paused: !instanceState.paused
-                    }
+                    instance_state: newState
                   })
                   changeRefreshKey(Date.now())
                 }}
               >
-                {instanceState.paused ? "Unpause" : "Pause"}
+                {instanceState.paused ? "Unpause & Clear Errors" : "Pause"}
               </Button>
               <Button onClick={() => changeRefreshKey(Date.now())}>
                 Refresh
