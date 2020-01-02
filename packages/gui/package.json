@@ -13,7 +13,8 @@
     "start": "PORT=9100 react-scripts start",
     "start:prod": "serve -s build -l 9100",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "echo 'no gui tests'",
+    "test:full": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 4100 -s public",
     "build-storybook": "build-storybook -s public"
