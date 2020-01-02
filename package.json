@@ -7,6 +7,9 @@
     "start:prod": "pm2-runtime start ecosystem.yaml",
     "postinstall": "lerna exec --concurrency 1 -- yarn install"
   },
+  "engines": {
+    "node": "12"
+  },
   "devDependencies": {
     "lerna": "^3.13.4"
   }
