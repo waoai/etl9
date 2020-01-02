@@ -6,7 +6,8 @@
   "scripts": {
     "start": "POSTGRES_DB=etl9 node index.js",
     "start:prod": "node index.js",
-    "build": "echo 'no build task'"
+    "build": "echo 'no build task'",
+    "test": "echo 'no config-sync tests'"
   },
   "dependencies": {
     "database": "file:../database",

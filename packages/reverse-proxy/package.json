@@ -4,7 +4,8 @@
   "scripts": {
     "start": "traefik --configfile ./static-config.yaml",
     "start:prod": "traefik --configfile ./static-config.yaml",
-    "build": "echo 'no build task'"
+    "build": "echo 'no build task'",
+    "test": "echo 'no reverse-proxy test'"
   },
   "dependencies": {}
 }
