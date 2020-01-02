@@ -1,0 +1,39 @@
+name: Node CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: install postgrest
+      run: |
+        wget https://github.com/PostgREST/postgrest/releases/download/v6.0.2/postgrest-v6.0.2-linux-x64-static.tar.xz
+        tar zxf postgrest-v6.0.2-linux-x64-static.tar.xz
+        chmod +x ./postgrest
+        mv ./postgrest /usr/bin/postgrest
+    - name: Setup PostgreSQL
+      uses: Harmon758/postgresql-action@v1.0.0
+      with:
+        postgresql version: 12
+        postgresql db: etl9
+        postgresql user: postgres
+        postgresql password: ""
+    - name: npm install, build, and test
+      run: |
+        yarn install
+        yarn run build --if-present
+        yarn test
+      env:
+        CI: true
