@@ -6,7 +6,7 @@
     "start": "POSTGRES_USER=postgres POSTGRES_PORT=5432 POSTGRES_DB=etl9 POSTGRES_HOST=localhost pm2 start ecosystem.dev.yaml",
     "start:prod": "pm2-runtime start ecosystem.yaml",
     "postinstall": "lerna exec --concurrency 1 -- yarn install",
-    "test": "lerna exec --concurrency 1 -- yarn test"
+    "test": "lerna exec --concurrency 1 --stream -- yarn test"
   },
   "engines": {
     "node": "12"

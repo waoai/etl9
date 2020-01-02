@@ -31,11 +31,15 @@ jobs:
           postgresql db: etl9
           postgresql user: postgres
           postgresql password: ""
-      - name: npm install, build, and test
+      - name: yarn install
         run: |
           yarn install
           cd packages/database && yarn build
           cd packages/config-sync && yarn build
+        env:
+          CI: true
+      - name: tests
+        run: |
           yarn test
         env:
           CI: true
