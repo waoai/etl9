@@ -34,7 +34,8 @@ jobs:
       - name: npm install, build, and test
         run: |
           yarn install
-          yarn run build --if-present
+          cd packages/database && yarn build
+          cd packages/config-sync && yarn build
           yarn test
         env:
           CI: true
