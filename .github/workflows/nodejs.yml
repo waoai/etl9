@@ -21,7 +21,9 @@ jobs:
           wget https://github.com/PostgREST/postgrest/releases/download/v6.0.2/postgrest-v6.0.2-linux-x64-static.tar.xz
           tar xf postgrest-v6.0.2-linux-x64-static.tar.xz
           chmod +x ./postgrest
-          mv ./postgrest /usr/bin/postgrest
+          mkdir -p ~/bin
+          echo "::add-path::~/bin"
+          mv ./postgrest ~/bin/postgrest
       - name: Setup PostgreSQL
         uses: Harmon758/postgresql-action@v1.0.0
         with:
