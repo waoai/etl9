@@ -26,6 +26,8 @@ apps:
     autorestart: true
     watch: false
     cwd: packages/database-rest-api
+    env:
+      PORT: 9102
 
   - name: stage-api
     script: npm

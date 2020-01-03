@@ -8,7 +8,7 @@ import http from "http"
 import listen from "test-listen"
 import app from "../"
 
-import got from "got"
+import request from "request-promise"
 
 test("LogOutput should log to database", async t => {
   const db = await getDB()
@@ -16,19 +16,25 @@ test("LogOutput should log to database", async t => {
   const service = micro(app)
   const url = await listen(service)
 
-  const res = await got(`${url}/logoutput`, {
-    method: "POST",
-    json: true,
-    headers: { "content-type": "application/json" },
-    body: {
-      instance_id: "test-instance-id",
-      inputs: {
-        input: {
-          value: "Test Message"
+  let res
+  try {
+    res = await request({
+      url: `${url}/logoutput`,
+      method: "POST",
+      json: true,
+      headers: { "content-type": "application/json" },
+      body: {
+        instance_id: "test-instance-id",
+        inputs: {
+          input: {
+            value: "Test Message"
+          }
         }
       }
-    }
-  })
+    })
+  } catch (e) {
+    t.fail("Request failed: " + e.toString())
+  }
 
   t.is(res.statusCode, 200)
 

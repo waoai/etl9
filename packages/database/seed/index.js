@@ -4,7 +4,11 @@ const getDB = require("../")
 const { definitions, envVars } = require("./examples")
 
 module.exports = async db => {
-  if (!db) db = await getDB()
+  let destroyWhenComplete = false
+  if (!db) {
+    destroyWhenComplete = true
+    db = await getDB()
+  }
   const defCount = parseInt((await db("definition").count())[0].count)
   console.log(`${defCount} definitions found`)
   if (defCount !== 0)
@@ -22,7 +26,10 @@ module.exports = async db => {
     })
   }
   console.log("disconnecting from database...")
-  await db.destroy()
-  console.log("done")
-  process.exit(0)
+  if (destroyWhenComplete) {
+    console.log("destroying database connection")
+    await db.destroy()
+    // process.exit(0)
+  }
+  console.log("done seeding")
 }

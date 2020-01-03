@@ -10,12 +10,15 @@
     "test": "ava ./tests/test.js"
   },
   "dependencies": {
+    "get-port": "^5.1.0",
     "moment": "^2.24.0",
     "qspg": "^1.0.8"
   },
   "devDependencies": {
-    "ava": "^2.2.0",
+    "ava": "^2.4.0",
     "micro": "^9.3.4",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.5",
     "test-listen": "^1.1.0"
   }
 }
