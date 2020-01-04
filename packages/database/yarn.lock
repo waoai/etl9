@@ -2763,9 +2763,10 @@ qs@~6.5.2:
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
   integrity sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA==
 
-qspg@^1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/qspg/-/qspg-1.0.8.tgz#514aa12984a0853b9e056999056804848ff0281f"
+qspg@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/qspg/-/qspg-1.0.10.tgz#fb6c73f00ead1ec90ac9a416b85ede430ac8d750"
+  integrity sha512-Ys0EPfAU6/anJ8OdZACnDUKkCu7A74NTHSCZcEhM2YnsiOX7IzoLXINkhQnZ9wg//otRZ4N8Yp9Xas3Jl93yIQ==
   dependencies:
     knex "^0.19.0"
     pg "^7.11.0"

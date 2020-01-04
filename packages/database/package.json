@@ -12,7 +12,7 @@
   "dependencies": {
     "get-port": "^5.1.0",
     "moment": "^2.24.0",
-    "qspg": "^1.0.8"
+    "qspg": "^1.0.10"
   },
   "devDependencies": {
     "ava": "^2.4.0",
