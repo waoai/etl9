@@ -1,12 +1,14 @@
 // @flow
 
 const got = require("got")
+const moment = require("moment")
 
 let iter = 0
 async function runInstance(
   { db, stageAPIURL = "http://localhost:9123/api/stage/", alwaysPoll = false },
   { instance_state, params, pipeline_def, id }
 ) {
+  const runInstanceStartTime = moment()
   iter++
 
   // Pull environment variables
@@ -295,6 +297,11 @@ async function runInstance(
   await db("instance")
     .update({ instance_state })
     .where("id", id)
+  await db("system_instance_profile").insert({
+    instance_id: id,
+    started_at: runInstanceStartTime,
+    ended_at: moment()
+  })
 }
 
 module.exports = runInstance
