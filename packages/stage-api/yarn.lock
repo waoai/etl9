@@ -1141,8 +1141,9 @@ currently-unhandled@^0.4.1:
 "database@file:../database":
   version "0.0.1"
   dependencies:
+    get-port "^5.1.0"
     moment "^2.24.0"
-    qspg "^1.0.8"
+    qspg "^1.0.10"
 
 date-time@^2.1.0:
   version "2.1.0"
@@ -1694,6 +1695,11 @@ get-port@^5.0.0:
   integrity sha512-imzMU0FjsZqNa6BqOjbbW6w5BivHIuQKopjpPqcnx0AVHJQKCxK1O+Ab3OrVXhrekqfVMjwA9ZYu062R+KcIsQ==
   dependencies:
     type-fest "^0.3.0"
+
+get-port@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/get-port/-/get-port-5.1.0.tgz#a8f6510d0000f07d5c65653a4b0ae648fe832683"
+  integrity sha512-bjioH1E9bTQUvgaB6VycVy1QVbTZI41yTnF9qkZz6ixgy/uhCH6D63bKeZ6Code/07JYA61MeI94jSdHss8PNA==
 
 get-stream@^3.0.0:
   version "3.0.0"
@@ -3393,10 +3399,10 @@ pump@^3.0.0:
     end-of-stream "^1.1.0"
     once "^1.3.1"
 
-qspg@^1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/qspg/-/qspg-1.0.8.tgz#514aa12984a0853b9e056999056804848ff0281f"
-  integrity sha512-eBW5L1JIuxxULhlDVpXbqlbMh+5h1C16WICuuKWI436dNOqGu6K6MJBFrBFxwcm6E25IR3A9GzpKh1Y5Eafoqg==
+qspg@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/qspg/-/qspg-1.0.10.tgz#fb6c73f00ead1ec90ac9a416b85ede430ac8d750"
+  integrity sha512-Ys0EPfAU6/anJ8OdZACnDUKkCu7A74NTHSCZcEhM2YnsiOX7IzoLXINkhQnZ9wg//otRZ4N8Yp9Xas3Jl93yIQ==
   dependencies:
     knex "^0.19.0"
     pg "^7.11.0"

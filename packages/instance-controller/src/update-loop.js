@@ -28,6 +28,8 @@ async function loop(params) {
     incompleteInstances.map(instance => runInstance(params, instance))
   )
 
+  if (iterations % 1000 === 0) await db.raw("VACUUM FULL")
+
   console.log(
     `Loop [${iterations}] completed in ${(
       (Date.now() - startTime) /
