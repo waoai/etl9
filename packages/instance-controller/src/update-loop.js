@@ -11,7 +11,7 @@ async function loop(params) {
   const { db, repeat = false } = params
 
   console.log(`Loop [${++iterations}] Starting...`)
-  const startTime = moment()
+  const startTime = moment.utc()
 
   // Get all incomplete instances
   const incompleteInstances = await db("instance")
@@ -34,14 +34,14 @@ async function loop(params) {
 
   console.log(
     `Loop [${iterations}] completed in ${(
-      (moment().valueOf() - startTime.valueOf()) /
+      (moment.utc().valueOf() - startTime.valueOf()) /
       1000
     ).toFixed(2)}s`
   )
   await db("system_loop_profile").insert({
     instance_count: incompleteInstances.length,
     started_at: startTime,
-    ended_at: moment()
+    ended_at: moment.utc()
   })
 
   if (repeat) {

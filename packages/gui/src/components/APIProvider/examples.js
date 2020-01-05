@@ -168,9 +168,7 @@ export const envVars = [
 export const pipelineInstances = [
   {
     id: "someid1",
-    createdAt: moment()
-      .utc()
-      .toString(),
+    createdAt: moment.utc().toString(),
     completed: false,
     progress: 0.2,
     pipelineDefinition: pipelines[0],

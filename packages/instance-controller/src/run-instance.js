@@ -8,7 +8,7 @@ async function runInstance(
   { db, stageAPIURL = "http://localhost:9123/api/stage/", alwaysPoll = false },
   { instance_state, params, pipeline_def, id }
 ) {
-  const runInstanceStartTime = moment()
+  const runInstanceStartTime = moment.utc()
   iter++
 
   // Pull environment variables
@@ -130,7 +130,7 @@ async function runInstance(
     }
 
     // ---- RUN STAGE INSTANCE ----
-    const stageInstanceStartTime = moment()
+    const stageInstanceStartTime = moment.utc()
 
     // Hit the endpoint...
     const requestBody = {
@@ -286,7 +286,7 @@ async function runInstance(
         stage_id: stageId,
         stage_name: stageInstance.def.name,
         started_at: stageInstanceStartTime,
-        ended_at: moment()
+        ended_at: moment.utc()
       })
     } else {
       await requestError()
@@ -307,6 +307,9 @@ async function runInstance(
   if (instance_state.progress === 1) {
     instance_state.complete = true
   }
+  if (instance_state.complete) {
+    instance_state.completeTime = moment.utc().valueOf()
+  }
 
   await db("instance")
     .update({ instance_state })
@@ -314,7 +317,7 @@ async function runInstance(
   await db("system_instance_profile").insert({
     instance_id: id,
     started_at: runInstanceStartTime,
-    ended_at: moment()
+    ended_at: moment.utc()
   })
 }
 
