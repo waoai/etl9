@@ -129,6 +129,9 @@ async function runInstance(
       continue
     }
 
+    // ---- RUN STAGE INSTANCE ----
+    const stageInstanceStartTime = moment()
+
     // Hit the endpoint...
     const requestBody = {
       state: stageInstance.state,
@@ -278,6 +281,13 @@ async function runInstance(
       } catch (e) {
         await requestError(`Error parsing body: "${e.toString()}"`)
       }
+      await db("system_stage_profile").insert({
+        instance_id: id,
+        stage_id: stageId,
+        stage_name: stageInstance.def.name,
+        started_at: stageInstanceStartTime,
+        ended_at: moment()
+      })
     } else {
       await requestError()
       continue
@@ -293,6 +303,10 @@ async function runInstance(
   }
   instance_state.progress =
     progresses.reduce((acc, a) => acc + a) / progresses.length
+
+  if (instance_state.progress === 1) {
+    instance_state.complete = true
+  }
 
   await db("instance")
     .update({ instance_state })
