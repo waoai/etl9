@@ -10,6 +10,7 @@
     "test": "ava ./tests/test.js"
   },
   "dependencies": {
+    "database-rest-api": "file:../database-rest-api",
     "get-port": "^5.1.0",
     "moment": "^2.24.0",
     "qspg": "^1.0.10"

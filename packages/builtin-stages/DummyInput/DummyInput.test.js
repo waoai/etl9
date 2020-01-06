@@ -11,7 +11,7 @@ import app from "../"
 import got from "got"
 
 test("DummyInput should output", async t => {
-  const db = await getDB()
+  const db = await getDB({ testMode: true, restAPI: true })
 
   const service = micro(app)
   const url = await listen(service)

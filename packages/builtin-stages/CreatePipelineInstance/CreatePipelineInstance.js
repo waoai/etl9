@@ -19,7 +19,8 @@ module.exports = async (req, res) => {
     return { state, pollFrequency: 1000 * 10 }
   // Get latest pipeline definition
   const pipelineDefs = await request({
-    uri: "http://localhost:9102/pipeline_def",
+    uri: `${process.env.DB_REST_API_URL ||
+      "http://localhost:9102"}/pipeline_def`,
     qs: { name: `eq.${pipelineName}` },
     json: true
   })
@@ -38,7 +39,7 @@ module.exports = async (req, res) => {
     }
 
     const result = await request({
-      uri: "http://localhost:9102/instance",
+      uri: `${process.env.DB_REST_API_URL || "http://localhost:9102"}/instance`,
       method: "POST",
       json: true,
       headers: {

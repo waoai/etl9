@@ -11,7 +11,7 @@ import app from "../"
 import request from "request-promise"
 
 test("ETL9Event should log to database", async t => {
-  const db = await getDB({ testMode: true })
+  const db = await getDB({ testMode: true, restAPI: true })
 
   const service = micro(app)
   const url = await listen(service)
