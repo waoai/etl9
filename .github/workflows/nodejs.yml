@@ -24,6 +24,7 @@ jobs:
           mkdir -p $GITHUB_WORKSPACE/bin
           echo "::add-path::$GITHUB_WORKSPACE/bin"
           mv ./postgrest $GITHUB_WORKSPACE/bin/postgrest
+          ls -l $GITHUB_WORKSPACE/bin
       - name: Setup PostgreSQL
         uses: Harmon758/postgresql-action@v1.0.0
         with:
