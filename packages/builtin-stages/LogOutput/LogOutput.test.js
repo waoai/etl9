@@ -36,8 +36,6 @@ test("LogOutput should log to database", async t => {
     t.fail("Request failed: " + e.toString())
   }
 
-  t.is(res.statusCode, 200)
-
   const latestLog = await db("log_entry")
     .orderBy("created_at", "desc")
     .first()

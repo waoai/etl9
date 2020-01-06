@@ -1,0 +1,15 @@
+kind: Pipeline
+name: LoggingPipeline2
+nodes:
+  logger:
+    name: LogOutput
+    inputs:
+      input:
+        param: output
+  logger2:
+    name: LogOutput
+    inputs:
+      input:
+        node: logger
+        output: is_complete
+description: Logs the parameter "output"
