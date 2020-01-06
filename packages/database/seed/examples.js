@@ -130,6 +130,7 @@ const definitions = [
     kind: "Stage",
     name: "LogOutput",
     description: "Log Output to ETL9 Server",
+    endpoint: "http://localhost:9105/logoutput",
     inputs: {
       input: {
         type: "any"
