@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/styles"
 import WaterTable from "react-watertable"
 import { useAPI } from "../APIProvider"
 import useNavigation from "../../utils/use-navigation.js"
-import Instances from "../Instances"
+import GroupedInstances from "../GroupedInstances"
 
 const useStyles = makeStyles({
   root: {
@@ -54,7 +54,7 @@ export const DashboardPage = () => {
           ))}
         </div>
         <div className={c.instances}>
-          <Instances />
+          <GroupedInstances />
         </div>
       </div>
     </Page>
