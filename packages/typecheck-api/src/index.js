@@ -24,7 +24,7 @@ module.exports = visualize(async (req, res) => {
     .select("def")
     .where({ name: typeName })
     .first()
-  if (!dbType) throw new Error("Type not found")
+  if (!dbType) throw new Error(`Type not found "${typeName}"`)
 
   let dbTypeCheckFunc
   try {

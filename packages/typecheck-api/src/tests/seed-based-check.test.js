@@ -9,9 +9,10 @@ import app from "../"
 import getDB from "database"
 
 test("check types from seed", async t => {
+  const db = await getDB({ seed: true, testMode: true, restAPI: true })
+
   const service = micro(app)
   const url = await listen(service)
-  // const db = await getDB({ seed: true, testMode: true })
 
   let res
   try {

@@ -1143,9 +1143,13 @@ currently-unhandled@^0.4.1:
   dependencies:
     array-find-index "^1.0.1"
 
+"database-rest-api@file:../database-rest-api":
+  version "0.0.0"
+
 "database@file:../database":
   version "0.0.1"
   dependencies:
+    database-rest-api "file:../../../../../.cache/yarn/v6/npm-database-0.0.1-16dc83e3-060b-4a6b-8f98-0e8f2841273c-1578291157641/node_modules/database-rest-api"
     get-port "^5.1.0"
     moment "^2.24.0"
     qspg "^1.0.10"
