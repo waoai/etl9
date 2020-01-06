@@ -89,7 +89,8 @@ module.exports = async (req, res) => {
 
   let stageRes
   try {
-    if (!stageDef.def.endpoint) throw new Error("endpoint not specified")
+    if (!stageDef.def.endpoint)
+      throw new Error(`endpoint not specified in "${stageDef.def.name}"`)
 
     stageRes = await got(await replaceEnvVars(db, stageDef.def.endpoint), {
       method: "POST",

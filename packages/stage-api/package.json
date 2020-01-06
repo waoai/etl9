@@ -16,6 +16,7 @@
     "test-listen": "^1.1.0"
   },
   "dependencies": {
+    "builtin-stages": "file:../builtin-stages",
     "database": "file:../database",
     "micro": "^9.3.4",
     "safe-eval": "^0.4.1",
