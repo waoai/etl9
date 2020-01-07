@@ -10,7 +10,7 @@ type Pipeline = {
     [nodeName: string]: {
       name: string,
       inputs: {
-        [inputKey: string]: 
+        [inputKey: string]:
           | { value: any }
           | { node: string, output: string }
           | { param: string }
@@ -30,6 +30,14 @@ export const PipelineDiagram = ({
 }) => {
   if (!pipeline || !pipeline.nodes) return null
   if (Object.keys(pipeline.nodes).length === 0) return null
+
+  // TODO Every stage gets a is_complete output for now, this should be
+  // selectively added later
+  stages = stages.map(stage => ({
+    ...stage,
+    outputs: { ...stage.outputs, is_complete: { type: "boolean" } }
+  }))
+
   try {
     // Try to construct the rete node structure from the Pipeline format
 
