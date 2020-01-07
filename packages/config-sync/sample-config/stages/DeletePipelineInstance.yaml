@@ -1,0 +1,10 @@
+kind: Stage
+name: DeletePipelineInstance
+inputs:
+  trigger:
+    type: boolean
+builtin: "yes"
+endpoint: "http://localhost:9105/deletepipelineinstance"
+description: |
+  Delete the pipeline instance that this stage is called within. Use when
+  a stage is completed early.
