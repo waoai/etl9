@@ -59,10 +59,19 @@ async function runInstance(
     )
       continue
 
-    // Can this stage be run?
+    // Can this stage be run? Let's find out while collecting the inputs necessary
+    // to run the stage into `inputsWithValues`
     const inputsWithValues = {}
     for (const [inputKey, connectionDef] of Object.entries(inputs)) {
-      if (connectionDef.node) {
+      if (
+        (connectionDef.node && connectionDef.output === "is_complete") ||
+        connectionDef.output === "complete"
+      ) {
+        const pushingStageInstance = stageInstances[connectionDef.node]
+        inputsWithValues[inputKey] = {
+          value: Boolean(pushingStageInstance.complete)
+        }
+      } else if (connectionDef.node) {
         const pushingStageInstance = stageInstances[connectionDef.node]
         const pushingOutputDef =
           pushingStageInstance.def.outputs[connectionDef.output]
@@ -234,10 +243,6 @@ async function runInstance(
           }
           stageInstance.outputs = outputs || {}
         }
-        if ((stageInstance.def.outputs || {}).complete)
-          stageInstance.outputs.complete = { value: Boolean(complete) }
-        if ((stageInstance.def.outputs || {}).is_complete)
-          stageInstance.outputs.is_complete = { value: Boolean(complete) }
 
         stageInstance.pollFrequency = pollFrequency
         if (progress !== undefined) stageInstance.progress = progress
