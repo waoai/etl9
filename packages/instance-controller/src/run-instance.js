@@ -225,7 +225,8 @@ async function runInstance(
           state,
           error,
           complete,
-          pollFrequency
+          pollFrequency,
+          forcePause
         } = res.body
         if (!stageInstance.outputs) stageInstance.outputs = {}
         if (outputs !== undefined) {
@@ -249,6 +250,7 @@ async function runInstance(
         if (state !== undefined) stageInstance.state = state
         if (error !== undefined) stageInstance.error = error
         if (complete !== undefined) stageInstance.complete = complete
+        if (forcePause === true) instance_state.paused = true
         if (stageInstance.complete) stageInstance.progress = 1
         stageInstance.delay = stageInstance.delay || {
           firstResponseTimestamp: Date.now()
