@@ -52,7 +52,7 @@ async function replaceEnvVars(db, str) {
 
 module.exports = async (req, res) => {
   const db = await getCachedDB()
-  const reqBody = await json(req)
+  const reqBody = await json(req, { limit: "100mb" })
   const typeMap = await getTypes(db)
   const stageName = req.url.slice(1)
 
