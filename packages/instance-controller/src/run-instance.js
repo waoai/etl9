@@ -223,6 +223,7 @@ async function runInstance(
           outputs,
           progress,
           state,
+          stateUpdate,
           error,
           complete,
           pollFrequency,
@@ -248,6 +249,8 @@ async function runInstance(
         stageInstance.pollFrequency = pollFrequency
         if (progress !== undefined) stageInstance.progress = progress
         if (state !== undefined) stageInstance.state = state
+        else if (stateUpdate !== undefined)
+          stageInstance.state = { ...stageInstance.state, ...stateUpdate }
         if (error !== undefined) stageInstance.error = error
         if (complete !== undefined) stageInstance.complete = complete
         if (forcePause === true) instance_state.paused = true
