@@ -1,0 +1,27 @@
+version: "3.3"
+
+services:
+  postgres:
+    image: "postgres:latest"
+    environment:
+      - POSTGRES_USER:postgres
+      - POSTGRES_DB:not_used
+      - POSTGRES_PASSWORD=password
+      - PG_HOST=127.0.0.1
+      - PG_USER=postgres
+      - PG_PASS=password
+      - PG_PORT=5432
+    ports:
+      - "5432:5432"
+
+  etl9:
+    image: "workaroundonline/etl9"
+    depends_on:
+      - postgres
+    environment:
+      - POSTGRES_USER:postgres
+      - POSTGRES_DB:etl9
+      - POSTGRES_PASS=password
+      - POSTGRES_HOST=postgres
+    ports:
+      - "9123:9123"
