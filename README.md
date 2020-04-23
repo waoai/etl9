@@ -1,5 +1,7 @@
 # ETL9
 
+![](https://user-images.githubusercontent.com/1910070/80068672-064d7f80-850e-11ea-8db4-4fba03cb4902.png)
+
 **ETL9 makes data pipelining fun.**
 
 Simple all-in-one container for FaaS-based ETL pipelines.
