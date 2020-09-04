@@ -67,7 +67,7 @@
     "rete-context-menu-plugin": "^0.3.7",
     "rete-react-render-plugin": "^0.1.2",
     "safe-eval": "^0.4.1",
-    "showdown": "^1.9.0",
+    "showdown": "^1.9.1",
     "superstruct": "^0.6.1",
     "typescript": "^3.4.5"
   }
