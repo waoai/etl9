@@ -12,7 +12,7 @@
   "dependencies": {
     "database": "file:../database",
     "js-yaml": "^3.13.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "moment": "^2.24.0",
     "recursive-readdir": "^2.2.2",
     "watch": "^1.0.2"
