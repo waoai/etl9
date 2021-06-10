@@ -913,7 +913,7 @@ currently-unhandled@^0.4.1:
 "database@file:../database":
   version "0.0.1"
   dependencies:
-    database-rest-api "file:../../../../../.cache/yarn/v4/npm-database-0.0.1-cc0edee1-b066-40f2-a5b0-232a7a4c3354-1578350931151/node_modules/database-rest-api"
+    database-rest-api "file:../database-rest-api"
     get-port "^5.1.0"
     moment "^2.24.0"
     qspg "^1.0.10"
@@ -2281,8 +2281,9 @@ normalize-path@^3.0.0, normalize-path@~3.0.0:
   resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-3.0.0.tgz#0dcd69ff23a1c9b11fd0978316644a0388216a65"
 
 normalize-url@^4.1.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-4.5.0.tgz#453354087e6ca96957bd8f5baf753f5982142129"
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-4.5.1.tgz#0dd90cf1288ee1d1313b87081c9a5932ee48518a"
+  integrity sha512-9UZCFRHQdNrfTpGg8+1INIg93B6zE0aXMVFkw1WFwvO4SlZywU6aLg5Of0Ap/PgcbSw4LNxvMWXMeugwMCX0AA==
 
 npm-run-path@^2.0.0:
   version "2.0.2"
