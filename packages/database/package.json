@@ -12,7 +12,7 @@
   "dependencies": {
     "database-rest-api": "file:../database-rest-api",
     "get-port": "^5.1.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "qspg": "^1.0.10"
   },
   "devDependencies": {
