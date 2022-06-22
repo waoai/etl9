@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "ava": "^2.0.0",
-    "got": "^9.6.0",
+    "got": "^11.8.5",
     "micro-dev": "^3.0.0",
     "micro-visualize": "^3.0.1",
     "test-listen": "^1.1.0"
