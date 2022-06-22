@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "database": "file:../database",
-    "got": "^9.6.0"
+    "got": "^11.8.5"
   },
   "devDependencies": {
     "ava": "^2.2.0",
