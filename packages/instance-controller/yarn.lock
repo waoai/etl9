@@ -913,7 +913,7 @@ currently-unhandled@^0.4.1:
 "database@file:../database":
   version "0.0.1"
   dependencies:
-    database-rest-api "file:../../../../../.cache/yarn/v4/npm-database-0.0.1-cc0edee1-b066-40f2-a5b0-232a7a4c3354-1578350931151/node_modules/database-rest-api"
+    database-rest-api "file:../database-rest-api"
     get-port "^5.1.0"
     moment "^2.24.0"
     qspg "^1.0.10"
@@ -1888,10 +1888,9 @@ json-stringify-safe@^5.0.1:
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
 
 json5@^2.1.0:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/json5/-/json5-2.1.1.tgz#81b6cb04e9ba496f1c7005d07b4368a2638f90b6"
-  dependencies:
-    minimist "^1.2.0"
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/json5/-/json5-2.2.3.tgz#78cd6f1a19bdc12b73db5ad0c61efd66c1e29283"
+  integrity sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==
 
 keyv@^3.0.0:
   version "3.1.0"
